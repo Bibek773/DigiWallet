@@ -69,5 +69,5 @@ Current stage:
 
 - [Bibek Ghimire](https://github.com/bibek773)
 - [Maheshwar Pant](https://github.com/Maheshwar-Pant)
-- [Manish Oli](https://github.com/Manishaa-Oli)
+- [Manisha Oli](https://github.com/Manishaa-Oli)
 
