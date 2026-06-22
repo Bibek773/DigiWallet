@@ -9,14 +9,14 @@ const {
   deleteCollege,
 } = require("../controllers/admin.controller");
 
-router.post("/college", createCollege);//here / shows http://localhost:5000/api/admin
+router.post("/", createCollege);
 
-router.get("/college", getAllColleges);
+router.get("/", getAllColleges);
 
-router.get("/college/:id", getCollegeById);
+router.get("/:id", getCollegeById);
 
-router.put("/college/:id", updateCollege);
+router.put("/:id", updateCollege);
 
-router.delete("/college/:id", deleteCollege);
+router.delete("/:id", deleteCollege);
 
 module.exports = router;

@@ -1,10 +1,16 @@
+const path = require('path');
 require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env'), override: false });
 const app = require('./app');
 const connectDB=require("./config/db")
 const PORT = process.env.PORT || 5000;
 
 //to connect mogodb
-connectDB()
-app.listen(PORT, () => {
-  console.log(`DiGiWallet server running on port ${PORT}`);
-});
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`DiGiWallet server running on port ${PORT}`);
+  });
+};
+
+startServer();
