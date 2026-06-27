@@ -1,4 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-// TODO: GET /wallet, GET /credentials/:credentialId
+
+const {
+  createUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+} = require("../controllers/student.controller"); // adjust path as needed
+
+router.post("/", createUser);
+
+router.get("/", getAllUsers);
+
+router.get("/:id", getUserById);
+
+router.put("/:id", updateUser);
+
+router.delete("/:id", deleteUser);
+
 module.exports = router;

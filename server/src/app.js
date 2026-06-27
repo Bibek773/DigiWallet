@@ -11,11 +11,12 @@ app.use(express.json());
 
 const adminRoutes= require("./routes/admin.routes")
 app.use("/api/college",adminRoutes)
+app.use('/api/student',     require('./routes/student.routes'))
 
 // Routes — uncomment as each sprint implements them
 // app.use('/api/auth',        require('./routes/auth.routes'));
 // app.use('/api/credentials', require('./routes/credential.routes'));
-// app.use('/api/student',     require('./routes/student.routes'));
+
 // app.use('/api/verify',      require('./routes/verify.routes'));
 
 // Health check
