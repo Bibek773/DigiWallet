@@ -1,8 +1,7 @@
 const path = require('path');
-require('dotenv').config();
-require('dotenv').config({ path: path.join(__dirname, '.env'), override: false });
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const app = require('./app');
-const connectDB=require("./config/db")
+const connectDB = require("./config/db");
 const PORT = process.env.PORT || 5000;
 
 //to connect mogodb

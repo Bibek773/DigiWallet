@@ -1,4 +1,17 @@
 const express = require('express');
 const router = express.Router();
-// TODO: POST /issue, GET /issued, PATCH /revoke/:credentialId
+
+const {
+  issueCredential,
+  getIssuedCredentials,
+  revokeCredential,
+} = require('../controllers/credential.controller');
+
+router.post('/issue', issueCredential);
+
+router.get('/issued', getIssuedCredentials);
+
+router.patch('/revoke/:credentialId', revokeCredential);
+
+
 module.exports = router;

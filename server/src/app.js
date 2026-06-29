@@ -13,6 +13,9 @@ const adminRoutes= require("./routes/admin.routes")
 app.use("/api/college",adminRoutes)
 app.use('/api/student',     require('./routes/student.routes'))
 
+const credentialRoutes = require("./routes/credential.routes");
+app.use("/api/credentials", credentialRoutes);
+
 // Routes — uncomment as each sprint implements them
 // app.use('/api/auth',        require('./routes/auth.routes'));
 // app.use('/api/credentials', require('./routes/credential.routes'));
