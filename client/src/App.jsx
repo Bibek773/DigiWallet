@@ -1,22 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 
-// Pages — uncomment as each sprint implements them
-// import LoginPage           from './pages/LoginPage';
-// import RegisterPage        from './pages/RegisterPage';
-// import AdminDashboard      from './pages/AdminDashboard';
-// import CollegeDashboard    from './pages/CollegeDashboard';
-// import IssueCredentialPage from './pages/IssueCredentialPage';
-// import IssuedCredentials   from './pages/IssuedCredentials';
-// import StudentWallet       from './pages/StudentWallet';
-// import VerifyPage          from './pages/VerifyPage';
-// import VerifyResult        from './pages/VerifyResult';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Routes will be added in Sprint 1 */}
-        <Route path="/" element={<div>DiGiWallet — Sprint 1 coming soon</div>} />
+        <Route
+          path="/"
+          element={
+            <div style={{ padding: '32px', fontFamily: 'sans-serif' }}>
+              <h1>DiGiWallet</h1>
+              <p>
+                Open the registration page here: <Link to="/register">/register</Link>
+              </p>
+            </div>
+          }
+        />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );
