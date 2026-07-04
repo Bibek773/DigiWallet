@@ -22,6 +22,16 @@ const userSchema = new mongoose.Schema({
         select: false,
     },
 
+        role: {
+      type: String,
+      enum: {
+        values: ['super_admin', 'college', 'student'],
+        message: '{VALUE} is not a valid role',
+      },
+      required: [true, 'Role is required'],
+    
+    },
+
     College_Id: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'College',
