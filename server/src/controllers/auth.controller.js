@@ -1,15 +1,14 @@
-// TODO: login, registerStudent, registerCollege, getMe — Sprint 1
 
 // controllers/auth.controller.js
 const User = require("../models/student.model");
 const generateToken = require("../utils/generateTokens");
 
-// ================================================================
+
 // STUDENT SIGNUP — creates the account directly.
 // Public route. Student provides all their own data + a password.
 // Account starts as "pending" and cannot log in until the college
 // manually approves it based on their own external records.
-// ================================================================
+
 exports.studentSignup = async (req, res) => {
   try {
     const {
@@ -57,9 +56,9 @@ exports.studentSignup = async (req, res) => {
   }
 };
 
-// ================================================================
+
 // LOGIN — used by all three roles: super_admin, college, student
-// ================================================================
+
 exports.login = async (req, res) => {
   try {
     const { Email, Password } = req.body;
@@ -127,9 +126,9 @@ exports.login = async (req, res) => {
   }
 };
 
-// ================================================================
+
 // SUPER ADMIN manually creates a "college" role login account
-// ================================================================
+
 exports.createUserAccount = async (req, res) => {
   try {
     const { Name, Email, Password, role, College_Id } = req.body;
@@ -169,9 +168,8 @@ exports.createUserAccount = async (req, res) => {
   }
 };
 
-// ================================================================
 // GET current logged-in user's own profile
-// ================================================================
+
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate(

@@ -1,7 +1,6 @@
 // models/student.model.js
 const mongoose = require("mongoose");
-// NOTE: password hashing (pre-save hook + comparePassword method) is handled
-// separately by teammate — this file only defines schema shape.
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
     Name: {
@@ -82,5 +81,27 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true,
 });
+
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("Password") || !this.Password) {
+        return next();
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    this.Password = await bcrypt.hash(this.Password, salt);
+    next();
+});
+
+userSchema.methods.comparePassword = async function (candidatePassword) {
+    if (!this.Password) {
+        return false;
+    }
+
+    if (typeof this.Password === "string" && this.Password.startsWith("$2")) {
+        return bcrypt.compare(candidatePassword, this.Password);
+    }
+
+    return this.Password === candidatePassword;
+};
 
 module.exports = mongoose.model("User", userSchema);

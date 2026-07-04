@@ -1,4 +1,3 @@
-// TODO: restrictTo(...roles) — role guard — Sprint 1
 
 const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {

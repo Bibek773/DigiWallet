@@ -15,6 +15,11 @@ const dbConnect = async () => {
     console.log("mongoDb connected successfully");
   } catch (error) {
     console.error(error.message);
+    if (error.message.includes("different case")) {
+      console.error(
+        "MongoDB database names are case-sensitive on this setup. Make sure the database name in MONGODB_URI matches the existing database exactly."
+      );
+    }
     process.exit(1);
   }
 };
