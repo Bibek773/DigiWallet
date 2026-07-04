@@ -1,43 +1,14 @@
-const crypto = require("crypto");
 const mongoose = require("mongoose");
 const QRCode = require("qrcode");
 
 const College = require("../models/college.model");
 const Credential = require("../models/credential.model");
-
-const canonicalize = (value) => {
-  if (Array.isArray(value)) {
-    return value.map(canonicalize);
-  }
-
-  if (value && typeof value === "object" && !(value instanceof Date)) {
-    return Object.keys(value)
-      .sort()
-      .reduce((result, key) => {
-        result[key] = canonicalize(value[key]);
-        return result;
-      }, {});
-  }
-
-  return value;
-};
-
-const createDataHash = (data) =>
-  crypto
-    .createHash("sha256")
-    .update(JSON.stringify(canonicalize(data)))
-    .digest("hex");
-
-const signHash = (hash) =>
-  crypto
-    .createHmac(
-      "sha256",
-      process.env.CREDENTIAL_SIGNING_SECRET ||
-        process.env.JWT_SECRET ||
-        "digiwallet-credential-secret"
-    )
-    .update(hash)
-    .digest("hex");
+const { createCredentialHash } = require("../utils/hash");
+const {
+  SIGNATURE_ALGORITHM,
+  readPrivateKey,
+  signCredential,
+} = require("../utils/signature");
 
 const normalizeProgram = (program) => {
   if (!program) return program;
@@ -60,6 +31,8 @@ const safeCredential = (credential) => ({
   credentialData: credential.credentialData,
   dataHash: credential.dataHash,
   signature: credential.signature,
+  keyId: credential.keyId,
+  signatureAlgorithm: credential.signatureAlgorithm,
   verificationLink: credential.verificationLink,
   qrCodeData: credential.qrCodeData,
   status: credential.status,
@@ -79,11 +52,18 @@ exports.issueCredential = async (req, res) => {
       });
     }
 
-    const college = await College.findById(issuerCollegeId).select("collegeName");
+    const college = await College.findById(issuerCollegeId).select("collegeName keyPair");
     if (!college) {
       return res.status(404).json({
         success: false,
         message: "Issuer college not found.",
+      });
+    }
+
+    if (!college.keyPair?.keyId) {
+      return res.status(400).json({
+        success: false,
+        message: "Issuer college does not have a signing key.",
       });
     }
 
@@ -132,8 +112,9 @@ exports.issueCredential = async (req, res) => {
       issuedAt,
     };
 
-    const dataHash = createDataHash(credentialData);
-    const signature = signHash(dataHash);
+    const dataHash = createCredentialHash(credentialData);
+    const privateKey = readPrivateKey(college.keyPair.keyId);
+    const signature = signCredential(dataHash, privateKey);
 
     const credential = await Credential.create({
       ...credentialInput,
@@ -144,6 +125,8 @@ exports.issueCredential = async (req, res) => {
       credentialData,
       dataHash,
       signature,
+      keyId: college.keyPair.keyId,
+      signatureAlgorithm: SIGNATURE_ALGORITHM,
     });
 
     const clientUrl = (process.env.CLIENT_URL || "http://localhost:3000").replace(/\/$/, "");

@@ -1,4 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-// TODO: GET /:credentialId  (public — no auth required)
+const { verifyCredential } = require("../controllers/verify.controller");
+
+router.get("/:credentialId", verifyCredential);
+
 module.exports = router;

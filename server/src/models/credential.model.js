@@ -62,6 +62,14 @@ const credentialSchema = new mongoose.Schema({
       type: String,
       required: [true, 'Digital signature is required'],
     },
+    keyId: {
+      type: String,
+      default: '',
+    },
+    signatureAlgorithm: {
+      type: String,
+      default: 'RSA-SHA256',
+    },
     verificationLink: {
       type: String,
       default: '',

@@ -15,12 +15,11 @@ app.use('/api/student',     require('./routes/student.routes'))
 
 const credentialRoutes = require("./routes/credential.routes");
 app.use("/api/credentials", credentialRoutes);
+app.use("/api/verify", require("./routes/verify.routes"));
 
 // Routes — uncomment as each sprint implements them
 // app.use('/api/auth',        require('./routes/auth.routes'));
 // app.use('/api/credentials', require('./routes/credential.routes'));
-
-// app.use('/api/verify',      require('./routes/verify.routes'));
 
 // Health check
 app.get('/api/health', (req, res) => {
