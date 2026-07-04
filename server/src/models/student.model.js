@@ -1,7 +1,7 @@
+// models/student.model.js
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-
-const SALT_ROUNDS = 10;
+// NOTE: password hashing (pre-save hook + comparePassword method) is handled
+// separately by teammate — this file only defines schema shape.
 
 const userSchema = new mongoose.Schema({
     Name: {
@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Full name is required'],
         trim: true,
     },
-
     Email: {
         type: String,
         required: [true, 'Email is required'],
@@ -17,27 +16,61 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         trim: true,
     },
-
     Password: {
         type: String,
+        // Required again — student sets their own password directly at
+        // signup now; there is no separate "activation" step.
         required: [true, 'Password needed'],
         minlength: [6, 'Password must contain at least 6 characters'],
         select: false,
     },
-
-        role: {
-      type: String,
-      enum: {
-        values: ['super_admin', 'college', 'student'],
-        message: '{VALUE} is not a valid role',
-      },
-      required: [true, 'Role is required'],
-    
+    role: {
+        type: String,
+        enum: {
+            values: ['super_admin', 'college', 'student'],
+            message: '{VALUE} is not a valid role',
+        },
+        required: [true, 'Role is required'],
+    },
+    // The college the student CLAIMS to belong to at signup.
+    // Not verified against any pre-existing college record automatically —
+    // it's a claim the college later checks manually (approve/reject).
+    College_Id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'College',
+        default: null,
     },
 
-    College_Id: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'College',
+    // ===== Student academic identity (self-submitted at signup) =====
+    Faculty: {
+        type: String,
+        trim: true,
+    },
+    RegistrationNumber: {
+        type: String,
+        trim: true,
+    },
+    RollNo: {
+        type: String,
+        trim: true,
+    },
+    DOB: {
+        type: Date,
+    },
+
+    // pending  = student signed up, college hasn't reviewed yet (default)
+    // approved = college confirmed this is a real student, can now log in
+    // rejected = college determined this signup is not a real/valid student
+    accountStatus: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+    },
+
+    // Optional note from college explaining why an account was rejected
+    rejectionReason: {
+        type: String,
+        trim: true,
         default: null,
     },
 
@@ -46,17 +79,8 @@ const userSchema = new mongoose.Schema({
         enum: ['active', 'inactive'],
         default: 'active',
     },
-
 }, {
     timestamps: true,
-});
-
-userSchema.pre("save", async function () {
-    if (!this.isModified("Password")) {
-        return;
-    }
-
-    this.Password = await bcrypt.hash(this.Password, SALT_ROUNDS);
 });
 
 module.exports = mongoose.model("User", userSchema);

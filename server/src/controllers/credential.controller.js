@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+/* const mongoose = require("mongoose");
 const QRCode = require("qrcode");
 
 const College = require("../models/college.model");
@@ -226,5 +226,180 @@ exports.revokeCredential = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+// controllers/credential.controller.js
+const User = require("../models/student.model");
+
+// ================================================================
+// GET all students belonging to the logged-in college, optionally
+// filtered by accountStatus (e.g. ?status=pending)
+// super_admin sees everyone, across all colleges.
+// ================================================================
+exports.getAllUsers = async (req, res) => {
+  try {
+    const filter = { role: "student" };
+
+    if (req.user.role === "college") {
+      filter.College_Id = req.user.collegeId;
+    }
+    if (req.query.status) {
+      filter.accountStatus = req.query.status; // pending | approved | rejected
+    }
+
+    const users = await User.find(filter).populate("College_Id", "collegeName collegeCode");
+    res.json({ success: true, count: users.length, data: users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get single — with ownership checks
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate("College_Id", "collegeName collegeCode");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (req.user.role === "student" && req.user.id !== String(user._id)) {
+      return res.status(403).json({ success: false, message: "You can only access your own record" });
+    }
+    if (req.user.role === "college" && String(user.College_Id?._id || user.College_Id) !== String(req.user.collegeId)) {
+      return res.status(403).json({ success: false, message: "This student does not belong to your college" });
+    }
+
+    res.json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ================================================================
+// APPROVE — college confirms a pending student is real, based on
+// their own external records. Flips accountStatus to "approved",
+// which is what unlocks the student's ability to log in.
+// ================================================================
+exports.approveStudent = async (req, res) => {
+  try {
+    const student = await User.findById(req.params.id);
+    if (!student || student.role !== "student") {
+      return res.status(404).json({ success: false, message: "Student not found" });
+    }
+
+    // A college can only approve its own claimed students
+    if (String(student.College_Id) !== String(req.user.collegeId)) {
+      return res.status(403).json({
+        success: false,
+        message: "This student does not belong to your college",
+      });
+    }
+
+    if (student.accountStatus === "approved") {
+      return res.status(400).json({ success: false, message: "Student is already approved" });
+    }
+
+    student.accountStatus = "approved";
+    student.rejectionReason = null; // clear any prior rejection note
+    await student.save();
+
+    res.json({
+      success: true,
+      message: "Student approved successfully. They can now log in.",
+      data: student,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ================================================================
+// REJECT — college determines the signup doesn't match a real
+// student in their records. Optionally provide a reason.
+// ================================================================
+exports.rejectStudent = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const student = await User.findById(req.params.id);
+    if (!student || student.role !== "student") {
+      return res.status(404).json({ success: false, message: "Student not found" });
+    }
+
+    if (String(student.College_Id) !== String(req.user.collegeId)) {
+      return res.status(403).json({
+        success: false,
+        message: "This student does not belong to your college",
+      });
+    }
+
+    student.accountStatus = "rejected";
+    student.rejectionReason = reason || "Not verified against college records";
+    await student.save();
+
+    res.json({ success: true, message: "Student signup rejected.", data: student });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Update — college (own students) or super_admin (anyone)
+exports.updateUser = async (req, res) => {
+  try {
+    // These fields are controlled only by their dedicated flows —
+    // never editable through the generic update route.
+    delete req.body.Password;
+    delete req.body.accountStatus;
+    delete req.body.role;
+
+    const target = await User.findById(req.params.id);
+    if (!target) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (req.user.role === "college" && String(target.College_Id) !== String(req.user.collegeId)) {
+      return res.status(403).json({ success: false, message: "This student does not belong to your college" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    ).populate("College_Id", "collegeName collegeCode");
+
+    res.json({ success: true, data: user });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// Delete — college (own students) or super_admin
+exports.deleteUser = async (req, res) => {
+  try {
+    const target = await User.findById(req.params.id);
+    if (!target) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (req.user.role === "college" && String(target.College_Id) !== String(req.user.collegeId)) {
+      return res.status(403).json({ success: false, message: "This student does not belong to your college" });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

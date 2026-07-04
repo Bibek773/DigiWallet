@@ -1,4 +1,4 @@
-const College = require("../models/college.model");
+/* const College = require("../models/college.model");
 const generateKeyPair = require("../utils/keyGenerator");
 
 // Create
@@ -158,5 +158,105 @@ exports.deleteCollege = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+}; */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// controllers/admin.controller.js
+const College = require("../models/college.model");
+const generateKeyPair = require("../utils/keyGenerator");
+
+// Create
+exports.createCollege = async (req, res) => {
+  try {
+    const {
+      collegeName, collegeCode, email, phoneNumber, address,
+      website, accreditation, establishedYear, admin,
+    } = req.body;
+
+    const existingCollege = await College.findOne({ $or: [{ collegeCode }, { email }] });
+    if (existingCollege) {
+      return res.status(400).json({ success: false, message: "College already exists." });
+    }
+
+    const { publicKey, keyId } = generateKeyPair(collegeCode);
+
+    const college = await College.create({
+      collegeName, collegeCode, email, phoneNumber, address,
+      website, accreditation, establishedYear, admin,
+      keyPair: { publicKey, keyId },
+      status: "pending",
+    });
+
+    res.status(201).json({ success: true, data: college });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// Get all
+exports.getAllColleges = async (req, res) => {
+  try {
+    const colleges = await College.find();
+    res.json({ success: true, data: colleges });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get single
+exports.getCollegeById = async (req, res) => {
+  try {
+    const college = await College.findById(req.params.id);
+    if (!college) {
+      return res.status(404).json({ success: false, message: "College not found" });
+    }
+    res.json({ success: true, data: college });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Update
+exports.updateCollege = async (req, res) => {
+  try {
+    const college = await College.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, runValidators: true,
+    });
+    if (!college) {
+      return res.status(404).json({ success: false, message: "College not found" });
+    }
+    res.json({ success: true, data: college });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// Delete
+exports.deleteCollege = async (req, res) => {
+  try {
+    const college = await College.findByIdAndDelete(req.params.id);
+    if (!college) {
+      return res.status(404).json({ success: false, message: "College not found" });
+    }
+    res.json({ success: true, message: "College deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
