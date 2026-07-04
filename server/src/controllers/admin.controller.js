@@ -1,4 +1,4 @@
-/* const College = require("../models/college.model");
+const College = require("../models/college.model");
 const generateKeyPair = require("../utils/keyGenerator");
 
 // Create
@@ -159,7 +159,7 @@ exports.deleteCollege = async (req, res) => {
       message: error.message,
     });
   }
-}; */
+}; 
 
 
 
@@ -178,7 +178,7 @@ exports.deleteCollege = async (req, res) => {
 
 
 
-// controllers/admin.controller.js
+/* // controllers/admin.controller.js
 const College = require("../models/college.model");
 const generateKeyPair = require("../utils/keyGenerator");
 
@@ -259,4 +259,4 @@ exports.deleteCollege = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-};
+}; */

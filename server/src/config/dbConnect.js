@@ -1,6 +1,4 @@
-// TODO: MongoDB connection — Sprint 1
-// const mongoose = require('mongoose');
-// module.exports = connectDB = async () => { ... };
+
 const mongoose = require("mongoose");
 
 const dbConnect = async () => {

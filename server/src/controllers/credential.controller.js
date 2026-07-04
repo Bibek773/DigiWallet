@@ -1,4 +1,4 @@
-/* const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const QRCode = require("qrcode");
 
 const College = require("../models/college.model");
@@ -228,7 +228,8 @@ exports.revokeCredential = async (req, res) => {
     });
   }
 };
- */
+ 
+ 
 
 
 
@@ -239,8 +240,7 @@ exports.revokeCredential = async (req, res) => {
 
 
 
-
-
+/* 
 // controllers/credential.controller.js
 const User = require("../models/student.model");
 
@@ -402,4 +402,4 @@ exports.deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-};
+}; */

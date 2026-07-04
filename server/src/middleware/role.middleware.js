@@ -1,6 +1,5 @@
 // TODO: restrictTo(...roles) — role guard — Sprint 1
 
-// middleware/role.middleware.js
 const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {

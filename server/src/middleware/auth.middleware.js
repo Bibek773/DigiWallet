@@ -1,6 +1,5 @@
 // TODO: protect — verifies JWT and attaches req.user — Sprint 1
 
-// middleware/auth.middleware.js
 const jwt = require("jsonwebtoken");
 
 const protect = (req, res, next) => {

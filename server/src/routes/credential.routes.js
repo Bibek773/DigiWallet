@@ -1,4 +1,4 @@
-/* const express = require('express');
+const express = require('express');
 const router = express.Router();
 
 const {
@@ -15,14 +15,14 @@ router.patch('/revoke/:credentialId', revokeCredential);
 
 
 module.exports = router;
- */
+ 
 
 
 
 
 
 
-
+/* 
 // routes/credential.routes.js
 const express = require("express");
 const router = express.Router();
@@ -50,3 +50,4 @@ router.put("/:id", protect, authorizeRoles("super_admin", "college"), updateUser
 router.delete("/:id", protect, authorizeRoles("super_admin", "college"), deleteUser);
 
 module.exports = router;
+ */
