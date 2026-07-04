@@ -64,10 +64,24 @@ const collegeSchema = new mongoose.Schema(
         ref: "Credential",
       },
     ],
+    keyPair:{
+      publicKey:{
+        type:String,
+        required:true,
+      },
+      keyId:{
+        type:String,
+        required:true
+      },
+      algorithm:{
+       type:String,
+       default:"RSA"
+      },
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("College", collegeSchema);
