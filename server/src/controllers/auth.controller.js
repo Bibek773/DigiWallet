@@ -3,6 +3,9 @@
 const User = require("../models/student.model");
 const generateToken = require("../utils/generateTokens");
 
+const normalizeEmail = (value) =>
+  typeof value === "string" ? value.trim().toLowerCase() : "";
+
 
 // STUDENT SIGNUP — creates the account directly.
 // Public route. Student provides all their own data + a password.
@@ -22,7 +25,18 @@ exports.studentSignup = async (req, res) => {
       DOB,
     } = req.body;
 
-    const existing = await User.findOne({ Email: Email?.toLowerCase().trim() });
+    const normalizedEmail = normalizeEmail(Email ?? req.body.email);
+
+    if (!normalizedEmail || !Password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const existing = await User.findOne({
+      $or: [{ email: normalizedEmail }, { Email: normalizedEmail }],
+    });
     if (existing) {
       return res.status(400).json({
         success: false,
@@ -32,7 +46,8 @@ exports.studentSignup = async (req, res) => {
 
     const user = await User.create({
       Name,
-      Email: Email?.toLowerCase().trim(),
+      Email: normalizedEmail,
+      email: normalizedEmail,
       Password,
       role: "student",
       College_Id,
@@ -62,15 +77,18 @@ exports.studentSignup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { Email, Password } = req.body;
+    const normalizedEmail = normalizeEmail(Email ?? req.body.email);
 
-    if (!Email || !Password) {
+    if (!normalizedEmail || !Password) {
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
       });
     }
 
-    const user = await User.findOne({ Email: Email.toLowerCase().trim() }).select("+Password");
+    const user = await User.findOne({
+      $or: [{ email: normalizedEmail }, { Email: normalizedEmail }],
+    }).select("+Password");
 
     if (!user) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -116,7 +134,7 @@ exports.login = async (req, res) => {
       user: {
         id: user._id,
         name: user.Name,
-        email: user.Email,
+        email: user.email || user.Email,
         role: user.role,
         collegeId: user.College_Id,
       },
@@ -132,6 +150,7 @@ exports.login = async (req, res) => {
 exports.createUserAccount = async (req, res) => {
   try {
     const { Name, Email, Password, role, College_Id } = req.body;
+    const normalizedEmail = normalizeEmail(Email ?? req.body.email);
 
     if (role === "super_admin") {
       return res.status(403).json({
@@ -146,7 +165,16 @@ exports.createUserAccount = async (req, res) => {
       });
     }
 
-    const existing = await User.findOne({ Email });
+    if (!normalizedEmail || !Password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const existing = await User.findOne({
+      $or: [{ email: normalizedEmail }, { Email: normalizedEmail }],
+    });
     if (existing) {
       return res.status(400).json({
         success: false,
@@ -155,7 +183,12 @@ exports.createUserAccount = async (req, res) => {
     }
 
     const user = await User.create({
-      Name, Email, Password, role, College_Id,
+      Name,
+      Email: normalizedEmail,
+      email: normalizedEmail,
+      Password,
+      role,
+      College_Id,
       accountStatus: "approved", // college accounts skip the review flow
     });
 

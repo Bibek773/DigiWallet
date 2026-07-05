@@ -11,9 +11,16 @@ const userSchema = new mongoose.Schema({
     Email: {
         type: String,
         required: [true, 'Email is required'],
-        unique: true,
         lowercase: true,
         trim: true,
+    },
+    email: {
+        type: String,
+        lowercase: true,
+        trim: true,
+        unique: true,
+        sparse: true,
+        select: false,
     },
     Password: {
         type: String,
@@ -80,6 +87,21 @@ const userSchema = new mongoose.Schema({
     },
 }, {
     timestamps: true,
+});
+
+userSchema.pre("validate", function (next) {
+    const normalizedEmail = typeof this.Email === "string"
+        ? this.Email.trim().toLowerCase()
+        : typeof this.email === "string"
+            ? this.email.trim().toLowerCase()
+            : "";
+
+    if (normalizedEmail) {
+        this.Email = normalizedEmail;
+        this.email = normalizedEmail;
+    }
+
+    next();
 });
 
 userSchema.pre("save", async function (next) {
