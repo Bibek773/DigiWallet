@@ -152,18 +152,6 @@ Expected response:
 }
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Health check returns 200", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("API is running", () => {
-  const json = pm.response.json();
-  pm.expect(json.status).to.include("DiGiWallet API is running");
-});
-```
 
 ## Test 2: Create College
 
@@ -214,22 +202,6 @@ Important result:
 - Private key file is saved in `server/keys`.
 - `status` defaults to `pending`.
 
-Postman Tests tab:
-
-```js
-pm.test("College created", () => {
-  pm.response.to.have.status(201);
-});
-
-pm.test("Save collegeId", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data._id).to.exist;
-  pm.expect(json.data.keyPair.publicKey).to.exist;
-  pm.expect(json.data.keyPair.keyId).to.exist;
-  pm.environment.set("collegeId", json.data._id);
-});
-```
 
 ## Test 3: Get All Colleges
 
@@ -245,19 +217,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Get colleges returns 200", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("College list is returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data).to.be.an("array");
-});
-```
 
 ## Test 4: Get College By ID
 
@@ -273,19 +232,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Get college by ID returns 200", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Correct college is returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data._id).to.eql(pm.environment.get("collegeId"));
-});
-```
 
 ## Test 5: Update College
 
@@ -317,20 +263,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("College updated", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Updated data returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.phoneNumber).to.eql("9811111111");
-  pm.expect(json.data.status).to.eql("verified");
-});
-```
 
 ## Test 6: Duplicate College Error
 
@@ -354,19 +286,6 @@ Expected response message:
 College already exists.
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Duplicate college is rejected", () => {
-  pm.response.to.have.status(400);
-});
-
-pm.test("Duplicate message is correct", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(false);
-  pm.expect(json.message).to.eql("College already exists.");
-});
-```
 
 ## Test 7: Create Super Admin Test User
 
@@ -397,20 +316,6 @@ Expected status:
 201 Created
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Super admin user created", () => {
-  pm.response.to.have.status(201);
-});
-
-pm.test("Save superAdminId", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.role).to.eql("super_admin");
-  pm.environment.set("superAdminId", json.data._id);
-});
-```
 
 ## Test 8: Login Super Admin
 
@@ -435,21 +340,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Super admin login successful", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Save superAdminToken", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.token).to.exist;
-  pm.expect(json.user.role).to.eql("super_admin");
-  pm.environment.set("superAdminToken", json.token);
-});
-```
 
 ## Test 9: Get Logged-In User Profile
 
@@ -471,19 +361,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Profile request successful", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Current user returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.role).to.eql("super_admin");
-});
-```
 
 ## Test 10: Get Profile Without Token
 
@@ -501,13 +378,6 @@ Expected status:
 401 Unauthorized
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Profile without token is rejected", () => {
-  pm.response.to.have.status(401);
-});
-```
 
 ## Test 11: Create College Login Account
 
@@ -543,20 +413,6 @@ Expected status:
 201 Created
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("College account created", () => {
-  pm.response.to.have.status(201);
-});
-
-pm.test("Save collegeAccountId", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.role).to.eql("college");
-  pm.environment.set("collegeAccountId", json.data._id);
-});
-```
 
 ## Test 12: Login College Account
 
@@ -581,20 +437,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("College login successful", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Save collegeAccountToken", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.user.role).to.eql("college");
-  pm.environment.set("collegeAccountToken", json.token);
-});
-```
 
 ## Test 13: Student Signup
 
@@ -631,21 +473,6 @@ Important result:
 - Student account status is `pending`.
 - Pending student cannot login until approved.
 
-Postman Tests tab:
-
-```js
-pm.test("Student signup successful", () => {
-  pm.response.to.have.status(201);
-});
-
-pm.test("Save studentId", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.role).to.eql("student");
-  pm.expect(json.data.accountStatus).to.eql("pending");
-  pm.environment.set("studentId", json.data._id);
-});
-```
 
 ## Test 14: Pending Student Login Should Fail
 
@@ -670,19 +497,6 @@ Expected status:
 403 Forbidden
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Pending student cannot login", () => {
-  pm.response.to.have.status(403);
-});
-
-pm.test("Pending message is returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(false);
-  pm.expect(json.message).to.include("pending approval");
-});
-```
 
 ## Test 15: Approve Student For Testing
 
@@ -708,19 +522,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Student approved", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Account status is approved", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.accountStatus).to.eql("approved");
-});
-```
 
 ## Test 16: Login Approved Student
 
@@ -745,19 +546,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Approved student can login", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Student user returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.user.role).to.eql("student");
-});
-```
 
 ## Test 17: Login With Wrong Password
 
@@ -782,19 +570,6 @@ Expected status:
 401 Unauthorized
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Wrong password is rejected", () => {
-  pm.response.to.have.status(401);
-});
-
-pm.test("Invalid credentials message returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(false);
-  pm.expect(json.message).to.eql("Invalid credentials");
-});
-```
 
 ## Test 18: Create Student Through Student CRUD
 
@@ -829,19 +604,6 @@ Expected status:
 201 Created
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("CRUD student created", () => {
-  pm.response.to.have.status(201);
-});
-
-pm.test("Password is not returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.Password).to.be.undefined;
-});
-```
 
 ## Test 19: Get All Students
 
@@ -857,19 +619,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Get students returns 200", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Student list returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data).to.be.an("array");
-});
-```
 
 ## Test 20: Get Student By ID
 
@@ -885,19 +634,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Get student by ID returns 200", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Correct student returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data._id).to.eql(pm.environment.get("studentId"));
-});
-```
 
 ## Test 21: Update Student
 
@@ -922,19 +658,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Student updated", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Updated student data returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.data.Faculty).to.eql("Engineering");
-});
-```
 
 ## Test 22: Issue Credential
 
@@ -987,23 +710,6 @@ Important result:
 - `qrCodeData` is generated.
 - Credential ID is saved for later tests.
 
-Postman Tests tab:
-
-```js
-pm.test("Credential issued", () => {
-  pm.response.to.have.status(201);
-});
-
-pm.test("Save credentialId", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.credential.id).to.exist;
-  pm.expect(json.credential.dataHash).to.exist;
-  pm.expect(json.credential.signature).to.exist;
-  pm.expect(json.credential.verificationLink).to.include("/verify/");
-  pm.environment.set("credentialId", json.credential.id);
-});
-```
 
 ## Test 23: Issue Credential With Missing Fields
 
@@ -1028,19 +734,6 @@ Expected status:
 400 Bad Request
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Missing credential fields are rejected", () => {
-  pm.response.to.have.status(400);
-});
-
-pm.test("Missing fields message returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(false);
-  pm.expect(json.message).to.include("Missing required fields");
-});
-```
 
 ## Test 24: Get Issued Credentials
 
@@ -1062,20 +755,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Issued credentials returned", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Credentials list exists", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.count).to.be.a("number");
-  pm.expect(json.credentials).to.be.an("array");
-});
-```
 
 ## Test 25: Verify Valid Credential
 
@@ -1097,22 +776,6 @@ Expected result:
 valid
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Verify credential returns 200", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Credential is valid", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.valid).to.eql(true);
-  pm.expect(json.result).to.eql("valid");
-  pm.expect(json.checks.hashMatches).to.eql(true);
-  pm.expect(json.checks.signatureValid).to.eql(true);
-});
-```
 
 ## Test 26: Revoke Credential
 
@@ -1136,19 +799,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Credential revoked", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Credential status is revoked", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.credential.status).to.eql("revoked");
-});
-```
 
 ## Test 27: Verify Revoked Credential
 
@@ -1170,20 +820,6 @@ Expected result:
 revoked
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Revoked credential verification returns 200", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Credential result is revoked", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.valid).to.eql(false);
-  pm.expect(json.result).to.eql("revoked");
-});
-```
 
 ## Test 28: Revoke Already Revoked Credential
 
@@ -1207,19 +843,6 @@ Expected status:
 409 Conflict
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Already revoked credential returns conflict", () => {
-  pm.response.to.have.status(409);
-});
-
-pm.test("Already revoked message returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(false);
-  pm.expect(json.message).to.include("already revoked");
-});
-```
 
 ## Test 29: Verify Invalid Credential ID
 
@@ -1241,19 +864,6 @@ Expected result:
 not_found
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Invalid credential ID returns 404", () => {
-  pm.response.to.have.status(404);
-});
-
-pm.test("Not found result returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(false);
-  pm.expect(json.result).to.eql("not_found");
-});
-```
 
 ## Test 30: Get College With Invalid ID
 
@@ -1274,13 +884,6 @@ Current note:
 - The controller currently sends `500` for invalid MongoDB ObjectId format.
 - A better future behavior would be `400 Bad Request`.
 
-Postman Tests tab:
-
-```js
-pm.test("Invalid college id currently returns 500", () => {
-  pm.response.to.have.status(500);
-});
-```
 
 ## Test 31: Delete Student
 
@@ -1298,19 +901,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("Student deleted", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Delete message returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.message).to.eql("User deleted successfully");
-});
-```
 
 ## Test 32: Delete College
 
@@ -1328,19 +918,6 @@ Expected status:
 200 OK
 ```
 
-Postman Tests tab:
-
-```js
-pm.test("College deleted", () => {
-  pm.response.to.have.status(200);
-});
-
-pm.test("Delete message returned", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.eql(true);
-  pm.expect(json.message).to.eql("College deleted successfully");
-});
-```
 
 ## Current Route Summary
 
