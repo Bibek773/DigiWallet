@@ -1,15 +1,27 @@
 // TODO: getWallet, getCredentialById — Sprint 1
 const User = require("../models/student.model");
 
+const toPublicUser = (user) => {
+  const userObj = user.toObject();
+  const email = userObj.email || userObj.Email;
+
+  delete userObj.Password;
+  delete userObj.Email;
+
+  if (email) {
+    userObj.email = email;
+  }
+
+  return userObj;
+};
+
 // Create
 exports.createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
-    const userObj = user.toObject();
-    delete userObj.Password;
     res.status(201).json({
       success: true,
-      data: userObj,
+      data: toPublicUser(user),
     });
   } catch (error) {
     res.status(400).json({

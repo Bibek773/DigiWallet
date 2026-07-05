@@ -6,6 +6,20 @@ const generateToken = require("../utils/generateTokens");
 const normalizeEmail = (value) =>
   typeof value === "string" ? value.trim().toLowerCase() : "";
 
+const toPublicUser = (user) => {
+  const userObj = user.toObject();
+  const email = userObj.email || userObj.Email;
+
+  delete userObj.Password;
+  delete userObj.Email;
+
+  if (email) {
+    userObj.email = email;
+  }
+
+  return userObj;
+};
+
 
 // STUDENT SIGNUP — creates the account directly.
 // Public route. Student provides all their own data + a password.
@@ -58,8 +72,7 @@ exports.studentSignup = async (req, res) => {
       accountStatus: "pending", // explicit, even though it's the schema default
     });
 
-    const userObj = user.toObject();
-    delete userObj.Password;
+    const userObj = toPublicUser(user);
 
     res.status(201).json({
       success: true,
@@ -192,8 +205,7 @@ exports.createUserAccount = async (req, res) => {
       accountStatus: "approved", // college accounts skip the review flow
     });
 
-    const userObj = user.toObject();
-    delete userObj.Password;
+    const userObj = toPublicUser(user);
 
     res.status(201).json({ success: true, data: userObj });
   } catch (error) {
@@ -209,7 +221,7 @@ exports.getMe = async (req, res) => {
       "College_Id",
       "collegeName collegeCode"
     );
-    res.status(200).json({ success: true, data: user });
+    res.status(200).json({ success: true, data: user ? toPublicUser(user) : null });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
