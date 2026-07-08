@@ -69,6 +69,9 @@ MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
+SUPER_ADMIN_NAME=Super Admin
+SUPER_ADMIN_EMAIL=admin email
+SUPER_ADMIN_PASSWORD=admin's password 
 ```
 
 3. In Postman, create an environment named `DiGiWallet Local`.
@@ -287,34 +290,21 @@ College already exists.
 ```
 
 
-## Test 7: Create Super Admin Test User
+## Test 7: Seed Super Admin Test User
 
-Current code does not include a seed script for the first super admin. For local Postman testing only, create one through the current student/user CRUD route.
+Run this once from the server folder:
 
-Method:
-
-```http
-POST {{baseUrl}}/student
+```powershell
+npm run seed:admin
 ```
 
-Body:
-
-```json
-{
-  "Name": "Super Admin",
-  "Email": "superadmin{{runId}}@digiwallet.test",
-  "Password": "password123",
-  "role": "super_admin",
-  "Status": "active",
-  "accountStatus": "approved"
-}
-```
-
-Expected status:
+Expected result:
 
 ```text
-201 Created
+Super admin created successfully.
 ```
+
+If the account already exists, the script exits without creating a duplicate.
 
 
 ## Test 8: Login Super Admin
@@ -329,7 +319,7 @@ Body:
 
 ```json
 {
-  "Email": "superadmin{{runId}}@digiwallet.test",
+  "Email": "admin@digiwallet.test",
   "Password": "password123"
 }
 ```
@@ -996,4 +986,3 @@ Body:
   "accountStatus": "approved"
 }
 ```
-
