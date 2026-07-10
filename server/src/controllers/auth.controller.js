@@ -91,8 +91,8 @@ exports.login = async (req, res) => {
   try {
     const { Email, Password } = req.body;
     const normalizedEmail = normalizeEmail(Email ?? req.body.email);
-
-    if (!normalizedEmail || !Password) {
+    const password=Password??req.body.password;
+    if (!normalizedEmail || !password) {
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
@@ -134,7 +134,7 @@ exports.login = async (req, res) => {
     }
 
     // comparePassword — bcrypt.compare against stored hash (teammate's part)
-    const isMatch = await user.comparePassword(Password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
