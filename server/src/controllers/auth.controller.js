@@ -40,8 +40,9 @@ exports.studentSignup = async (req, res) => {
     } = req.body;
 
     const normalizedEmail = normalizeEmail(Email ?? req.body.email);
+    const password = Password ?? req.body.password;
 
-    if (!normalizedEmail || !Password) {
+    if (!normalizedEmail || !password) {
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
@@ -62,7 +63,7 @@ exports.studentSignup = async (req, res) => {
       Name,
       Email: normalizedEmail,
       email: normalizedEmail,
-      Password,
+      Password: password,
       role: "student",
       College_Id,
       Faculty,

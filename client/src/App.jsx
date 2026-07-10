@@ -1,8 +1,10 @@
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 
-import RegisterPage from './pages/RegisterPage';
+import RegisterPage from './pages/register/RegisterPage';
 import Login from './pages/login/LoginPage';
 import LoginPage from './pages/login/LoginPage';
+import TermsPage from './pages/terms/TermsPage';
+import PrivacyPage from './pages/register/PrivacyPage';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
 
       </Routes>
     </BrowserRouter>

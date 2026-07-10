@@ -1,9 +1,9 @@
-import axios from "axios";
-
-const API = axios.create({
-    baseURL: "http://localhost:5000/api",
-});
+import api from "./api";
 
 export const loginUser = (data) => {
-    return API.post("/auth/login", data);
+    return api.post("/auth/login", data);
+};
+
+export const registerStudent = (data) => {
+    return api.post("/auth/signup", data);
 };
