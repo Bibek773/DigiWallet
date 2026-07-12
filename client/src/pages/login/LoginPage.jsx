@@ -88,30 +88,70 @@ export default function LoginPage() {
     
 
 
-    return (
+   return (
+    <div className="login-page">
 
-        <div className="login-page">
+        <div className="login-container">
 
+            {/* Left Section */}
+            <section className="hero">
+
+                <div className="hero__content">
+
+                    <p className="eyebrow">
+                        Digital Credential Management System
+                    </p>
+
+                    <h1 className="hero__title">
+                        Secure. Verified. Accessible.
+                    </h1>
+
+                    <p className="hero__subtitle">
+                        Access your verified academic credentials through a
+                        secure platform designed for students, colleges, and
+                        administrators.
+                    </p>
+
+                    <div className="feature-list">
+
+                        <div className="feature-item">
+                            🔐 Secure Authentication
+                        </div>
+
+                        <div className="feature-item">
+                            🎓 Student & College Portal
+                        </div>
+
+                        <div className="feature-item">
+                            📄 Verified Digital Certificates
+                        </div>
+
+                        <div className="feature-item">
+                            ⚡ Instant Credential Verification
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* Right Section */}
 
             <div className="login-box">
 
-
                 <div className="logo-area">
 
-                    <h1>
-                        DiGiWallet
-                    </h1>
+                    <h2>Welcome Back</h2>
 
                     <p>
-                        Digital Credential Management System
+                        Sign in to continue to DigiWallet
                     </p>
 
                 </div>
 
-
-
                 <form onSubmit={handleSubmit}>
-
 
                     <div className="form-group">
 
@@ -120,7 +160,7 @@ export default function LoginPage() {
                         <input
                             type="email"
                             name="email"
-                            placeholder="Enter email"
+                            placeholder="Enter your email"
                             value={formData.email}
                             onChange={handleChange}
                         />
@@ -128,13 +168,15 @@ export default function LoginPage() {
                     </div>
 
                     <div className="form-group">
+
                         <label>Password</label>
 
                         <div className="password-wrapper">
+
                             <input
                                 type={showPassword ? "text" : "password"}
                                 name="password"
-                                placeholder="Enter password"
+                                placeholder="Enter your password"
                                 value={formData.password}
                                 onChange={handleChange}
                             />
@@ -146,60 +188,56 @@ export default function LoginPage() {
                             >
                                 {showPassword ? <FaEye /> : <FaEyeSlash />}
                             </button>
+
                         </div>
+
                     </div>
-
-                                        
-
-
-
 
                     <div className="login-options">
 
                         <label>
-                            <input type="checkbox"/>
+                            <input type="checkbox" />
                             Remember me
                         </label>
 
-
-                        <Link to="/forgot-password" className="forgot-password-link">
-                            Forgot password?
+                        <Link
+                            to="/forgot-password"
+                            className="forgot-password-link"
+                        >
+                            Forgot Password?
                         </Link>
 
                     </div>
 
-
-
-
-
-                    <button type="submit" className="login-btn" disabled={loading}>
+                    <button
+                        type="submit"
+                        className="login-btn"
+                        disabled={loading}
+                    >
                         {loading ? "Logging in..." : "Login"}
                     </button>
-                    {error && (
 
+                    {error && (
                         <p className="error-message">
                             {error}
                         </p>
                     )}
 
-
                 </form>
-
-
 
                 <div className="register-link">
 
                     Don't have an account?
-                    <Link to="/register">Register</Link>
+
+                    <Link to="/register">
+                        Register
+                    </Link>
 
                 </div>
 
-
             </div>
-
 
         </div>
 
-    );
-
-}
+    </div>
+)}

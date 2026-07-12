@@ -1,0 +1,235 @@
+.dashboard{
+
+    display:flex;
+
+    min-height:100vh;
+
+    background:#f8fafc;
+
+}
+
+
+/* ===========================
+        MAIN CONTENT
+=========================== */
+
+.dashboard-content{
+
+    flex:1;
+
+    background:#f8fafc;
+
+}
+
+
+/* ===========================
+        HERO
+=========================== */
+
+.dashboard-hero{
+
+    height:320px;
+
+    position:relative;
+
+    background-image:
+    linear-gradient(
+        180deg,
+        rgba(10,20,35,.45) 0%,
+        rgba(10,20,35,.75) 55%,
+        rgba(8,15,28,.95) 100%
+    ),
+    url("https://images.unsplash.com/photo-1741699428220-65f37f3fbbcb?fm=jpg&q=80&w=1200&auto=format&fit=crop");
+
+    background-size:cover;
+
+    background-position:center;
+
+    border-radius:0 0 24px 24px;
+
+}
+
+
+.hero-overlay{
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    padding:60px;
+
+    color:white;
+
+}
+
+
+.dashboard-tag{
+
+    display:inline-block;
+
+    width:max-content;
+
+    padding:8px 18px;
+
+    border-radius:50px;
+
+    background:rgba(255,255,255,.15);
+
+    margin-bottom:22px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+}
+
+
+.dashboard-hero h1{
+
+    font-size:46px;
+
+    margin-bottom:20px;
+
+    font-weight:700;
+
+}
+
+
+.dashboard-hero p{
+
+    max-width:600px;
+
+    line-height:1.8;
+
+    font-size:17px;
+
+    color:rgba(255,255,255,.9);
+
+}
+
+
+/* ===========================
+        CARDS
+=========================== */
+
+.dashboard-cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,2fr); 
+    /* this is for cards like students, pending requests,etc */
+
+    gap:24px;
+
+    padding:0 40px;
+
+    margin-top:-70px;
+
+    position:relative;
+
+    z-index:2;
+
+    
+}
+
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+    transition:.3s;
+    border:1px solid rgba(247, 231, 208, 0.738);
+
+}
+
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+.card h3{
+
+    color:#6b7280;
+
+    font-size:15px;
+
+    margin-bottom:12px;
+
+}
+
+
+.card h2{
+
+    font-size:36px;
+
+    color:#08011d;
+
+    margin-bottom:8px;
+
+}
+
+
+.card span{
+
+    color:#2563eb;
+
+    font-size:14px;
+
+}
+
+
+/* 
+        BODY
+*/
+
+.dashboard-body{
+
+    padding:40px;
+
+}
+
+
+.content-box{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:35px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+}
+
+
+.content-box h2{
+
+    color:#08011d;
+
+    margin-bottom:18px;
+
+}
+
+
+.content-box p{
+
+    color:#6b7280;
+
+    line-height:1.8;
+
+}

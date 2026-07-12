@@ -1,0 +1,260 @@
+/* Students.css */
+
+
+.students-page {
+
+    flex:1;
+
+    min-height:100vh;
+
+    background:#f8fafc;
+
+    padding:25px;
+
+    font-family:'Inter', Arial, sans-serif;
+
+}
+.students-hero{
+
+    height:320px;
+
+    position:relative;
+
+    background-image:
+    linear-gradient(
+        180deg,
+        rgba(10,20,35,.45) 0%,
+        rgba(10,20,35,.75) 55%,
+        rgba(8,15,28,.95) 100%
+    ),
+    url("https://images.unsplash.com/photo-1741699428220-65f37f3fbbcb?fm=jpg&q=80&w=1200&auto=format&fit=crop");
+
+    background-size:cover;
+
+    background-position:center;
+
+    border-radius:0 0 24px 24px;
+
+}
+
+
+/* Header */
+
+
+.students-header {
+
+    padding:40px;
+
+    background:linear-gradient(
+        160deg,
+        #fbfaf5,
+        #eeece1
+    );
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+
+    margin-top:20px;
+
+}
+
+
+.page-tag {
+
+    display:inline-block;
+
+    padding:8px 18px;
+
+    border-radius:50px;
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+    margin-bottom:20px;
+
+}
+.page-tag-hero p{
+
+    font-size:46px;
+
+    margin-bottom:20px;
+
+    font-weight:700;
+
+}
+
+
+.students-header h1 {
+
+    font-size:40px;
+
+    color:#1e293b;
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+}
+
+
+.page-description {
+
+    color:#64748b;
+
+    font-size:16px;
+
+    line-height:1.6;
+
+}
+
+
+
+/* Table Container */
+
+
+.students-table-container {
+
+    margin-top:30px;
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+
+}
+
+
+
+/* Table */
+
+
+table {
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+thead {
+
+    background:#1d336d;
+
+    color:white;
+
+}
+
+
+th {
+
+    padding:18px;
+
+    text-align:left;
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+
+td {
+
+    padding:18px;
+
+    border-bottom:1px solid #e5e7eb;
+
+    color:#374151;
+
+    font-size:14px;
+
+}
+
+
+
+tbody tr {
+
+    transition:.2s;
+
+}
+
+
+tbody tr:hover {
+
+    background:#f8fafc;
+
+}
+
+
+
+/* Status */
+
+
+.status {
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+.approved {
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+
+
+/* Responsive */
+
+
+@media(max-width:900px){
+
+    .students-page{
+
+        padding:15px;
+
+    }
+
+
+    .students-header{
+
+        padding:25px;
+
+    }
+
+
+    .students-header h1{
+
+        font-size:32px;
+
+    }
+
+
+    th,td{
+
+        padding:12px;
+
+    }
+
+}
