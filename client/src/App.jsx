@@ -1,44 +1,25 @@
-import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 
-import HomePage from './pages/home/Homepage';
-import RegisterPage from './pages/register/RegisterPage';
-import LoginPage from './pages/login/LoginPage';
-import TermsPage from './pages/terms/TermsPage';
-import PrivacyPage from './pages/register/PrivacyPage';
-import CollegeDashboard from './pages/college/CollegeDashboard';
-import Students from './pages/college/Students';
-import Credentials from './pages/college/Credentials';
-import PendingRequests from './pages/college/PendingRequests';
-import Verification from './pages/college/Verification';
-import Profile from './pages/college/Profile';
-import StudentDashboard from './pages/student/StudentDashboard'; 
+import HomePage from "./pages/home/Homepage";
+import RegisterPage from "./pages/register/RegisterPage";
+import LoginPage from "./pages/login/LoginPage";
+import TermsPage from "./pages/terms/TermsPage";
+import PrivacyPage from "./pages/register/PrivacyPage";
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
+import CollegeDashboard from "./pages/college/CollegeDashboard";
+import Students from "./pages/college/Students";
+import Credentials from "./pages/college/Credentials";
+import PendingRequests from "./pages/college/PendingRequests";
+import Verification from "./pages/college/Verification";
+import Profile from "./pages/college/Profile";
 
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/college/dashboard" element={<CollegeDashboard />} />  
-        <Route path="/college/students" element={<Students />} /> 
-        <Route path="/college/credentials" element={<Credentials/>} />
-        <Route path="/college/pending-requests" element={<PendingRequests />} />
-        <Route path="/college/verification" element={<Verification/>} />
-        <Route path="/college/profile" element={<Profile/>} />
-        <Route path="/student/dashboard" element={<StudentDashboard />} /> 
+import StudentDashboard from "./pages/student/StudentDashboard";
 
-      </Routes>
-    </BrowserRouter>
-import AdminDashboard from './pages/admin/AdminDashboard';
-import CreateCollegePage from './pages/admin/CreateCollegePage';
-import CollegeDashboard from './pages/CollegeDashboard';
-import StudentDashboard from './pages/student/StudentDashboard';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedAdminRoute from './components/ProtectedAdminRoute';
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import CreateCollegePage from "./pages/admin/CreateCollegePage";
+
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 
 function App() {
   return (
@@ -50,9 +31,18 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
+
           <Route path="/student/dashboard" element={<StudentDashboard />} />
+
           <Route path="/college/dashboard" element={<CollegeDashboard />} />
+          <Route path="/college/students" element={<Students />} />
+          <Route path="/college/credentials" element={<Credentials />} />
+          <Route path="/college/pending-requests" element={<PendingRequests />} />
+          <Route path="/college/verification" element={<Verification />} />
+          <Route path="/college/profile" element={<Profile />} />
+
           <Route path="/admin" element={<Navigate to="/login" replace />} />
+
           <Route
             path="/admin/dashboard"
             element={
@@ -61,6 +51,7 @@ function App() {
               </ProtectedAdminRoute>
             }
           />
+
           <Route
             path="/admin/colleges/create"
             element={
