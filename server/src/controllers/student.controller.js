@@ -1,5 +1,14 @@
-// TODO: getWallet, getCredentialById — Sprint 1
+const mongoose = require("mongoose");
+
 const User = require("../models/student.model");
+
+const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const invalidIdResponse = (res) =>
+  res.status(400).json({
+    success: false,
+    message: "Invalid ID",
+  });
 
 const toPublicUser = (user) => {
   const userObj = user.toObject();
@@ -50,7 +59,13 @@ exports.getAllUsers = async (req, res) => {
 // Get single
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).populate("College_Id", "name");
+    const { id } = req.params;
+
+    if (!isValidId(id)) {
+      return invalidIdResponse(res);
+    }
+
+    const user = await User.findById(id).populate("College_Id", "name");
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -72,10 +87,16 @@ exports.getUserById = async (req, res) => {
 // Update
 exports.updateUser = async (req, res) => {
   try {
+    const { id } = req.params;
+
+    if (!isValidId(id)) {
+      return invalidIdResponse(res);
+    }
+
     delete req.body.Password;
 
     const user = await User.findByIdAndUpdate(
-      req.params.id,
+      id,
       req.body,
       { new: true, runValidators: true }
     ).populate("College_Id", "name");
@@ -102,7 +123,13 @@ exports.updateUser = async (req, res) => {
 // Delete
 exports.deleteUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+
+    if (!isValidId(id)) {
+      return invalidIdResponse(res);
+    }
+
+    const user = await User.findByIdAndDelete(id);
     if (!user) {
       return res.status(404).json({
         success: false,

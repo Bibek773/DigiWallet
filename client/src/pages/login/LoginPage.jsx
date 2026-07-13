@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./LoginPage.css";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginUser } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
 
@@ -11,9 +12,10 @@ export default function LoginPage() {
         password:""
     });
     const [error, setError] = useState("");
-    const[showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleChange = (e)=>{
 
@@ -34,21 +36,7 @@ export default function LoginPage() {
         try {
 
             const response = await loginUser(formData);
-
-            const { token, user } = response.data;
-
-
-            // save login information
-
-            localStorage.setItem("token", token);
-
-            localStorage.setItem(
-                "user",
-                JSON.stringify(user)
-            );
-
-
-            // redirect based on role
+            const { user } = await login(response.data);
 
             if(user.role === "student"){
 
@@ -60,7 +48,7 @@ export default function LoginPage() {
                 navigate("/college/dashboard");
 
             }
-            else if(user.role === "super_admin"){
+            else if(user.role === "super_admin" || user.role === "admin"){
 
                 navigate("/admin/dashboard");
 
@@ -81,7 +69,7 @@ export default function LoginPage() {
 
         }
         finally{
-            setLoading(false); // to stop user from clicking multiple times while waiting for response
+            setLoading(false);
         }
 
     };

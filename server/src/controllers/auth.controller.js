@@ -1,10 +1,19 @@
 
 // controllers/auth.controller.js
+const mongoose = require("mongoose");
 const User = require("../models/student.model");
 const generateToken = require("../utils/generateTokens");
 
 const normalizeEmail = (value) =>
   typeof value === "string" ? value.trim().toLowerCase() : "";
+
+const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const invalidIdResponse = (res) =>
+  res.status(400).json({
+    success: false,
+    message: "Invalid ID",
+  });
 
 const toPublicUser = (user) => {
   const userObj = user.toObject();
@@ -218,6 +227,10 @@ exports.createUserAccount = async (req, res) => {
 
 exports.getMe = async (req, res) => {
   try {
+    if (!isValidId(req.user.id)) {
+      return invalidIdResponse(res);
+    }
+
     const user = await User.findById(req.user.id).populate(
       "College_Id",
       "collegeName collegeCode"

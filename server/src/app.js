@@ -1,30 +1,22 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
+
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
-
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-const adminRoutes= require("./routes/admin.routes")
-app.use("/api/college",adminRoutes)
-app.use('/api/student',     require('./routes/student.routes'))
-
-const credentialRoutes = require("./routes/credential.routes");
-app.use("/api/credentials", credentialRoutes);
+app.use("/api/college", adminRoutes);
+app.use("/api/student", require("./routes/student.routes"));
+app.use("/api/credentials", require("./routes/credential.routes"));
 app.use("/api/verify", require("./routes/verify.routes"));
+app.use("/api/admin", adminRoutes);
+app.use("/api/auth", require("./routes/auth.routes"));
 
-// Routes — uncomment as each sprint implements them
-app.use('/api/admin',        require('./routes/admin.routes'));
-app.use('/api/auth',        require('./routes/auth.routes'));
-app.use('/api/credentials', require('./routes/credential.routes'));
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'DiGiWallet API is running' });
+app.get("/api/health", (req, res) => {
+  res.json({ status: "DiGiWallet API is running" });
 });
 
 module.exports = app;

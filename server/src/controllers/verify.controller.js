@@ -16,10 +16,9 @@ exports.verifyCredential = async (req, res) => {
     const { credentialId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(credentialId)) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
-        result: "not_found",
-        message: "Credential not found.",
+        message: "Invalid ID",
       });
     }
 
