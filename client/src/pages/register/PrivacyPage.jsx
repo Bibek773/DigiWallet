@@ -186,7 +186,7 @@ export default function PrivacyPage() {
             </div>
             <div>
               <dt>University</dt>
-              <dd>Your University Name</dd>
+              <dd>Pokhara University</dd>
             </div>
           </dl>
           <p className="privacy-contact__note">Contact details will be replaced with official information before deployment.</p>

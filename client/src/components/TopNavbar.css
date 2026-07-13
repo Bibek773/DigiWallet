@@ -1,0 +1,103 @@
+.top-navbar{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    position:relative;
+
+    padding:22px 35px;
+
+    background:#e9dacea3;
+
+    border-bottom:1px solid #e2e8f0;
+    border:1px solid rgba(245, 138, 103, 0.212);
+
+}
+
+
+
+/* Center both texts */
+
+.top-navbar > div:first-child{
+
+    text-align:center;
+
+}
+
+
+
+/* Dashboard title */
+
+.top-navbar h2{
+
+    margin:0;
+
+    color:#1e293b;
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+
+
+/* Welcome text */
+
+.top-navbar p{
+
+    margin:6px 0 0;
+
+    color:#08011d;
+
+    font-size:22px;
+
+}
+
+
+
+/* Keep profile fixed on right */
+
+.profile{
+
+    position:absolute;
+
+    right:30px;
+
+}
+
+
+
+.profile-circle{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:50%;
+
+    background:#3a3847;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:bold;
+    border:1px solid rgba(245, 244, 209, 0.76);
+
+}
+.profile-circle:hover{
+
+    background:#08011d;
+    color:#fff;
+
+    transform:translateX(1px);
+
+}

@@ -39,6 +39,14 @@
 - after logging in it will direct to `localhost:3001/{role}/dashboard
 - It will direct to the dashboard according to the role responded from backend for that particular login info
 
+
+### 03-28
+
+- made college dashboard with students, credentials, verification, profile, pending and setting options
+- on clicking each component , it directs to individual pages
+- Since,superAdmin is still on progress, use `http://localhost:3001/college/dashboard` to visit college dashboard
+- datas are manually entered for now , after backend integration datas will be taken from `API`
+- works are still remaining to do
 #### Working
 
 - test api through postman using url `http://localhost:5000/api/college`

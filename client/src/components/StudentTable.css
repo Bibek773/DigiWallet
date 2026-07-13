@@ -1,0 +1,109 @@
+.students-table-container{
+
+    margin:0 40px 40px;
+
+    background:white;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+
+}
+
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+thead{
+
+    background:#0f0b6c;
+
+    color:white;
+
+}
+
+
+th{
+
+    padding:18px;
+
+    text-align:left;
+
+    font-size:14px;
+    background:#221e4cc4 ;
+
+}
+
+
+td{
+
+    padding:18px;
+
+    border-bottom:1px solid #e5e7eb;
+
+    color:#144806ac;
+
+}
+
+
+tbody tr:hover{
+
+    background:#f8fafc;
+
+}
+
+
+.status{
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+.verified{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+
+.pending{
+
+    background:#fef3c7;
+
+    color:#b45309;
+
+}
+
+
+.view-btn{
+
+    padding:7px 15px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+
+}
