@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa";
 import "./StudentDashboard.css";
 
-const mockCredentials = [
+const credentials = [
   {
     id: "CRED-2026-001",
     degree: "Bachelor in Computer Engineering",
@@ -40,6 +40,14 @@ export default function StudentDashboard() {
     const storedUser = JSON.parse(localStorage.getItem("user") || "null");
     setProfile(storedUser);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
 
   const handleSignOut = () => {
     localStorage.removeItem("token");
@@ -77,11 +85,9 @@ export default function StudentDashboard() {
   return (
     <div className="dashboard">
 
-      {/* ================= TOP NAVBAR ================= */}
       <header className="topnav">
         <span className="topnav__brand">DiGiWallet</span>
 
-        {/* Profile preview — clicking it opens the Profile section below */}
         <button
           className="profile-preview"
           onClick={() => setActiveSection("profile")}
@@ -104,7 +110,6 @@ export default function StudentDashboard() {
 
       <div className="dashboard__body">
 
-        {/* ================= SIDEBAR ================= */}
         <aside className="sidebar">
           <nav className="sidebar__nav">
             <button
@@ -142,7 +147,6 @@ export default function StudentDashboard() {
           </button>
         </aside>
 
-        {/* ================= MAIN CONTENT ================= */}
         <main className="dashboard__content">
 
           {activeSection === "credentials" && (
@@ -154,7 +158,7 @@ export default function StudentDashboard() {
               </p>
 
               <div className="credential-list">
-                {mockCredentials.map((cred) => (
+                {credentials.map((cred) => (
                   <div className="credential-item" key={cred.id}>
                     <div className="credential-item__main">
                       <span className="credential-item__degree">

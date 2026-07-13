@@ -1,0 +1,93 @@
+.admin-guard {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #f6f8fb;
+    color: #0f172a;
+    font-family: Arial, sans-serif;
+}
+
+.admin-guard__panel {
+    width: min(100%, 440px);
+    padding: 32px;
+    border: 1px solid #dbe3ef;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+    text-align: center;
+}
+
+.admin-guard__code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    height: 34px;
+    margin-bottom: 18px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.admin-guard__spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 18px;
+    border: 3px solid #dbe3ef;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: admin-spin 0.9s linear infinite;
+}
+
+.admin-guard h1 {
+    margin: 0 0 10px;
+    font-size: 26px;
+}
+
+.admin-guard p {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.admin-guard__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.admin-guard__button,
+.admin-guard__link {
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.admin-guard__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.admin-guard__link {
+    color: #2563eb;
+}
+
+@keyframes admin-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

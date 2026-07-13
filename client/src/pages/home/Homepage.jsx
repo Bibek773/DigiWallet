@@ -8,13 +8,12 @@ import {
   FaBolt,
 } from "react-icons/fa";
 import Logo from "../../components/Logo";
-import "./HomePage.css";
+import "./Homepage.css";
 
 export default function HomePage() {
   return (
     <div className="home-page">
 
-      {/* ================= NAVBAR ================= */}
       <nav className="home-nav">
         <div className="home-nav__brand">
           <Logo size={36} />
@@ -40,7 +39,6 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* ================= HERO ================= */}
       <header className="hero-section">
         <p className="eyebrow">Digital Academic Credential Platform</p>
         <h1 className="hero-section__title">
@@ -54,7 +52,6 @@ export default function HomePage() {
         </p>
       </header>
 
-      {/* ================= FEATURES ================= */}
       <section className="features-section">
         <p className="eyebrow eyebrow--center">Why DiGiWallet</p>
         <h2 className="features-section__title">
@@ -135,7 +132,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= BOTTOM CTA ================= */}
       <section className="cta-section">
         <h2 className="cta-section__title">Ready to get started?</h2>
         <p className="cta-section__subtitle">
@@ -146,7 +142,6 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* ================= FOOTER ================= */}
       <footer className="home-footer">
         <span>© 2026 DiGiWallet — Digital Credential Management System</span>
         <div className="home-footer__links">
