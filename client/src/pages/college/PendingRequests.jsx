@@ -1,11 +1,62 @@
 import "./PendingRequests.css";
 
+import { useEffect, useState } from "react";
+
 import TopNavbar from "../../components/TopNavbar";
-import "../../styles/PageHero.css"
+import "../../styles/PageHero.css";
+
+import { getPendingRequests } from "../../services/collegeService";
+
 
 export default function PendingRequests(){
 
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+
+
+    useEffect(()=>{
+
+        const fetchRequests = async()=>{
+
+            try{
+
+                const response = await getPendingRequests();
+
+                setRequests(response.data.data);
+
+            }
+            catch(error){
+
+                console.log("Error fetching pending requests:", error);
+
+            }
+            finally{
+
+                setLoading(false);
+
+            }
+
+        };
+
+
+        fetchRequests();
+
+
+    },[]);
+
+
+
+    if(loading){
+
+        return <h2>Loading requests...</h2>;
+
+    }
+
+
+
     return(
+
 
         <div className="pending-page">
 
@@ -13,20 +64,29 @@ export default function PendingRequests(){
             <TopNavbar/>
 
 
+
             {/* Header */}
 
             <section className="page-hero">
 
+
                 <div className="page-hero-overlay">
 
+
                     <p className="page-tag">
+
                         Request Management
+
                     </p>
 
 
+
                     <h1>
+
                         Pending Requests
+
                     </h1>
+
 
 
                     <p className="page-description">
@@ -37,9 +97,13 @@ export default function PendingRequests(){
                     </p>
 
 
+
                 </div>
 
+
             </section>
+
+
 
 
 
@@ -74,128 +138,103 @@ export default function PendingRequests(){
 
 
 
+
                     <tbody>
 
 
-                        <tr>
+
+                    {
+                        requests?.map((request)=>(
 
 
-                            <td>
-                                John Doe
-                            </td>
+                            <tr key={request._id}>
 
 
-                            <td>
-                                Credential Issue
-                            </td>
+                                <td>
 
+                                    {request.Name}
 
-                            <td>
-                                BCA Transcript
-                            </td>
-
-
-                            <td>
-                                2026-07-10
-                            </td>
-
-
-                            <td>
-
-                                <span className="status pending">
-
-                                    Pending
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <div className="action-buttons">
-
-                                    <button className="approve-btn">
-
-                                        Approve
-
-                                    </button>
-
-
-                                    <button className="reject-btn">
-
-                                        Reject
-
-                                    </button>
-
-
-                                </div>
-
-                            </td>
-
-
-                        </tr>
+                                </td>
 
 
 
-                        <tr>
+                                <td>
+
+                                    Student Approval
+
+                                </td>
 
 
-                            <td>
-                                Jane Smith
-                            </td>
+
+                                <td>
+
+                                    {request.Faculty}
+
+                                </td>
 
 
-                            <td>
-                                Student Approval
-                            </td>
+
+                                <td>
+
+                                    {
+                                    new Date(
+                                        request.createdAt
+                                    ).toLocaleDateString()
+                                    }
+
+                                </td>
 
 
-                            <td>
-                                BBA Enrollment
-                            </td>
+
+                                <td>
 
 
-                            <td>
-                                2026-07-11
-                            </td>
+                                    <span className="status pending">
+
+                                        {request.accountStatus}
+
+                                    </span>
 
 
-                            <td>
-
-                                <span className="status pending">
-
-                                    Pending
-
-                                </span>
-
-                            </td>
+                                </td>
 
 
-                            <td>
-
-                                <div className="action-buttons">
-
-                                    <button className="approve-btn">
-
-                                        Approve
-
-                                    </button>
 
 
-                                    <button className="reject-btn">
-
-                                        Reject
-
-                                    </button>
+                                <td>
 
 
-                                </div>
-
-                            </td>
+                                    <div className="action-buttons">
 
 
-                        </tr>
+                                        <button className="approve-btn">
+
+                                            Approve
+
+                                        </button>
+
+
+
+                                        <button className="reject-btn">
+
+                                            Reject
+
+                                        </button>
+
+
+                                    </div>
+
+
+                                </td>
+
+
+
+                            </tr>
+
+
+                        ))
+                    }
+
 
 
                     </tbody>
@@ -209,6 +248,7 @@ export default function PendingRequests(){
 
 
         </div>
+
 
     );
 

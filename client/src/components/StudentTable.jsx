@@ -1,42 +1,9 @@
 import "./StudentTable.css";
 
 
-export default function StudentTable(){
+export default function StudentTable({students}){
 
 
-    const students = [
-
-        {
-            id:1,
-            name:"Ram Sharma",
-            reg:"2023001",
-            program:"BCA",
-            email:"ram@gmail.com",
-            credentials:5,
-            status:"Verified"
-        },
-
-        {
-            id:2,
-            name:"Sita Thapa",
-            reg:"2023002",
-            program:"BBA",
-            email:"sita@gmail.com",
-            credentials:3,
-            status:"Pending"
-        },
-
-        {
-            id:3,
-            name:"Hari Karki",
-            reg:"2023003",
-            program:"BIM",
-            email:"hari@gmail.com",
-            credentials:7,
-            status:"Verified"
-        }
-
-    ];
 
 
 
@@ -71,79 +38,53 @@ export default function StudentTable(){
 
                 </thead>
 
+                    <tbody>
 
+                        {students?.map((student) => (
 
-                <tbody>
+                        <tr key={student._id}>
 
+                        <td>{student.Name}</td>
 
-                    {
-                        students.map((student)=>(
+                        <td>{student.RegistrationNumber}</td>
 
+                        <td>{student.Faculty}</td>
 
-                            <tr key={student.id}>
+                        <td>{student.email || student.Email}</td>
 
+                        <td>{student.credentials || 0}</td>
 
-                                <td>
-                                    {student.name}
-                                </td>
+                        <td>
 
+                        <span
+                        className={
+                        student.accountStatus === "approved"
+                        ? "status verified"
+                        : "status pending"
+                        }
+                        >
 
-                                <td>
-                                    {student.reg}
-                                </td>
+                        {student.accountStatus}
 
+                        </span>
 
-                                <td>
-                                    {student.program}
-                                </td>
+                        </td>
 
+                        <td>
 
-                                <td>
-                                    {student.email}
-                                </td>
+                        <button className="view-btn">
+                        View
+                        </button>
 
+                        </td>
 
-                                <td>
-                                    {student.credentials}
-                                </td>
+                        </tr>
 
+                        ))}
 
-                                <td>
+                    </tbody>
 
-                                    <span 
-                                    className={
-                                        student.status==="Verified"
-                                        ?
-                                        "status verified"
-                                        :
-                                        "status pending"
-                                    }
-                                    >
-
-                                        {student.status}
-
-                                    </span>
-
-                                </td>
-
-
-                                <td>
-
-                                    <button className="view-btn">
-                                        View
-                                    </button>
-
-                                </td>
-
-
-                            </tr>
-
-
-                        ))
-                    }
-
-
-                </tbody>
+               
 
 
             </table>

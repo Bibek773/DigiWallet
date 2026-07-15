@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./TopNavbar.css";
 
 export default function TopNavbar() {
@@ -20,7 +21,8 @@ export default function TopNavbar() {
 
             </div>
 
-            <div className="profile">
+            <Link to="/college/dashboard" className="profile">
+                {/* later it can be replaced with actual college logo */}
 
                 <div className="profile-circle">
 
@@ -28,7 +30,7 @@ export default function TopNavbar() {
 {/* gives first letter of the college name */}
                 </div>
 
-            </div>
+            </Link>
 
         </header>
 
