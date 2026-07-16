@@ -222,7 +222,7 @@ exports.getCollegeProfile = async(req,res)=>{
 
     try{
 
-        const collegeId = req.user.College_Id;
+        const collegeId = req.user.collegeId;
 
 
         const college = await College.findById(collegeId)
@@ -266,7 +266,7 @@ exports.updateCollegeProfile = async(req,res)=>{
 
     try{
 
-        const collegeId = req.user.College_Id;
+        const collegeId = req.user.college_Id;
 
 
         const college = await College.findByIdAndUpdate(
@@ -306,30 +306,182 @@ exports.updateSettings = async(req,res)=>{
 
     try{
 
-        const userId = req.user.id;
+        const {currentPassword,newPassword}=req.body;
 
 
-        const user = await User.findByIdAndUpdate(
-            userId,
-            req.body,
-            {
-                new:true
-            }
-        ).select("-Password");
+        const user = await User.findById(req.user.id)
+            .select("+Password");
+
+
+        const isMatch = await user.comparePassword(currentPassword);
+
+
+        if(!isMatch){
+
+            return res.status(400).json({
+
+                success:false,
+                message:"Current password is incorrect"
+
+            });
+
+        }
+
+
+        user.Password = newPassword;
+
+        await user.save();
 
 
         res.json({
+
             success:true,
-            data:user
+            message:"Password updated successfully"
+
+        });
+
+
+    }
+    catch(error){
+
+        res.status(500).json({
+
+            success:false,
+            message:error.message
+
+        });
+
+    }
+
+};
+exports.getAllColleges = async(req,res)=>{
+
+    try{
+
+        const colleges = await College.find({
+            status:"verified"
+        }).select("collegeName collegeCode");
+
+
+        res.status(200).json({
+            success:true,
+            data:colleges
         });
 
 
     }catch(error){
 
-        res.status(400).json({
+        res.status(500).json({
             success:false,
             message:error.message
         });
+
+    }
+
+};
+exports.approveStudent = async(req,res)=>{
+
+    try{
+
+
+        const student = await User.findById(req.params.id);
+
+
+        if(!student){
+
+            return res.status(404).json({
+
+                success:false,
+                message:"Student not found"
+
+            });
+
+        }
+
+
+
+        student.accountStatus = "approved";
+
+
+        await student.save();
+
+
+
+        res.json({
+
+            success:true,
+
+            message:"Student approved successfully"
+
+        });
+
+
+
+    }
+    catch(error){
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+
+    }
+
+};
+exports.deleteStudent = async(req,res)=>{
+
+    try{
+
+
+        const student = await User.findById(req.params.id);
+
+
+
+        if(!student){
+
+            return res.status(404).json({
+
+                success:false,
+
+                message:"Student not found"
+
+            });
+
+        }
+
+
+
+        await User.findByIdAndDelete(req.params.id);
+
+
+
+        res.json({
+
+            success:true,
+
+            message:"Student deleted successfully"
+
+        });
+
+
+
+    }
+    catch(error){
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
 
     }
 

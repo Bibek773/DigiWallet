@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerStudent } from '../../services/authService';
 import './RegisterPage.css';
+import { getAllColleges } from '../../services/collegeService';
 
 const initialFormState = {
   name: '',
@@ -54,7 +55,30 @@ export default function RegisterPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [colleges,setColleges]=useState([]);
+  useEffect(()=>{
 
+    const fetchColleges=async()=>{
+
+        try{
+
+            const response=await getAllColleges();
+
+            setColleges(response.data.data);
+
+        }catch(error){
+
+            console.log(error);
+
+        }
+
+    };
+
+
+    fetchColleges();
+
+
+},[]);
   useEffect(() => {
     if (!formData.photo) {
       setPhotoUrl(null);
@@ -106,7 +130,7 @@ export default function RegisterPage() {
       RegistrationNumber: formData.registrationNumber.trim(),
       RollNo: formData.examRollNo.trim(),
       DOB: formData.dob,
-      College_Id: null,
+      College_Id: formData.college,
     };
 
     setLoading(true);
@@ -251,8 +275,37 @@ export default function RegisterPage() {
               <div className="row">
                 <div className="field">
                   <label htmlFor="college">College</label>
-                  <input id="college" name="college" type="text" placeholder="e.g. St. Xavier's College"
-                    value={formData.college} onChange={handleChange} required />
+                  {/* updated because college id was null and college dashboaard couldnot identify college */}
+                    <select 
+                          id="college"
+                          name="college"
+                          value={formData.college}
+                          onChange={handleChange}
+                          required
+                      >
+
+                      <option value="">
+                          Select College
+                      </option>
+
+
+                      {
+                          colleges.map((college)=>(
+
+                              <option
+                                  key={college._id}
+                                  value={college._id}
+                              >
+
+                                  {college.collegeName}
+
+                              </option>
+
+                          ))
+                      }
+
+
+                    </select>
                 </div>
                 <div className="field">
                   <label htmlFor="faculty">Faculty</label>

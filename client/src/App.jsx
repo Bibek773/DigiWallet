@@ -20,6 +20,7 @@ import CreateCollegePage from "./pages/admin/CreateCollegePage";
 
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import Settings from "./pages/college/Settings";
 
 function App() {
   return (
@@ -40,7 +41,7 @@ function App() {
           <Route path="/college/pending-requests" element={<PendingRequests />} />
           <Route path="/college/verification" element={<Verification />} />
           <Route path="/college/profile" element={<Profile />} />
-
+          <Route path="/college/settings" element={<Settings/>}/>
           <Route path="/admin" element={<Navigate to="/login" replace />} />
 
           <Route

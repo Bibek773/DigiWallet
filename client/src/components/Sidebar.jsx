@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
+import { useAuth } from "../context/AuthContext";
 import {
     FaHome,
     FaUserGraduate,
@@ -10,7 +11,15 @@ import {
     FaSignOutAlt,
 } from "react-icons/fa";
 
+
 export default function Sidebar() {
+    const navigate=useNavigate();//import hook
+    const {logout}=useAuth();
+    const handleLogout=()=>{ 
+        // logout handler which removes token, user from localStorage and clears session state
+        logout();
+        navigate("/login")
+    }
     return (
         <aside className="sidebar">
 
@@ -24,55 +33,58 @@ export default function Sidebar() {
 
             <nav>
 
-                <a href="#">
+                <Link to="/college/dashboard">
                     <FaHome />
                     Dashboard
-                </a>
+                </Link>
 
-                <a href="#">
-                    <FaUserGraduate />
+                
+                    
                     <Link to="/college/students">
+                     <FaUserGraduate />
                         Students
                     </Link>
-                </a>
+                
 
-                <a href="#">
-                    <FaFileAlt />
+                
+                    
                     <Link to="/college/credentials">
+                       <FaFileAlt />
                         Credentials
                     </Link>
-                </a>    
+                   
+               
                     
-                <a href="#">
-                    <FaFileAlt />
                     <Link to="/college/pending-requests">
+                     <FaFileAlt />
                         Pending Requests
                     </Link>
-                </a>
+                
 
-                <a href="#">
-                    <FaCheckCircle />
+                    
                     <Link to="/college/verification">
+                     <FaCheckCircle />
                         Verification
                     </Link>
-                </a>
+                
 
-                <a href="#">
-                    <FaUniversity />
+                
+                    
                     <Link to="/college/profile">
+                      <FaUniversity />
                         College Profile
                     </Link>
-                </a>
+                
                     
 
-                <a href="#">
+                <Link to="/college/settings">
                     <FaCog />
                     Settings
-                </a>
+                </Link>
 
             </nav>
 
-            <button className="logout-btn">
+            <button className="logout-btn" onClick={handleLogout}>
 
                 <FaSignOutAlt />
 

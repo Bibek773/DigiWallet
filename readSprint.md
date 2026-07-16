@@ -71,6 +71,16 @@
   inside college.controller on getcollegedashboard `College_Id!=collegeId` 
   - we had collegeId in `./utils/generateToken.js`
 - integrated dashboard pages with backend
+
+### 03-32
+
+- `AuthContext` client->src->context tells how our authentication works, our JWT is stored in localStorage
+- settings and logout integrated
+- new password for modern is `modern987@`
+
+- Bibek Ghimire
+- bibek123@gmail.com
+- Bibek123%,modern
 #### Working
 
 - test api through postman using url `http://localhost:5000/api/college`
