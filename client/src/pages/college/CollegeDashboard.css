@@ -122,7 +122,7 @@
 
     display:grid;
 
-    grid-template-columns:repeat(2,2fr); 
+    grid-template-columns:repeat(2,1fr); 
     /* this is for cards like students, pending requests,etc */
 
     gap:24px;
@@ -231,5 +231,151 @@
     color:#6b7280;
 
     line-height:1.8;
+
+}
+/* ===========================
+        TABLET
+=========================== */
+
+@media (max-width: 992px) {
+
+    .dashboard-hero {
+        height: 260px;
+    }
+
+    .hero-overlay {
+        padding: 40px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 36px;
+    }
+
+    .dashboard-hero p {
+        font-size: 16px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 24px;
+        gap: 20px;
+        margin-top: -50px;
+    }
+
+    .dashboard-body {
+        padding: 24px;
+    }
+
+    .content-box {
+        padding: 28px;
+    }
+}
+
+
+/* ===========================
+        MOBILE
+=========================== */
+
+@media (max-width: 768px) {
+
+    .dashboard {
+        flex-direction: column;
+    }
+
+    .dashboard-hero {
+        height: auto;
+        border-radius: 0;
+    }
+
+    .hero-overlay {
+        padding: 35px 20px;
+    }
+
+    .dashboard-tag {
+        font-size: 12px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 28px;
+        line-height: 1.3;
+    }
+
+    .dashboard-hero p {
+        font-size: 15px;
+        max-width: 100%;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        margin-top: 0;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .card h2 {
+        font-size: 30px;
+    }
+
+    .dashboard-body {
+        padding: 20px;
+    }
+
+    .content-box {
+        padding: 24px;
+    }
+
+}
+
+
+/* ===========================
+        SMALL PHONES
+=========================== */
+
+@media (max-width: 480px) {
+
+    .hero-overlay {
+        padding: 28px 16px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 24px;
+    }
+
+    .dashboard-hero p {
+        font-size: 14px;
+    }
+
+    .dashboard-tag {
+        padding: 6px 14px;
+        font-size: 11px;
+    }
+
+    .dashboard-cards {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .card h3 {
+        font-size: 14px;
+    }
+
+    .card h2 {
+        font-size: 26px;
+    }
+
+    .dashboard-body {
+        padding: 16px;
+    }
+
+    .content-box {
+        padding: 18px;
+    }
 
 }

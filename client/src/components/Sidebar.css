@@ -181,3 +181,148 @@
     font-size:17px;
 
 }
+/* ===========================
+        TABLET
+=========================== */
+
+@media (max-width: 992px) {
+
+    .sidebar {
+        width: 220px;
+        padding: 24px 18px;
+    }
+
+    .sidebar-logo h2 {
+        font-size: 34px;
+    }
+
+    .sidebar-logo p {
+        font-size: 20px;
+    }
+
+    .sidebar nav a {
+        padding: 13px 15px;
+        font-size: 14px;
+    }
+
+    .sidebar nav a svg {
+        font-size: 22px;
+    }
+
+    .logout-btn {
+        padding: 13px;
+        font-size: 14px;
+    }
+}
+
+
+/* ===========================
+        MOBILE
+=========================== */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+
+        width: 100%;
+        min-height: auto;
+
+        padding: 16px;
+
+        flex-direction: column;
+
+        border-right: none;
+        border-bottom: 2px solid rgba(100,97,72,.08);
+
+    }
+
+    .sidebar-logo {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .sidebar-logo h2 {
+        font-size: 30px;
+    }
+
+    .sidebar-logo p {
+        font-size: 18px;
+    }
+
+    .sidebar nav {
+
+        flex-direction: row;
+
+        overflow-x: auto;
+
+        gap: 10px;
+
+        padding-bottom: 8px;
+
+        scrollbar-width: none;
+    }
+
+    .sidebar nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sidebar nav a {
+
+        flex-shrink: 0;
+
+        justify-content: center;
+
+        padding: 12px 16px;
+
+        white-space: nowrap;
+    }
+
+    .sidebar-footer {
+
+        margin-top: 20px;
+
+        border-top: none;
+
+        padding-top: 0;
+    }
+
+    .logout-btn {
+        width: 100%;
+    }
+
+}
+
+
+/* ===========================
+        SMALL PHONES
+=========================== */
+
+@media (max-width: 480px) {
+
+    .sidebar {
+        padding: 12px;
+    }
+
+    .sidebar-logo h2 {
+        font-size: 26px;
+    }
+
+    .sidebar-logo p {
+        font-size: 16px;
+    }
+
+    .sidebar nav a {
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+
+    .sidebar nav a svg {
+        font-size: 18px;
+    }
+
+    .logout-btn {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+}

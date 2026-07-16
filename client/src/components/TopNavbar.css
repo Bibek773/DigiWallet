@@ -101,3 +101,112 @@
     transform:translateX(1px);
 
 }
+/* ===========================
+        TABLET
+=========================== */
+
+@media (max-width: 992px) {
+
+    .top-navbar {
+        padding: 18px 24px;
+    }
+
+    .top-navbar h2 {
+        font-size: 26px;
+    }
+
+    .top-navbar p {
+        font-size: 18px;
+    }
+
+    .profile {
+        right: 20px;
+    }
+
+    .profile-circle {
+        width: 48px;
+        height: 48px;
+        font-size: 16px;
+    }
+
+}
+
+
+/* ===========================
+        MOBILE
+=========================== */
+
+@media (max-width: 768px) {
+
+    .top-navbar {
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        gap: 12px;
+
+        padding: 18px;
+
+    }
+
+    .top-navbar > div:first-child {
+        text-align: center;
+    }
+
+    .top-navbar h2 {
+        font-size: 22px;
+    }
+
+    .top-navbar p {
+        font-size: 16px;
+    }
+
+    .profile {
+
+        position: static;
+
+        margin-top: 8px;
+
+    }
+
+    .profile-circle {
+
+        width: 45px;
+        height: 45px;
+
+        font-size: 15px;
+    }
+
+}
+
+
+/* ===========================
+        SMALL PHONES
+=========================== */
+
+@media (max-width: 480px) {
+
+    .top-navbar {
+        padding: 15px 12px;
+    }
+
+    .top-navbar h2 {
+        font-size: 20px;
+    }
+
+    .top-navbar p {
+        font-size: 14px;
+    }
+
+    .profile-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    .profile{
+    text-decoration:none;
+    cursor:pointer;
+}
+
+}

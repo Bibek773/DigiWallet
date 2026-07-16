@@ -2,9 +2,48 @@ import "./CollegeDashboard.css";
 
 import Sidebar from "../../components/Sidebar";
 import TopNavbar from "../../components/TopNavbar";
+import { useEffect, useState } from "react";
+import { getCollegeDashboard } from "../../services/collegeService";
 
 export default function CollegeDashboard(){
+    const[dashboardData,setDashboardData]=useState(null);
+    const[loading,setLoading]=useState(true);
+     useEffect(()=>{
 
+        const fetchDashboard = async()=>{
+
+            try{
+
+                const response = await getCollegeDashboard();
+
+                setDashboardData(response.data.data);
+
+            }
+            catch(error){
+
+                console.log(error);
+
+            }
+            finally{
+
+                setLoading(false);
+
+            }
+
+        };
+
+
+        fetchDashboard();
+
+    },[]);
+
+
+
+    if(loading){
+
+        return <h2>Loading...</h2>;
+
+    }
     return(
 
         <div className="dashboard">
@@ -49,7 +88,10 @@ export default function CollegeDashboard(){
 
                         <h3>Students</h3>
 
-                        <h2>256</h2>
+                        <h2>{
+                        dashboardData?.students||0
+                        }
+                        </h2>
 
                         <span>Registered Students</span>
 
@@ -59,7 +101,9 @@ export default function CollegeDashboard(){
 
                         <h3>Pending Requests</h3>
 
-                        <h2>18</h2>
+                        <h2>{dashboardData?.pendingStudents||0
+                            }
+                        </h2>
 
                         <span>Awaiting Approval</span>
 
@@ -69,7 +113,9 @@ export default function CollegeDashboard(){
 
                         <h3>Credentials</h3>
 
-                        <h2>124</h2>
+                        <h2>{dashboardData?.credentials||0}
+
+                        </h2>
 
                         <span>Issued Successfully</span>
 
@@ -79,7 +125,9 @@ export default function CollegeDashboard(){
 
                         <h3>Verification</h3>
 
-                        <h2>98%</h2>
+                        <h2>{dashboardData?.verificationRate||0}%
+
+                        </h2>
 
                         <span>Success Rate</span>
 

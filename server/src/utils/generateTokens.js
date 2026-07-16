@@ -14,3 +14,4 @@ const generateToken = (user) => {
 };
 
 module.exports = generateToken;
+//this generates tokens 

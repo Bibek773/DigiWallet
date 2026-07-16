@@ -2,13 +2,14 @@ const express = require("express");
 const cors = require("cors");
 
 const adminRoutes = require("./routes/admin.routes");
+const collegeRoutes=require("./routes/college.routes");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/college", adminRoutes);
+app.use("/api/college", collegeRoutes);
 app.use("/api/student", require("./routes/student.routes"));
 app.use("/api/credentials", require("./routes/credential.routes"));
 app.use("/api/verify", require("./routes/verify.routes"));

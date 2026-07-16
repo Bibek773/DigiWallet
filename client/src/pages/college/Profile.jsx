@@ -1,9 +1,59 @@
 import "./Profile.css";
-import "../../styles/PageHero.css"
+import "../../styles/PageHero.css";
+
+import { useEffect, useState } from "react";
+
 import TopNavbar from "../../components/TopNavbar";
+
+import { getCollegeProfile } from "../../services/collegeService";
 
 
 export default function Profile(){
+
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+
+
+    useEffect(()=>{
+
+        const fetchProfile = async()=>{
+
+            try{
+
+                const response = await getCollegeProfile();
+
+                setProfile(response.data.data);
+
+            }
+            catch(error){
+
+                console.log("Error fetching college profile:", error);
+
+            }
+            finally{
+
+                setLoading(false);
+
+            }
+
+        };
+
+
+        fetchProfile();
+
+
+    },[]);
+
+
+
+    if(loading){
+
+        return <h2>Loading profile...</h2>;
+
+    }
+
+
 
     return(
 
@@ -13,6 +63,8 @@ export default function Profile(){
             <TopNavbar/>
 
 
+
+
             {/* Header */}
 
             <section className="page-hero">
@@ -20,14 +72,21 @@ export default function Profile(){
 
                 <div className="page-hero-overlay">
 
+
                     <p className="page-tag">
+
                         Institution Profile
+
                     </p>
 
 
+
                     <h1>
+
                         College Profile
+
                     </h1>
+
 
 
                     <p className="page-description">
@@ -38,10 +97,14 @@ export default function Profile(){
                     </p>
 
 
+
                 </div>
 
 
             </section>
+
+
+
 
 
 
@@ -51,7 +114,11 @@ export default function Profile(){
             <section className="profile-container">
 
 
+
+
+
                 {/* College Information */}
+
 
                 <div className="profile-card">
 
@@ -61,7 +128,10 @@ export default function Profile(){
                     </h2>
 
 
+
+
                     <div className="profile-grid">
+
 
 
                         <div className="profile-item">
@@ -71,10 +141,12 @@ export default function Profile(){
                             </label>
 
                             <p>
-                                ABC College
+                                {profile?.collegeName}
                             </p>
 
                         </div>
+
+
 
 
 
@@ -85,10 +157,12 @@ export default function Profile(){
                             </label>
 
                             <p>
-                                ABC001
+                                {profile?.collegeCode}
                             </p>
 
                         </div>
+
+
 
 
 
@@ -99,10 +173,12 @@ export default function Profile(){
                             </label>
 
                             <p>
-                                info@abccollege.edu
+                                {profile?.email}
                             </p>
 
                         </div>
+
+
 
 
 
@@ -113,10 +189,12 @@ export default function Profile(){
                             </label>
 
                             <p>
-                                +977 9800000000
+                                {profile?.phoneNumber}
                             </p>
 
                         </div>
+
+
 
 
 
@@ -127,10 +205,12 @@ export default function Profile(){
                             </label>
 
                             <p>
-                                www.abccollege.edu
+                                {profile?.website}
                             </p>
 
                         </div>
+
+
 
 
 
@@ -141,10 +221,11 @@ export default function Profile(){
                             </label>
 
                             <p>
-                                2005
+                                {profile?.establishedYear}
                             </p>
 
                         </div>
+
 
 
                     </div>
@@ -155,7 +236,11 @@ export default function Profile(){
 
 
 
+
+
+
                 {/* Security Section */}
+
 
 
                 <div className="profile-card">
@@ -167,7 +252,11 @@ export default function Profile(){
 
 
 
+
                     <div className="security-box">
+
+
+
 
 
                         <div>
@@ -177,14 +266,26 @@ export default function Profile(){
                             </label>
 
 
-                            <span className="status verified">
+                            <span 
+                            className={
+                                profile?.status === "verified"
+                                ?
+                                "status verified"
+                                :
+                                "status pending"
+                            }
+                            >
 
-                                Verified
+                                {profile?.status}
 
                             </span>
 
 
                         </div>
+
+
+
+
 
 
 
@@ -196,11 +297,17 @@ export default function Profile(){
 
 
                             <p>
-                                ABC001_v1
+
+                                {profile?.keyPair?.keyId}
+
                             </p>
 
 
                         </div>
+
+
+
+
 
 
 
@@ -212,7 +319,8 @@ export default function Profile(){
 
 
                             <p>
-                                RSA 2048
+
+                                {profile?.keyPair?.algorithm || "RSA 2048"}
 
                             </p>
 
@@ -221,10 +329,15 @@ export default function Profile(){
 
 
 
+
+
                     </div>
 
 
+
                 </div>
+
+
 
 
 
@@ -233,6 +346,7 @@ export default function Profile(){
 
 
         </div>
+
 
     );
 

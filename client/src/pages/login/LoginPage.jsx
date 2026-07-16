@@ -37,7 +37,11 @@ export default function LoginPage() {
 
             const response = await loginUser(formData);
             const { user } = await login(response.data);
-
+            
+            setFormData({
+                email:"",//for clearing the input fields after successful login
+                password:""
+            });
             if(user.role === "student"){
 
                 navigate("/student/dashboard");

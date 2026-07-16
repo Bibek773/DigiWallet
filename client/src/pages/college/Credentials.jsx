@@ -1,15 +1,67 @@
 import "./Credentials.css";
 
+import { useEffect, useState } from "react";
+
 import TopNavbar from "../../components/TopNavbar";
-import "../../styles/PageHero.css"
+import "../../styles/PageHero.css";
+
+import { getCredentials } from "../../services/collegeService";
+
 
 export default function Credentials(){
+
+    const [credentials, setCredentials] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+
+
+    useEffect(()=>{
+
+        const fetchCredentials = async()=>{
+
+            try{
+
+                const response = await getCredentials();
+
+                setCredentials(response.data.data);
+
+            }
+            catch(error){
+
+                console.log("Error fetching credentials:", error);
+
+            }
+            finally{
+
+                setLoading(false);
+
+            }
+
+        };
+
+
+        fetchCredentials();
+
+
+    },[]);
+
+
+
+    if(loading){
+
+        return <h2>Loading credentials...</h2>;
+
+    }
+
+
 
     return(
 
         <div className="credentials-page">
 
+
             <TopNavbar/>
+
 
 
             {/* Header */}
@@ -17,6 +69,7 @@ export default function Credentials(){
             <section className="page-hero">
 
                 <div className="page-hero-overlay">
+
 
                     <p className="page-tag">
                         Credential Management
@@ -35,9 +88,12 @@ export default function Credentials(){
 
                     </p>
 
+
                 </div>
 
             </section>
+
+
 
 
 
@@ -65,108 +121,108 @@ export default function Credentials(){
 
                             <th>Action</th>
 
+
                         </tr>
 
+
                     </thead>
+
 
 
 
                     <tbody>
 
 
-                        <tr>
-
-                            <td>
-                                John Doe
-                            </td>
+                    {
+                        credentials?.map((credential)=>(
 
 
-                            <td>
-                                DIGI-2025-001
-                            </td>
+                            <tr key={credential._id}>
 
 
-                            <td>
-                                Bachelor in Computer Application
-                            </td>
+                                <td>
 
+                                    {credential.studentName}
 
-                            <td>
-                                2025-06-20
-                            </td>
-
-
-                            <td>
-
-                                <span className="status verified">
-
-                                    Verified
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <button className="view-btn">
-
-                                    View
-
-                                </button>
-
-                            </td>
-
-
-                        </tr>
+                                </td>
 
 
 
-                        <tr>
+                                <td>
 
-                            <td>
-                                Jane Smith
-                            </td>
+                                    {credential.keyId || credential._id}
 
-
-                            <td>
-                                DIGI-2025-002
-                            </td>
+                                </td>
 
 
-                            <td>
-                                Bachelor of Business Administration
-                            </td>
+
+                                <td>
+
+                                    {credential.program}
+
+                                </td>
 
 
-                            <td>
-                                2025-06-25
-                            </td>
+
+                                <td>
+
+                                    {
+                                    new Date(
+                                        credential.createdAt
+                                    ).toLocaleDateString()
+                                    }
+
+                                </td>
 
 
-                            <td>
-
-                                <span className="status pending">
-
-                                    Pending
-
-                                </span>
-
-                            </td>
 
 
-                            <td>
-
-                                <button className="view-btn">
-
-                                    View
-
-                                </button>
-
-                            </td>
+                                <td>
 
 
-                        </tr>
+                                    <span
+
+                                    className={
+                                        credential.status === "verified"
+                                        ?
+                                        "status verified"
+                                        :
+                                        "status pending"
+                                    }
+
+                                    >
+
+                                        {credential.status}
+
+
+                                    </span>
+
+
+                                </td>
+
+
+
+
+                                <td>
+
+
+                                    <button className="view-btn">
+
+                                        View
+
+                                    </button>
+
+
+                                </td>
+
+
+
+                            </tr>
+
+
+                        ))
+                    }
+
 
 
                     </tbody>

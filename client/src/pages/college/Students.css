@@ -224,11 +224,66 @@ tbody tr:hover {
 }
 
 
+/* ===========================
+        TABLET
+=========================== */
 
-/* Responsive */
+@media (max-width:992px){
+
+    .students-page{
+
+        padding:20px;
+
+    }
 
 
-@media(max-width:900px){
+    .students-hero{
+
+        height:260px;
+
+    }
+
+
+    .students-header{
+
+        padding:30px;
+
+    }
+
+
+    .students-header h1{
+
+        font-size:34px;
+
+    }
+
+
+    .page-description{
+
+        font-size:15px;
+
+    }
+
+
+    th,
+    td{
+
+        padding:14px;
+
+        font-size:13px;
+
+    }
+
+}
+
+
+
+/* ===========================
+        MOBILE
+=========================== */
+
+@media(max-width:768px){
+
 
     .students-page{
 
@@ -237,24 +292,136 @@ tbody tr:hover {
     }
 
 
+    .students-hero{
+
+        height:auto;
+
+        border-radius:0 0 18px 18px;
+
+    }
+
+
     .students-header{
 
         padding:25px;
+
+        margin-top:15px;
+
+        border-radius:14px;
+
+    }
+
+
+    .page-tag{
+
+        padding:7px 14px;
+
+        font-size:12px;
 
     }
 
 
     .students-header h1{
 
-        font-size:32px;
+        font-size:28px;
+
+        line-height:1.3;
 
     }
 
 
-    th,td{
+    .page-description{
 
-        padding:12px;
+        font-size:14px;
+
+        line-height:1.5;
+
+    }
+
+
+    /*
+        Horizontal scroll for table
+    */
+
+    .students-table-container{
+
+        overflow-x:auto;
+
+        border-radius:14px;
+
+    }
+
+
+    table{
+
+        min-width:750px;
+
+    }
+
+
+    th{
+
+        font-size:13px;
+
+        padding:14px;
+
+    }
+
+
+    td{
+
+        font-size:13px;
+
+        padding:14px;
+
+    }
+
+
+    .status{
+
+        padding:5px 12px;
+
+        font-size:12px;
 
     }
 
 }
+
+
+
+/* ===========================
+        SMALL PHONES
+=========================== */
+
+@media(max-width:480px){
+
+
+    .students-header{
+
+        padding:20px;
+
+    }
+
+
+    .students-header h1{
+
+        font-size:24px;
+
+    }
+
+
+    .page-description{
+
+        font-size:13px;
+
+    }
+
+
+    .students-table-container{
+
+        margin-top:20px;
+
+    }
+
+}
+

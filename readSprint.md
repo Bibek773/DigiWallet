@@ -47,6 +47,30 @@
 - Since,superAdmin is still on progress, use `http://localhost:3001/college/dashboard` to visit college dashboard
 - datas are manually entered for now , after backend integration datas will be taken from `API`
 - works are still remaining to do
+
+### 03-30
+- set .env of server with superadmin name,password
+- after superAdmin is implemented , `npm run seed:admin`
+  - seedSuperAdmin.js :creates the first super admin account
+  - auth.controller.js :handles login
+  - admin.routes.js: APIs available to super admin
+  - college.routes.js: APIs available to college admin
+  -student.routes.js: APIs available to students
+- student register: manisha oli,manisha@gmail.com, 230456,2034-95-4-1342, 2024-01-01,cosmos,ict,manisha123%:pw
+
+- college: modern , pw: modern987%, login email: modern12@gmail.com , creation email: modern23@gmail.com
+
+- created `college.controller.js`, `college.routes.js` 
+- to test college api 
+  - post `baseurl/auth/login` with email and password of college
+  - which returns with jwt token
+  - copy token only and open authorization, select type `Bearer token` paste there
+  - create new request, get, `baseurl/college/dashboard`
+
+- major bug(spent hours)
+  inside college.controller on getcollegedashboard `College_Id!=collegeId` 
+  - we had collegeId in `./utils/generateToken.js`
+- integrated dashboard pages with backend
 #### Working
 
 - test api through postman using url `http://localhost:5000/api/college`

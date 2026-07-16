@@ -606,3 +606,22 @@
     font-size:14px;
 
 }
+@media (max-width: 1024px) {
+
+    .login-container {
+        width: 95%;
+    }
+
+    .hero {
+        padding: 40px 35px;
+    }
+
+    .login-box {
+        padding: 35px;
+    }
+
+    .hero__title,
+    .logo-area h2 {
+        font-size: 38px;
+    }
+}
