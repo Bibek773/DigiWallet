@@ -15,23 +15,14 @@ export default function HomePage() {
     <div className="home-page">
 
       <nav className="home-nav">
-        <div className="home-nav__brand">
+        <Link to="/" className="home-nav__brand" aria-label="Go to home page">
           <Logo size={36} />
           <span className="home-nav__logo">DiGiWallet</span>
-        </div>
+        </Link>
 
         <div className="home-nav__links">
-          <Link to="/" className="home-nav__link home-nav__link--active">
-            Home
-          </Link>
           <Link to="/register" className="home-nav__link">
             Register
-          </Link>
-          <Link to="/terms" className="home-nav__link">
-            Terms
-          </Link>
-          <Link to="/privacy" className="home-nav__link">
-            Privacy Policy
           </Link>
           <Link to="/login" className="home-nav__login-btn">
             Login
@@ -147,8 +138,6 @@ export default function HomePage() {
         <div className="home-footer__links">
           <Link to="/terms">Terms</Link>
           <Link to="/privacy">Privacy Policy</Link>
-          <Link to="/register">Register</Link>
-          <Link to="/login">Login</Link>
         </div>
       </footer>
 

@@ -23,13 +23,13 @@ export default function Sidebar({ className = "", onNavigate }) {
     return (
         <aside id="college-sidebar" className={`sidebar ${className}`.trim()}>
 
-            <div className="sidebar-logo">
+            <Link to="/" className="sidebar-logo" aria-label="Go to home page">
 
                 <h2>DiGiWallet</h2>
 
                 <p>College Portal</p>
 
-            </div>
+            </Link>
 
             <nav onClick={onNavigate}>
 

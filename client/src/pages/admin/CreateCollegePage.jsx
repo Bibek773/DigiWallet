@@ -134,13 +134,13 @@ export default function CreateCollegePage() {
     return (
         <main className="admin-create-page">
             <aside className="admin-create-sidebar">
-                <div className="admin-brand">
+                <Link to="/" className="admin-brand" aria-label="Go to home page">
                     <span className="admin-brand__mark">DW</span>
                     <div>
                         <strong>DigiWallet</strong>
                         <small>Admin Console</small>
                     </div>
-                </div>
+                </Link>
 
                 <Link className="admin-create-back" to="/admin/dashboard">
                     <FaArrowLeft aria-hidden="true" />
