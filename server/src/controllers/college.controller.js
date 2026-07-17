@@ -7,6 +7,53 @@ const Credential = require("../models/credential.model");
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+const buildRecentActivity = ({ students, credentials }) => {
+    const studentActivity = students.flatMap((student) => {
+        const activities = [{
+            id: `student-registered-${student._id}`,
+            type: "Student registration",
+            detail: `${student.Name} submitted a registration request.`,
+            timestamp: student.createdAt
+        }];
+
+        if (student.accountStatus === "approved") {
+            activities.push({
+                id: `student-approved-${student._id}`,
+                type: "Student approved",
+                detail: `${student.Name} was approved.`,
+                timestamp: student.updatedAt
+            });
+        }
+
+        return activities;
+    });
+
+    const credentialActivity = credentials.flatMap((credential) => {
+        const activities = [{
+            id: `credential-issued-${credential._id}`,
+            type: "Credential issued",
+            detail: `A credential was issued to ${credential.studentName}.`,
+            timestamp: credential.createdAt
+        }];
+
+        if (credential.status === "revoked" && credential.revokedAt) {
+            activities.push({
+                id: `credential-revoked-${credential._id}`,
+                type: "Credential revoked",
+                detail: `The credential for ${credential.studentName} was revoked.`,
+                timestamp: credential.revokedAt
+            });
+        }
+
+        return activities;
+    });
+
+    return [...studentActivity, ...credentialActivity]
+        .filter((activity) => activity.timestamp)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        .slice(0, 10);
+};
+
 
 // ============================
 // College Dashboard
@@ -29,7 +76,9 @@ exports.getCollegeDashboard = async (req, res) => {
         const [
             students,
             pendingStudents,
-            credentials
+            credentials,
+            studentActivity,
+            credentialActivity
         ] = await Promise.all([
 
             User.countDocuments({
@@ -45,7 +94,16 @@ exports.getCollegeDashboard = async (req, res) => {
 
             Credential.countDocuments({
                 collegeId: collegeId
-            })
+            }),
+
+            User.find({
+                College_Id: collegeId,
+                role:"student"
+            }).select("Name accountStatus createdAt updatedAt"),
+
+            Credential.find({
+                collegeId: collegeId
+            }).select("studentName status createdAt revokedAt")
 
         ]);
 
@@ -56,7 +114,11 @@ exports.getCollegeDashboard = async (req, res) => {
                 students,
                 pendingStudents,
                 credentials,
-                verificationRate:100
+                verificationRate:100,
+                recentActivity: buildRecentActivity({
+                    students: studentActivity,
+                    credentials: credentialActivity
+                })
             }
         });
 
@@ -85,15 +147,32 @@ exports.getStudents = async(req,res)=>{
         const collegeId = req.user.collegeId;
 
 
-        const students = await User.find({
-            College_Id:collegeId,
-            role:"student"
-        }).select("-Password");
+        const [students, credentialCounts] = await Promise.all([
+            User.find({
+                College_Id:collegeId,
+                role:"student",
+                accountStatus:"approved"
+            }).select("-Password").lean(),
+
+            Credential.aggregate([
+                { $match: { collegeId: new mongoose.Types.ObjectId(collegeId) } },
+                { $group: { _id: "$studentId", count: { $sum: 1 } } }
+            ])
+        ]);
+
+        const credentialsByStudentId = new Map(
+            credentialCounts.map(({ _id, count }) => [_id.toString(), count])
+        );
+
+        const studentsWithCredentialCounts = students.map((student) => ({
+            ...student,
+            credentials: credentialsByStudentId.get(student._id.toString()) || 0
+        }));
 
 
         res.json({
             success:true,
-            data:students
+            data:studentsWithCredentialCounts
         });
 
 
@@ -118,7 +197,7 @@ exports.getCredentials = async(req,res)=>{
 
     try{
 
-        const collegeId = req.user.College_Id;
+        const collegeId = req.user.collegeId;
 
 
         const credentials = await Credential.find({
@@ -153,7 +232,7 @@ exports.getPendingRequests = async(req,res)=>{
 
     try{
 
-        const collegeId = req.user.College_Id;
+        const collegeId = req.user.collegeId;
 
 
         const requests = await User.find({

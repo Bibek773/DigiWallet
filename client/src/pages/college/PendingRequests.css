@@ -7,7 +7,30 @@
 
 }
 
+.pending-page .page-tag{
+    
 
+    display:inline-block;
+
+    width:max-content;
+
+    padding:8px 18px;
+
+    border-radius:50px;
+
+    background:rgba(255,255,255,.15);
+
+    margin-bottom:22px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+
+
+}
 
 .pending-table-container{
 
@@ -150,23 +173,29 @@ tbody tr:hover{
 
 .view{
 
-    background:#2563eb;
-
+   
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
 }
 
 
 
+
+
+
 .approve{
-
-    background:#16a34a;
-
+    border-color: #bfdbfe;
+    background:#eff6ff;
+    color:green
 }
 
 
 
 .reject{
-
-    background:#dc2626;
+    border-color: #bfdbfe;
+    color:red;
+    background:#eff6ff;
 
 }
 

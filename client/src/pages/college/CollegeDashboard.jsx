@@ -1,13 +1,12 @@
 import "./CollegeDashboard.css";
 
-import Sidebar from "../../components/Sidebar";
-import TopNavbar from "../../components/TopNavbar";
 import { useEffect, useState } from "react";
 import { getCollegeDashboard } from "../../services/collegeService";
 
 export default function CollegeDashboard(){
     const[dashboardData,setDashboardData]=useState(null);
     const[loading,setLoading]=useState(true);
+    const recentActivity = dashboardData?.recentActivity || [];
      useEffect(()=>{
 
         const fetchDashboard = async()=>{
@@ -46,15 +45,9 @@ export default function CollegeDashboard(){
     }
     return(
 
-        <div className="dashboard">
+        <>
 
-            <Sidebar/>
-
-            <main className="dashboard-content">
-
-                <TopNavbar />
-
-                {/* Hero Section */}
+            {/* Hero Section */}
 
                 <section className="dashboard-hero">
 
@@ -144,17 +137,23 @@ export default function CollegeDashboard(){
 
                         <h2>Recent Activity</h2>
 
-                        <p>
-                            Student approvals, credential issuance,
-                            and verification logs will appear here.
-                        </p>
+                        {recentActivity.length > 0 ? (
+                            recentActivity.map((activity) => (
+                                <p key={activity.id}>
+                                    <strong>{activity.type}:</strong>{" "}
+                                    {activity.detail}{" "}
+                                    · {new Date(activity.timestamp).toLocaleString()}
+                                </p>
+                            ))
+                        ) : (
+                            <p>No recent activity yet.</p>
+                        )}
 
                     </div>
 
                 </section>
 
-            </main>
-        </div>
+        </>
 
     );
 

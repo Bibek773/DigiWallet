@@ -37,6 +37,33 @@ const credentialSchema = new mongoose.Schema({
     enum: ["Computer", "Civil", "Electrical", "IT"],
     required: [true, "Program is required"],
   },
+  batch: {
+    type: String,
+    trim: true,
+    default: '',
+  },
+  academicYear: {
+    type: String,
+    required: [true, 'Academic year is required'],
+  },
+  grade: {
+    type: String,
+    required: [true, 'Grade is required'],
+  },
+  credentialType: {
+    type: String,
+    default: 'CGPA',
+  },
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  collegeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'College',
+    required: true,
+  },
   collegeName: {
     type: String,
     required: [true, "College name is required"],

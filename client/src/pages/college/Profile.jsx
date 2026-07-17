@@ -2,7 +2,6 @@ import "./Profile.css";
 import "../../styles/PageHero.css";
 
 import { useEffect, useState } from "react";
-import TopNavbar from "../../components/TopNavbar";
 
 import { getCollegeProfile } from "../../services/collegeService";
 
@@ -38,7 +37,6 @@ export default function Profile() {
     if (loading) {
         return (
             <>
-                <TopNavbar />
                 <div className="profile-loading">
                     Loading College Profile...
                 </div>
@@ -49,7 +47,6 @@ export default function Profile() {
     if (!profile) {
         return (
             <>
-                <TopNavbar />
                 <div className="profile-loading">
                     Unable to load profile.
                 </div>
@@ -60,8 +57,6 @@ export default function Profile() {
     return (
 
         <div className="profile-page">
-
-            <TopNavbar />
 
             <section className="page-hero">
 

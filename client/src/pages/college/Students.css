@@ -60,17 +60,19 @@
 }
 
 
-.page-tag {
+.students-page .page-tag {
 
     display:inline-block;
+
+    width:max-content;
 
     padding:8px 18px;
 
     border-radius:50px;
 
-    background:#dbeafe;
+    background:rgba(255,255,255,.15);
 
-    color:#2563eb;
+    margin-bottom:22px;
 
     font-size:13px;
 
@@ -78,8 +80,10 @@
 
     letter-spacing:1px;
 
-    margin-bottom:20px;
 
+
+
+    
 }
 .page-tag-hero p{
 

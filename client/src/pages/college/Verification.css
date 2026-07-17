@@ -12,7 +12,30 @@
 
 }
 
+.verification-page .page-tag{
+    
 
+    display:inline-block;
+
+    width:max-content;
+
+    padding:8px 18px;
+
+    border-radius:50px;
+
+    background:rgba(255,255,255,.15);
+
+    margin-bottom:22px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+
+
+}
 
 /* Header */
 

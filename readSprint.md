@@ -77,10 +77,19 @@
 - `AuthContext` client->src->context tells how our authentication works, our JWT is stored in localStorage
 - settings and logout integrated
 - new password for modern is `modern987@`
+-`Modern123%`
 
 - Bibek Ghimire
 - bibek123@gmail.com
 - Bibek123%,modern
+
+- made all pages of college dashboard properly functioning
+
+### 04-01
+
+- integrated credential page 
+- recent activity in dashboard
+- ui made more good
 #### Working
 
 - test api through postman using url `http://localhost:5000/api/college`

@@ -14,8 +14,21 @@ export const getStudents = () => {
 export const getCredentials = () => {
     return api.get("/college/credentials");
 };
+export const issueCredential = (data)=>{
 
+    return api.post(
+        "/credentials/issue",
+        data
+    );
 
+};
+export const revokeCredential = (id)=>{
+
+    return api.put(
+        `/credentials/${id}/revoke`
+    );
+
+};
 export const getPendingRequests = () => {
     return api.get("/college/pending-requests");
 };

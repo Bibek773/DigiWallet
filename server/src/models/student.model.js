@@ -52,6 +52,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    Program: {
+        type: String,
+        trim: true,
+    },
+    Batch: {
+        type: String,
+        trim: true,
+    },
     RegistrationNumber: {
         type: String,
         trim: true,

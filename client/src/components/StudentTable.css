@@ -229,7 +229,7 @@ tbody tr:hover{
 
     display:flex;
 
-    gap:10px;
+    gap:8px;
 
     align-items:center;
 
@@ -237,36 +237,39 @@ tbody tr:hover{
 
 
 
-.icon-btn{
+.action-icons .icon-btn{
 
+    display:inline-grid;
 
-    width:35px;
+    width:36px;
 
-    height:35px;
+    height:36px;
 
-    border:none;
+    place-items:center;
 
-    border-radius:50%;
+    border:1px solid #dbe3ee;
 
-    display:flex;
+    border-radius:9px;
 
-    align-items:center;
-
-    justify-content:center;
+    background:#fff;
 
     cursor:pointer;
 
-    color:white;
+    color:#2563eb;
 
-    transition:0.2s;
+    transition:background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
 
 }
 
 
 
-.icon-btn:hover{
+.action-icons .icon-btn:hover{
 
-    transform:translateY(-2px);
+    border-color:#bfdbfe;
+
+    background:#eff6ff;
+
+    transform:translateY(-1px);
 
 }
 
@@ -274,9 +277,13 @@ tbody tr:hover{
 
 /* View */
 
-.icon-btn.view{
+.action-icons .icon-btn.view{
 
-    background:#2563eb;
+    border-color:#bfdbfe;
+
+    background:#eff6ff;
+
+    color:#1d4ed8;
 
 }
 
@@ -284,9 +291,13 @@ tbody tr:hover{
 
 /* Approve */
 
-.icon-btn.approve{
+.action-icons .icon-btn.approve{
 
-    background:#16a34a;
+    border-color:#a7f3d0;
+
+    background:#ecfdf5;
+
+    color:#047857;
 
 }
 
@@ -294,17 +305,30 @@ tbody tr:hover{
 
 /* Delete */
 
-.icon-btn.delete{
+.action-icons .icon-btn.delete{
 
-    background:#dc2626;
+    border-color:#fecaca;
+
+    background:#fef2f2;
+
+    color:#dc2626;
+
+}
+
+
+.action-icons .icon-btn.delete:hover{
+
+    border-color:#fecaca;
+
+    background:#fef2f2;
 
 }
 
 
 
-.icon-btn svg{
+.action-icons .icon-btn svg{
 
-    font-size:15px;
+    font-size:inherit;
 
 }
 
@@ -322,22 +346,34 @@ tbody tr:hover{
     }
 
 
-    .icon-btn{
+    .action-icons .icon-btn{
 
 
-        width:30px;
+        width:36px;
 
-        height:30px;
+        height:36px;
+
+    }
+
+
+    .action-icons .icon-btn svg{
+
+        font-size:inherit;
 
     }
 
 
-    .icon-btn svg{
+}
 
-        font-size:12px;
+@media(max-width:480px){
+
+    .action-icons .icon-btn{
+
+        width:34px;
+
+        height:34px;
 
     }
-
 
 }
 

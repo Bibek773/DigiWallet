@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 
 
-export default function Sidebar() {
+export default function Sidebar({ className = "", onNavigate }) {
     const navigate=useNavigate();//import hook
     const {logout}=useAuth();
     const handleLogout=()=>{ 
@@ -21,7 +21,7 @@ export default function Sidebar() {
         navigate("/login")
     }
     return (
-        <aside className="sidebar">
+        <aside id="college-sidebar" className={`sidebar ${className}`.trim()}>
 
             <Link to="/" className="sidebar-logo" aria-label="Go to home page">
 
@@ -31,7 +31,7 @@ export default function Sidebar() {
 
             </Link>
 
-            <nav>
+            <nav onClick={onNavigate}>
 
                 <Link to="/college/dashboard">
                     <FaHome />

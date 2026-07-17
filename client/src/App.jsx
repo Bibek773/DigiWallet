@@ -21,6 +21,7 @@ import CreateCollegePage from "./pages/admin/CreateCollegePage";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import Settings from "./pages/college/Settings";
+import CollegeLayout from "./components/CollegeLayout";
 
 function App() {
   return (
@@ -35,13 +36,15 @@ function App() {
 
           <Route path="/student/dashboard" element={<StudentDashboard />} />
 
-          <Route path="/college/dashboard" element={<CollegeDashboard />} />
-          <Route path="/college/students" element={<Students />} />
-          <Route path="/college/credentials" element={<Credentials />} />
-          <Route path="/college/pending-requests" element={<PendingRequests />} />
-          <Route path="/college/verification" element={<Verification />} />
-          <Route path="/college/profile" element={<Profile />} />
-          <Route path="/college/settings" element={<Settings/>}/>
+          <Route path="/college" element={<CollegeLayout />}>
+            <Route path="dashboard" element={<CollegeDashboard />} />
+            <Route path="students" element={<Students />} />
+            <Route path="credentials" element={<Credentials />} />
+            <Route path="pending-requests" element={<PendingRequests />} />
+            <Route path="verification" element={<Verification />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
           <Route path="/admin" element={<Navigate to="/login" replace />} />
 
           <Route
