@@ -29,6 +29,9 @@
 .sidebar-logo{
 
     margin-bottom:40px;
+    color:inherit;
+    text-decoration:none;
+    display:block;
 
 }
 

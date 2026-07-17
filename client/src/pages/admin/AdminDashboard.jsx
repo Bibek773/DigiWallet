@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     FaBan,
     FaBars,
@@ -1107,13 +1107,13 @@ export default function AdminDashboard() {
     return (
         <main className="admin-page">
             <aside className={`admin-sidebar ${mobileNavOpen ? "admin-sidebar--open" : ""}`}>
-                <div className="admin-brand">
+                <Link to="/" className="admin-brand" aria-label="Go to home page">
                     <span className="admin-brand__mark">DW</span>
                     <div>
                         <strong>DigiWallet</strong>
                         <small>Admin Console</small>
                     </div>
-                </div>
+                </Link>
 
                 <nav className="admin-nav" aria-label="Admin sections">
                     {sections.map(({ id, label, icon: Icon }) => (

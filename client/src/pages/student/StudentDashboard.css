@@ -1,4 +1,4 @@
-.dashboard {
+.student-dashboard {
     min-height: 100vh;
     background: #f8fafc;
     font-family: Arial, sans-serif;
@@ -9,6 +9,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
 
     padding: 14px 32px;
     background: white;
@@ -19,6 +21,8 @@
     font-size: 20px;
     font-weight: 700;
     color: #2563eb;
+    text-decoration: none;
+    flex-shrink: 0;
 }
 
 
@@ -27,6 +31,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-left: auto;
 
     padding: 6px 12px 6px 6px;
 
@@ -83,7 +88,7 @@
 }
 
 /* ================= BODY LAYOUT (sidebar + content) ================= */
-.dashboard__body {
+.student-dashboard__body {
     display: flex;
 }
 
@@ -161,7 +166,7 @@
 }
 
 /* ================= MAIN CONTENT ================= */
-.dashboard__content {
+.student-dashboard__content {
     flex: 1;
     padding: 40px 48px;
 }
@@ -375,7 +380,7 @@
     .topnav__links {
         gap: 14px;
     }
-    .dashboard__body {
+    .student-dashboard__body {
         flex-direction: column;
     }
     .sidebar {

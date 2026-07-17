@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import {
-  FaWallet,
   FaCertificate,
   FaUserCircle,
   FaSignOutAlt,
@@ -30,16 +30,27 @@ const credentials = [
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const [activeSection, setActiveSection] = useState("credentials");
-  const [profile, setProfile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [shareOpenId, setShareOpenId] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-    setProfile(storedUser);
-  }, []);
+    if (!user) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    if (user.role === "super_admin" || user.role === "admin") {
+      navigate("/admin/dashboard", { replace: true });
+      return;
+    }
+
+    if (user.role === "college") {
+      navigate("/college/dashboard", { replace: true });
+    }
+  }, [navigate, user]);
 
   useEffect(() => {
     return () => {
@@ -50,8 +61,7 @@ export default function StudentDashboard() {
   }, [photoPreview]);
 
   const handleSignOut = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logout();
     navigate("/login");
   };
 
@@ -63,7 +73,7 @@ export default function StudentDashboard() {
   };
 
   const initials =
-    profile?.name
+    user?.name
       ?.trim()
       .split(/\s+/)
       .slice(0, 2)
@@ -82,11 +92,17 @@ export default function StudentDashboard() {
     navigator.clipboard.writeText(verifyUrl(credentialId));
   };
 
+  if (!user || user.role !== "student") {
+    return null;
+  }
+
   return (
-    <div className="dashboard">
+    <div className="student-dashboard">
 
       <header className="topnav">
-        <span className="topnav__brand">DiGiWallet</span>
+        <Link to="/" className="topnav__brand" aria-label="Go to home page">
+          DiGiWallet
+        </Link>
 
         <button
           className="profile-preview"
@@ -101,25 +117,17 @@ export default function StudentDashboard() {
           </div>
           <div className="profile-preview__info">
             <span className="profile-preview__name">
-              {profile?.name || "Student Name"}
+              {user?.name || "Student Name"}
             </span>
             <span className="profile-preview__role">Student</span>
           </div>
         </button>
       </header>
 
-      <div className="dashboard__body">
+      <div className="student-dashboard__body">
 
         <aside className="sidebar">
           <nav className="sidebar__nav">
-            <button
-              className="sidebar__link"
-              onClick={() => navigate("/student/wallet")}
-            >
-              <FaWallet className="sidebar__icon" />
-              My Wallet
-            </button>
-
             <button
               className={`sidebar__link ${
                 activeSection === "credentials" ? "sidebar__link--active" : ""
@@ -147,7 +155,7 @@ export default function StudentDashboard() {
           </button>
         </aside>
 
-        <main className="dashboard__content">
+        <main className="student-dashboard__content">
 
           {activeSection === "credentials" && (
             <section>
@@ -241,19 +249,19 @@ export default function StudentDashboard() {
                   <div className="profile-field">
                     <span className="profile-field__label">Full name</span>
                     <span className="profile-field__value">
-                      {profile?.name || "—"}
+                      {user?.name || "—"}
                     </span>
                   </div>
                   <div className="profile-field">
                     <span className="profile-field__label">Email</span>
                     <span className="profile-field__value">
-                      {profile?.email || "—"}
+                      {user?.email || "—"}
                     </span>
                   </div>
                   <div className="profile-field">
                     <span className="profile-field__label">College</span>
                     <span className="profile-field__value">
-                      {profile?.collegeId?.collegeName || "—"}
+                      {user?.collegeId?.collegeName || "—"}
                     </span>
                   </div>
                   <div className="profile-field">
