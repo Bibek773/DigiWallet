@@ -1,27 +1,3 @@
-.dashboard{
-
-    display:flex;
-
-    min-height:100vh;
-
-    background:#f8fafc;
-
-}
-
-
-/* ===========================
-        MAIN CONTENT
-=========================== */
-
-.dashboard-content{
-
-    flex:1;
-
-    background:#f8fafc;
-
-}
-
-
 /* ===========================
         HERO
 =========================== */
@@ -277,10 +253,6 @@
 =========================== */
 
 @media (max-width: 768px) {
-
-    .dashboard {
-        flex-direction: column;
-    }
 
     .dashboard-hero {
         height: auto;

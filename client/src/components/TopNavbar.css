@@ -1,212 +1,97 @@
-.top-navbar{
-
+.top-navbar {
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     position:relative;
-
-    padding:22px 35px;
-
+    min-height:94px;
+    padding:22px 96px;
     background:#e9dacea3;
-
-    border-bottom:1px solid #e2e8f0;
     border:1px solid rgba(245, 138, 103, 0.212);
-
+    border-bottom-color:#e2e8f0;
 }
 
+.top-navbar > div:first-child { text-align:center; }
 
-
-/* Center both texts */
-
-.top-navbar > div:first-child{
-
-    text-align:center;
-
-}
-
-
-
-/* Dashboard title */
-
-.top-navbar h2{
-
+.top-navbar h2 {
     margin:0;
-
     color:#1e293b;
-
     font-size:30px;
-
     font-weight:700;
-
 }
 
-
-
-/* Welcome text */
-
-.top-navbar p{
-
+.top-navbar p {
     margin:6px 0 0;
-
     color:#08011d;
-
     font-size:22px;
-
 }
 
-
-
-/* Keep profile fixed on right */
-
-.profile{
-
+/* The avatar is the menu trigger and remains on the navbar's left edge. */
+.profile {
     position:absolute;
-
-    right:30px;
-
-}
-
-
-
-.profile-circle{
-
-    width:55px;
-
-    height:55px;
-
-    border-radius:50%;
-
-    background:#3a3847;
-
-    color:white;
-
+    left:30px;
     display:flex;
-
-    justify-content:center;
-
     align-items:center;
-
-    font-weight:bold;
-    border:1px solid rgba(245, 244, 209, 0.76);
-
-}
-.profile-circle:hover{
-
-    background:#08011d;
-    color:#fff;
-
-    transform:translateX(1px);
-
-}
-/* ===========================
-        TABLET
-=========================== */
-
-@media (max-width: 992px) {
-
-    .top-navbar {
-        padding: 18px 24px;
-    }
-
-    .top-navbar h2 {
-        font-size: 26px;
-    }
-
-    .top-navbar p {
-        font-size: 18px;
-    }
-
-    .profile {
-        right: 20px;
-    }
-
-    .profile-circle {
-        width: 48px;
-        height: 48px;
-        font-size: 16px;
-    }
-
-}
-
-
-/* ===========================
-        MOBILE
-=========================== */
-
-@media (max-width: 768px) {
-
-    .top-navbar {
-
-        flex-direction: column;
-
-        justify-content: center;
-
-        gap: 12px;
-
-        padding: 18px;
-
-    }
-
-    .top-navbar > div:first-child {
-        text-align: center;
-    }
-
-    .top-navbar h2 {
-        font-size: 22px;
-    }
-
-    .top-navbar p {
-        font-size: 16px;
-    }
-
-    .profile {
-
-        position: static;
-
-        margin-top: 8px;
-
-    }
-
-    .profile-circle {
-
-        width: 45px;
-        height: 45px;
-
-        font-size: 15px;
-    }
-
-}
-
-
-/* ===========================
-        SMALL PHONES
-=========================== */
-
-@media (max-width: 480px) {
-
-    .top-navbar {
-        padding: 15px 12px;
-    }
-
-    .top-navbar h2 {
-        font-size: 20px;
-    }
-
-    .top-navbar p {
-        font-size: 14px;
-    }
-
-    .profile-circle {
-        width: 40px;
-        height: 40px;
-        font-size: 14px;
-    }
-    .profile{
+    justify-content:center;
+    padding:0;
+    border:0;
+    background:transparent;
     text-decoration:none;
     cursor:pointer;
+    z-index:40;
+    transition:left .3s ease;
+    will-change:left;
 }
 
+/* Keep the single avatar visually attached to the drawer while it is open. */
+.profile.profile--sidebar-open {
+    left:min(calc(var(--college-sidebar-size) + 12px), calc(100vw - 57px));
+}
+
+.profile-circle {
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    background:#3a3847;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    border:1px solid rgba(245, 244, 209, 0.76);
+    transition:background .2s ease, transform .2s ease;
+}
+
+.profile-circle:hover {
+    background:#08011d;
+    color:#fff;
+    transform:translateX(1px);
+}
+
+.profile:focus-visible .profile-circle {
+    outline:3px solid #f97316;
+    outline-offset:3px;
+}
+
+@media (max-width: 992px) {
+    .top-navbar { padding:18px 78px; }
+    .top-navbar h2 { font-size:26px; }
+    .top-navbar p { font-size:18px; }
+    .profile { left:20px; }
+    .profile-circle { width:48px; height:48px; font-size:16px; }
+}
+
+@media (max-width: 768px) {
+    .top-navbar { min-height:86px; padding:18px 72px; }
+    .top-navbar h2 { font-size:22px; }
+    .top-navbar p { font-size:16px; }
+    .profile { left:18px; }
+    .profile-circle { width:45px; height:45px; font-size:15px; }
+}
+
+@media (max-width: 480px) {
+    .top-navbar { min-height:76px; padding:15px 58px; }
+    .top-navbar h2 { font-size:20px; }
+    .top-navbar p { font-size:14px; }
+    .profile { left:12px; }
+    .profile-circle { width:40px; height:40px; font-size:14px; }
 }

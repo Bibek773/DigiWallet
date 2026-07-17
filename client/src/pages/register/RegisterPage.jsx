@@ -10,6 +10,7 @@ const initialFormState = {
   dob: '',
   college: '',
   faculty: '',
+  program: '',
   batch: '',
   registrationNumber: '',
   examRollNo: '',
@@ -127,6 +128,8 @@ export default function RegisterPage() {
       Email: formData.email.trim(),
       Password: formData.password,
       Faculty: formData.faculty.trim(),
+      Program: formData.program.trim(),
+      Batch: formData.batch.trim(),
       RegistrationNumber: formData.registrationNumber.trim(),
       RollNo: formData.examRollNo.trim(),
       DOB: formData.dob,
@@ -311,6 +314,16 @@ export default function RegisterPage() {
                   <label htmlFor="faculty">Faculty</label>
                   <input id="faculty" name="faculty" type="text" placeholder="e.g. Management"
                     value={formData.faculty} onChange={handleChange} required />
+                </div>
+                <div className="field">
+                  <label htmlFor="program">Program</label>
+                  <select id="program" name="program" value={formData.program} onChange={handleChange} required>
+                    <option value="">Select program</option>
+                    <option value="Computer">Computer</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="IT">IT</option>
+                  </select>
                 </div>
               </div>
 

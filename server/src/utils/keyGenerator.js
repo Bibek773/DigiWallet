@@ -4,6 +4,7 @@ const path = require("path");
 
 function generateKeyPair(collegeCode) {
   // Generate RSA key pair
+  { /*the "rsa" argument tells Node.js to generate an RSA public-private key pair*/}
   const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
     modulusLength: 2048,
 
@@ -16,7 +17,7 @@ function generateKeyPair(collegeCode) {
       type: "pkcs8",
       format: "pem",
     },
-  });
+});
 
   // Create key ID
   const keyId = `${collegeCode}_v1`;
@@ -54,4 +55,5 @@ module.exports = generateKeyPair;
 
 
 /*here controller prevents duplicate college registrations
- key generator prevents accidental overwriting of an existing private key file*/
+ key generator prevents accidental overwriting of an existing private key file
+ using RSA-Rivest Shamir Adleman */

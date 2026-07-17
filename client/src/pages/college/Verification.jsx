@@ -1,6 +1,5 @@
 import "./Verification.css";
 
-import TopNavbar from "../../components/TopNavbar";
 import "../../styles/PageHero.css"
 
 export default function Verification(){
@@ -8,9 +7,6 @@ export default function Verification(){
     return(
 
         <div className="verification-page">
-
-
-            <TopNavbar/>
 
 
             {/* Header */}

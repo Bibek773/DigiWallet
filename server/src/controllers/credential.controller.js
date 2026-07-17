@@ -3,6 +3,7 @@ const QRCode = require("qrcode");
 
 const College = require("../models/college.model");
 const Credential = require("../models/credential.model");
+const User = require("../models/student.model");
 const { createCredentialHash } = require("../utils/hash");
 const {
   SIGNATURE_ALGORITHM,
@@ -16,11 +17,23 @@ const normalizeProgram = (program) => {
   return value === "it" ? "IT" : value.charAt(0).toUpperCase() + value.slice(1);
 };
 
+const getGrade = (cgpa) => {
+  if (cgpa >= 3.6) return "A+";
+  if (cgpa >= 3.2) return "A";
+  if (cgpa >= 2.8) return "B+";
+  if (cgpa >= 2.4) return "B";
+  if (cgpa >= 2.0) return "C+";
+  return "C";
+};
+
 const safeCredential = (credential) => ({
   id: credential._id,
   studentName: credential.studentName,
   examRoll: credential.examRoll,
   registrationNumber: credential.registrationNumber,
+  academicYear: credential.academicYear,
+  grade: credential.grade,
+  credentialType: credential.credentialType,
   semester: credential.semester,
   level: credential.level,
   faculty: credential.faculty,
@@ -67,16 +80,41 @@ exports.issueCredential = async (req, res) => {
       });
     }
 
+    const student = await User.findOne({
+      _id: req.body.studentId,
+      College_Id: issuerCollegeId,
+      role: "student",
+      accountStatus: "approved",
+    });
+
+    if (!student) {
+      return res.status(400).json({
+        success: false,
+        message: "Select an approved student from your college.",
+      });
+    }
+
+    const cgpa = Number(req.body.CGPA);
+    if (!Number.isFinite(cgpa) || cgpa < 0 || cgpa > 4) {
+      return res.status(400).json({ success: false, message: "CGPA must be between 0.0 and 4.0." });
+    }
+
     const credentialInput = {
-      studentName: req.body.studentName?.trim(),
-      examRoll: req.body.examRoll,
-      registrationNumber: req.body.registrationNumber?.trim(),
+      studentName: student.Name?.trim(),
+      examRoll: student.RollNo,
+      registrationNumber: student.RegistrationNumber?.trim(),
       semester: req.body.semester?.trim().toLowerCase(),
       level: req.body.level?.trim() || "Bachelor",
-      faculty: req.body.faculty?.trim() || "Science and Technology",
-      program: normalizeProgram(req.body.program),
+      faculty: student.Faculty?.trim() || "Science and Technology",
+      program: normalizeProgram(student.Program),
+      batch: student.Batch?.trim() || "",
       collegeName: req.body.collegeName?.trim() || college.collegeName,
-      CGPA: req.body.CGPA,
+      CGPA: cgpa,
+      academicYear: req.body.academicYear?.trim(),
+      grade: getGrade(cgpa),
+      credentialType: "CGPA",
+      studentId: student._id,
+      collegeId: issuerCollegeId,
       issuerCollegeId,
     };
 
@@ -88,6 +126,7 @@ exports.issueCredential = async (req, res) => {
       "program",
       "collegeName",
       "CGPA",
+      "academicYear",
     ].filter((field) => credentialInput[field] === undefined || credentialInput[field] === "");
 
     if (missingFields.length) {
@@ -106,8 +145,14 @@ exports.issueCredential = async (req, res) => {
       level: credentialInput.level,
       faculty: credentialInput.faculty,
       program: credentialInput.program,
+      batch: credentialInput.batch,
       collegeName: credentialInput.collegeName,
-      CGPA: Number(credentialInput.CGPA),
+      CGPA: credentialInput.CGPA,
+      academicYear: credentialInput.academicYear,
+      grade: credentialInput.grade,
+      credentialType: credentialInput.credentialType,
+      studentId: student._id.toString(),
+      collegeId: issuerCollegeId.toString(),
       issuerCollegeId: issuerCollegeId.toString(),
       issuedAt,
     };

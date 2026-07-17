@@ -1,6 +1,5 @@
 import "./Students.css";
 
-import TopNavbar from "../../components/TopNavbar";
 import StudentTable from "../../components/StudentTable";
 import "../../styles/PageHero.css";
 
@@ -60,9 +59,6 @@ export default function Students(){
     return(
 
         <div className="students-page">
-
-
-            <TopNavbar/>
 
 
             <section className="page-hero">

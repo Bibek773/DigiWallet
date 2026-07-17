@@ -2,7 +2,6 @@ import "./PendingRequests.css";
 
 import { useEffect, useState } from "react";
 
-import TopNavbar from "../../components/TopNavbar";
 import "../../styles/PageHero.css";
 
 import { 
@@ -113,11 +112,6 @@ export default function PendingRequests(){
     return(
 
         <div className="pending-page">
-
-
-            <TopNavbar/>
-
-
 
 
             <section className="page-hero">

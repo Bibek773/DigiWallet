@@ -43,6 +43,8 @@ exports.studentSignup = async (req, res) => {
       Password,
       College_Id,        // the college they claim to belong to
       Faculty,
+      Program,
+      Batch,
       RegistrationNumber,
       RollNo,
       DOB,
@@ -76,6 +78,8 @@ exports.studentSignup = async (req, res) => {
       role: "student",
       College_Id,
       Faculty,
+      Program,
+      Batch,
       RegistrationNumber,
       RollNo,
       DOB,

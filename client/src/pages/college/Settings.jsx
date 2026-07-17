@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./Settings.css";
 import "../../styles/PageHero.css";
-import TopNavbar from "../../components/TopNavbar";
 import { updateSettings } from "../../services/collegeService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -88,9 +87,6 @@ export default function Settings(){
     return(
 
         <div className="settings-page">
-
-            <TopNavbar/>
-
 
             <section className="page-hero">
 
@@ -205,7 +201,7 @@ export default function Settings(){
                         </div>
 
 
-                        <button>
+                        <button className="update">
                             Update Password
                         </button>
 
