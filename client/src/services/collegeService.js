@@ -29,3 +29,24 @@ export const getVerificationLogs = () => {
 export const getCollegeProfile = () => {
     return api.get("/college/profile");
 };
+
+export const updateSettings=(data)=>{
+    return api.put("/college/settings",data);
+}
+export const getAllColleges = ()=>{
+
+    return api.get("/college/list");
+
+};
+export const approveStudent = (studentId) => {
+
+    return api.put(`/college/students/${studentId}/approve`);
+
+};
+
+
+export const deleteStudent = (studentId) => {
+
+    return api.delete(`/college/students/${studentId}`);
+
+};

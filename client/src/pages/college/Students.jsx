@@ -2,57 +2,77 @@ import "./Students.css";
 
 import TopNavbar from "../../components/TopNavbar";
 import StudentTable from "../../components/StudentTable";
-import "../../styles/PageHero.css"
-import { use, useEffect, useState } from "react";
+import "../../styles/PageHero.css";
+
+import { useEffect, useState } from "react";
 import { getStudents } from "../../services/collegeService";
 
+
 export default function Students(){
- const [students, setStudents] = useState([]);
- const [loading,setLoading]=useState(true);
 
- useEffect(() => {
+    const [students, setStudents] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const fetchStudents = async () => {
+    const [selectedStudent, setSelectedStudent] = useState(null);
 
-        try {
 
-            const response = await getStudents();
+    const fetchStudents = async()=>{
 
-            setStudents(response.data.data);
+            try{
 
-        } catch (error) {
+                const response = await getStudents();
 
-            console.log(error);
+                setStudents(response.data.data);
 
-        } finally {
+            }
+            catch(error){
 
-            setLoading(false);
+                console.log(error);
 
-        }
+            }
+            finally{
 
-    };
+                setLoading(false);
 
-    fetchStudents();
+            }
 
-}, []);
+        };
 
-if(loading){
-    return<h2>Loading...</h2>
-}
+
+    useEffect(()=>{
+
+        
+        fetchStudents();
+
+
+    },[]);
+
+
+
+    if(loading){
+
+        return <h2>Loading students...</h2>;
+
+    }
+
+
 
     return(
 
         <div className="students-page">
 
-            
+
             <TopNavbar/>
-            
+
 
             <section className="page-hero">
 
+
                 <div className="page-hero-overlay">
+
+
                     <p className="page-tag">
-                    Student Management
+                        Student Management
                     </p>
 
 
@@ -62,17 +82,123 @@ if(loading){
 
 
                     <p className="page-description">
+
                         Manage students and their digital credentials.
+
                     </p>
+
+
                 </div>
-                
-                <StudentTable students={students}/>
+
 
             </section>
 
 
 
-            
+            <section className="students-table-section">
+
+
+                <StudentTable
+                    students={students}
+                    setSelectedStudent={setSelectedStudent}
+                    fetchStudents={fetchStudents}
+                />
+
+
+            </section>
+
+
+
+
+
+            {
+                selectedStudent && (
+
+                    <div className="student-modal">
+
+
+                        <div className="modal-content">
+
+
+                            <h2>
+                                Student Details
+                            </h2>
+
+
+                            <div className="student-details">
+
+
+                                <p>
+                                    <strong>Name:</strong>
+                                    {" "}
+                                    {selectedStudent.Name}
+                                </p>
+
+
+                                <p>
+                                    <strong>Email:</strong>
+                                    {" "}
+                                    {selectedStudent.email || selectedStudent.Email}
+                                </p>
+
+
+                                <p>
+                                    <strong>Faculty:</strong>
+                                    {" "}
+                                    {selectedStudent.Faculty}
+                                </p>
+
+
+                                <p>
+                                    <strong>Registration No:</strong>
+                                    {" "}
+                                    {selectedStudent.RegistrationNumber}
+                                </p>
+
+
+                                <p>
+                                    <strong>Roll No:</strong>
+                                    {" "}
+                                    {selectedStudent.RollNo}
+                                </p>
+
+
+                                <p>
+                                    <strong>Date of Birth:</strong>
+                                    {" "}
+                                    {new Date(selectedStudent.DOB).toLocaleDateString()}
+                                </p>
+
+
+                                <p>
+                                    <strong>Status:</strong>
+                                    {" "}
+                                    {selectedStudent.accountStatus}
+                                </p>
+
+
+                            </div>
+
+
+
+                            <button
+                                className="close-btn"
+                                onClick={()=>setSelectedStudent(null)}
+                            >
+
+                                Close
+
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+                )
+            }
+
 
 
         </div>

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext(null); //creates a shared box where authentication data can be stored
 const ADMIN_ROLES = ["admin", "super_admin"];
 
 const normalizeUser = (user) => {
@@ -15,7 +15,7 @@ const normalizeUser = (user) => {
         collegeId: user.collegeId || user.College_Id,
     };
 };
-
+// reading from localStorage
 const readStoredSession = () => {
     const token = localStorage.getItem("token");
     const rawUser = localStorage.getItem("user");
@@ -36,16 +36,18 @@ const readStoredSession = () => {
 };
 
 const writeSession = ({ token, user }) => {
-    localStorage.setItem("token", token);
+    localStorage.setItem("token", token);//it stores on local storage
     localStorage.setItem("user", JSON.stringify(normalizeUser(user)));
 };
 
 const clearSession = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem("user"); //when logout, it removes token and user, then the app instantly knows there is no authenticated user
 };
 
 export function AuthProvider({ children }) {
+    /* initial state, where there is no paranthesis after readStoreSession, which means react calls the function once when 
+     the app loads*/
     const [session, setSession] = useState(readStoredSession);
 
     const logout = useCallback(() => {
@@ -60,7 +62,7 @@ export function AuthProvider({ children }) {
             throw new Error("Login response did not include a valid session.");
         }
 
-        writeSession({ token, user: normalizedUser });
+        writeSession({ token, user: normalizedUser }); 
         setSession({ token, user: normalizedUser });
         return { token, user: normalizedUser };
     }, []);

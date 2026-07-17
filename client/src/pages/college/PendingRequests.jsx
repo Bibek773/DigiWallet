@@ -5,7 +5,17 @@ import { useEffect, useState } from "react";
 import TopNavbar from "../../components/TopNavbar";
 import "../../styles/PageHero.css";
 
-import { getPendingRequests } from "../../services/collegeService";
+import { 
+    getPendingRequests,
+    approveStudent,
+    deleteStudent
+} from "../../services/collegeService";
+
+import {
+    FaEye,
+    FaCheck,
+    FaTimes
+} from "react-icons/fa";
 
 
 export default function PendingRequests(){
@@ -13,37 +23,81 @@ export default function PendingRequests(){
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [selectedStudent, setSelectedStudent] = useState(null);
+
+    const fetchRequests = async()=>{
+
+        try{
+
+            const response = await getPendingRequests();
+
+            setRequests(response.data.data);
+
+        }
+        catch(error){
+
+            console.log(
+                "Error fetching pending requests:",
+                error
+            );
+
+        }
+        finally{
+
+            setLoading(false);
+
+        }
+
+    };
+
 
 
     useEffect(()=>{
 
-        const fetchRequests = async()=>{
-
-            try{
-
-                const response = await getPendingRequests();
-
-                setRequests(response.data.data);
-
-            }
-            catch(error){
-
-                console.log("Error fetching pending requests:", error);
-
-            }
-            finally{
-
-                setLoading(false);
-
-            }
-
-        };
-
-
         fetchRequests();
 
-
     },[]);
+
+
+
+
+    const handleApprove = async(id)=>{
+
+        try{
+
+            await approveStudent(id);
+
+            fetchRequests();
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+    };
+
+
+
+    const handleReject = async(id)=>{
+
+        try{
+
+            await deleteStudent(id);
+
+            fetchRequests();
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+    };
+
+
 
 
 
@@ -55,8 +109,8 @@ export default function PendingRequests(){
 
 
 
-    return(
 
+    return(
 
         <div className="pending-page">
 
@@ -65,7 +119,6 @@ export default function PendingRequests(){
 
 
 
-            {/* Header */}
 
             <section className="page-hero">
 
@@ -74,17 +127,13 @@ export default function PendingRequests(){
 
 
                     <p className="page-tag">
-
                         Request Management
-
                     </p>
 
 
 
                     <h1>
-
                         Pending Requests
-
                     </h1>
 
 
@@ -97,7 +146,6 @@ export default function PendingRequests(){
                     </p>
 
 
-
                 </div>
 
 
@@ -106,8 +154,6 @@ export default function PendingRequests(){
 
 
 
-
-            {/* Requests Table */}
 
 
             <section className="pending-table-container">
@@ -120,11 +166,11 @@ export default function PendingRequests(){
 
                         <tr>
 
-                            <th>Requester</th>
+                            <th>Name</th>
 
                             <th>Request Type</th>
 
-                            <th>Details</th>
+                            <th>Faculty</th>
 
                             <th>Date</th>
 
@@ -138,19 +184,19 @@ export default function PendingRequests(){
 
 
 
-
                     <tbody>
 
 
-
                     {
-                        requests?.map((request)=>(
+                        requests.length > 0 ?
+
+                        requests.map((request)=>(
 
 
                             <tr key={request._id}>
 
 
-                                <td>
+                                <td data-label="Name">
 
                                     {request.Name}
 
@@ -158,7 +204,7 @@ export default function PendingRequests(){
 
 
 
-                                <td>
+                                <td data-label="Request">
 
                                     Student Approval
 
@@ -166,7 +212,7 @@ export default function PendingRequests(){
 
 
 
-                                <td>
+                                <td data-label="Faculty">
 
                                     {request.Faculty}
 
@@ -174,19 +220,22 @@ export default function PendingRequests(){
 
 
 
-                                <td>
+
+                                <td data-label="Date">
 
                                     {
-                                    new Date(
-                                        request.createdAt
-                                    ).toLocaleDateString()
+                                        new Date(
+                                            request.createdAt
+                                        )
+                                        .toLocaleDateString()
                                     }
 
                                 </td>
 
 
 
-                                <td>
+
+                                <td data-label="Status">
 
 
                                     <span className="status pending">
@@ -201,23 +250,50 @@ export default function PendingRequests(){
 
 
 
-                                <td>
+
+                                <td data-label="Action">
 
 
-                                    <div className="action-buttons">
+                                    <div className="icon-actions">
 
 
-                                        <button className="approve-btn">
+                                        <button
+                                        className="icon-btn view"
+                                        title="View Student Details"
+                                        onClick={()=>{
+                                            
+                                            setSelectedStudent(request)}}
+                                        >
 
-                                            Approve
+                                            <FaEye/>
 
                                         </button>
 
 
 
-                                        <button className="reject-btn">
 
-                                            Reject
+
+                                        <button
+                                        className="icon-btn approve"
+                                        title="Approve Student"
+                                        onClick={()=>handleApprove(request._id)}
+                                        >
+
+                                            <FaCheck/>
+
+                                        </button>
+
+
+
+
+
+                                        <button
+                                        className="icon-btn reject"
+                                        title="Reject Student"
+                                        onClick={()=>handleReject(request._id)}
+                                        >
+
+                                            <FaTimes/>
 
                                         </button>
 
@@ -233,11 +309,24 @@ export default function PendingRequests(){
 
 
                         ))
+
+                        :
+
+                        <tr>
+
+                            <td colSpan="6">
+
+                                No pending requests
+
+                            </td>
+
+                        </tr>
+
                     }
 
 
-
                     </tbody>
+
 
 
                 </table>
@@ -245,10 +334,101 @@ export default function PendingRequests(){
 
             </section>
 
+        {
+            selectedStudent && (
 
+            <div className="student-modal-overlay">
+
+
+                <div className="student-modal">
+
+
+                    <button
+                    className="close-modal"
+                    onClick={()=>setSelectedStudent(null)}
+                    >
+                        ×
+                    </button>
+
+
+
+                    <h2>
+                        Student Details
+                    </h2>
+
+
+
+                    <div className="student-info">
+
+
+                        <p>
+                            <strong>Name:</strong>
+                            {selectedStudent.Name}
+                        </p>
+
+
+                        <p>
+                            <strong>Email:</strong>
+                            {selectedStudent.Email}
+                        </p>
+
+
+
+                        <p>
+                            <strong>Faculty:</strong>
+                            {selectedStudent.Faculty}
+                        </p>
+
+
+
+                        <p>
+                            <strong>Registration No:</strong>
+                            {selectedStudent.RegistrationNumber}
+                        </p>
+
+
+
+                        <p>
+                            <strong>Roll No:</strong>
+                            {selectedStudent.RollNo}
+                        </p>
+
+
+
+                        <p>
+                            <strong>Date of Birth:</strong>
+                            {
+                                new Date(
+                                selectedStudent.DOB
+                                ).toLocaleDateString()
+                            }
+                        </p>
+
+
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            <span className="status pending">
+                                {selectedStudent.accountStatus}
+                            </span>
+
+                        </p>
+
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+            )
+            }
 
         </div>
-
 
     );
 

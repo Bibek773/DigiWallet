@@ -1,97 +1,21 @@
 .pending-page{
 
-    flex:1;
-
     min-height:100vh;
-
     background:#f8fafc;
-
     padding:25px;
-
-    font-family:'Inter', Arial, sans-serif;
-
-}
-
-
-
-/* Header */
-
-.pending-header{
-
-    padding:40px;
-
-    background:linear-gradient(
-        160deg,
-        #fbfaf5,
-        #eeece1
-    );
-
-    border-radius:18px;
-
-    box-shadow:0 10px 25px rgba(0,0,0,.05);
-
-    margin-top:20px;
+    font-family:'Inter',Arial,sans-serif;
 
 }
 
-
-
-.page-tag{
-
-    display:inline-block;
-
-    padding:8px 18px;
-
-    border-radius:50px;
-
-    background:#dbeafe;
-
-    color:#2563eb;
-
-    font-size:13px;
-
-    font-weight:600;
-
-    letter-spacing:1px;
-
-    margin-bottom:20px;
-
-}
-
-
-
-.pending-header h1{
-
-    font-size:40px;
-
-    color:#1e293b;
-
-    margin-bottom:10px;
-
-}
-
-
-
-.page-description{
-
-    color:#64748b;
-
-    font-size:16px;
-
-}
-
-
-
-/* Table */
 
 
 .pending-table-container{
 
-    margin-top:30px;
+    margin:30px 40px;
 
     background:white;
 
-    border-radius:18px;
+    border-radius:14px;
 
     overflow:hidden;
 
@@ -104,7 +28,6 @@
 table{
 
     width:100%;
-
     border-collapse:collapse;
 
 }
@@ -113,8 +36,7 @@ table{
 
 thead{
 
-    background:#1d336d;
-
+    background:#221e4c;
     color:white;
 
 }
@@ -124,12 +46,8 @@ thead{
 th{
 
     padding:18px;
-
     text-align:left;
-
     font-size:14px;
-
-    font-weight:600;
 
 }
 
@@ -141,9 +59,7 @@ td{
 
     border-bottom:1px solid #e5e7eb;
 
-    color:#374151;
-
-    font-size:14px;
+    color:#334155;
 
 }
 
@@ -156,8 +72,6 @@ tbody tr:hover{
 }
 
 
-
-/* Status */
 
 
 .status{
@@ -173,6 +87,7 @@ tbody tr:hover{
 }
 
 
+
 .pending{
 
     background:#fef3c7;
@@ -183,10 +98,12 @@ tbody tr:hover{
 
 
 
-/* Buttons */
 
 
-.action-buttons{
+/* ACTION ICONS */
+
+
+.icon-actions{
 
     display:flex;
 
@@ -196,28 +113,50 @@ tbody tr:hover{
 
 
 
-.approve-btn,
-.reject-btn{
+.icon-btn{
+
+    width:35px;
+
+    height:35px;
 
     border:none;
 
-    padding:8px 14px;
-
     border-radius:8px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
 
     color:white;
 
-    font-size:13px;
-
-    font-weight:600;
-
-    cursor:pointer;
+    transition:.2s;
 
 }
 
 
 
-.approve-btn{
+
+.icon-btn:hover{
+
+    transform:scale(1.1);
+
+}
+
+
+
+.view{
+
+    background:#2563eb;
+
+}
+
+
+
+.approve{
 
     background:#16a34a;
 
@@ -225,15 +164,7 @@ tbody tr:hover{
 
 
 
-.approve-btn:hover{
-
-    background:#15803d;
-
-}
-
-
-
-.reject-btn{
+.reject{
 
     background:#dc2626;
 
@@ -241,206 +172,235 @@ tbody tr:hover{
 
 
 
-.reject-btn:hover{
-
-    background:#b91c1c;
-
-}
-/* ===========================
-        TABLET
-=========================== */
-
-@media (max-width: 992px) {
-
-    .pending-page {
-        padding:20px;
-    }
 
 
-    .pending-header {
+/* Responsive */
 
-        padding:30px;
+
+@media(max-width:900px){
+
+
+    .pending-table-container{
+
+        margin:20px;
+
+        overflow-x:auto;
 
     }
 
 
-    .pending-header h1 {
 
-        font-size:34px;
+    table{
 
-    }
-
-
-    th,
-    td {
-
-        padding:14px;
-
-        font-size:13px;
-
-    }
-
-
-    .approve-btn,
-    .reject-btn {
-
-        padding:7px 12px;
-
-        font-size:12px;
+        min-width:750px;
 
     }
 
 }
 
 
-/* ===========================
-        MOBILE
-=========================== */
-
-@media (max-width:768px) {
 
 
-    .pending-page {
+
+@media(max-width:600px){
+
+
+    .pending-page{
 
         padding:15px;
 
     }
 
 
-    .pending-header {
 
-        padding:25px;
+    .pending-table-container{
 
-        margin-top:10px;
+        margin:15px 0;
 
-        border-radius:14px;
+        background:transparent;
 
-    }
-
-
-    .page-tag {
-
-        padding:7px 14px;
-
-        font-size:12px;
+        box-shadow:none;
 
     }
 
 
-    .pending-header h1 {
 
-        font-size:28px;
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr{
 
-        line-height:1.3;
-
-    }
-
-
-    .page-description {
-
-        font-size:14px;
-
-        line-height:1.6;
+        display:block;
 
     }
 
 
-    /* Table scrolling */
 
-    .pending-table-container {
+    thead{
 
-        overflow-x:auto;
-
-        border-radius:14px;
+        display:none;
 
     }
 
 
-    table {
-
-        min-width:750px;
-
-    }
 
 
-    th {
+    tr{
 
-        padding:14px;
+        background:white;
 
-        font-size:13px;
+        margin-bottom:15px;
 
-    }
+        border-radius:12px;
 
+        padding:15px;
 
-    td {
-
-        padding:14px;
-
-        font-size:13px;
+        box-shadow:0 5px 15px rgba(0,0,0,.05);
 
     }
 
 
-    .status {
 
-        padding:5px 12px;
+    td{
 
-        font-size:12px;
+        display:flex;
 
-    }
+        justify-content:space-between;
 
-
-    .action-buttons {
-
-        gap:8px;
+        padding:12px;
 
     }
 
 
-    .approve-btn,
-    .reject-btn {
 
-        padding:6px 10px;
+    td::before{
 
-        font-size:12px;
+        content:attr(data-label);
+
+        font-weight:600;
+
+        color:#64748b;
 
     }
+
+
+
+    .icon-actions{
+
+        justify-content:flex-end;
+
+        width:100%;
+
+    }
+
+
+}
+.student-modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:1000;
 
 }
 
 
 
-/* ===========================
-        SMALL PHONES
-=========================== */
+.student-modal{
 
-@media (max-width:480px) {
+    width:420px;
+
+    max-width:90%;
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:30px;
+
+    position:relative;
+
+    box-shadow:0 20px 40px rgba(0,0,0,.2);
+
+}
 
 
-    .pending-header {
+
+.student-modal h2{
+
+    margin-bottom:20px;
+
+    color:#1e293b;
+
+}
+
+
+
+.close-modal{
+
+    position:absolute;
+
+    right:15px;
+
+    top:10px;
+
+    border:none;
+
+    background:none;
+
+    font-size:28px;
+
+    cursor:pointer;
+
+}
+
+
+
+.student-info p{
+
+    margin:12px 0;
+
+    color:#334155;
+
+}
+
+
+
+.student-info strong{
+
+    display:inline-block;
+
+    width:130px;
+
+}
+
+
+
+@media(max-width:500px){
+
+    .student-modal{
 
         padding:20px;
 
     }
 
 
-    .pending-header h1 {
+    .student-info strong{
 
-        font-size:24px;
+        width:auto;
 
-    }
-
-
-    .page-description {
-
-        font-size:13px;
-
-    }
-
-
-    .pending-table-container {
-
-        margin-top:20px;
+        display:block;
 
     }
 

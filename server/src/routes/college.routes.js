@@ -10,9 +10,14 @@ const {
     getVerificationLogs,
     getCollegeProfile,
     updateCollegeProfile,
-    updateSettings
+    updateSettings,
+    getAllColleges
 } = require("../controllers/college.controller");
-
+const {
+    approveStudent,
+    deleteStudent
+} = require("../controllers/college.controller");
+router.get("/list",getAllColleges);
 // Protect all college routes
 router.use(protect);
 router.use(authorizeRoles("college"));
@@ -37,7 +42,19 @@ router.get("/profile", getCollegeProfile);
 
 router.put("/profile", updateCollegeProfile);
 
-router.put("/settings", updateSettings);
+router.put("/settings", 
+    protect,
+    authorizeRoles("college"),
+     updateSettings);
+
+router.put(
+    "/students/:id/approve",
+    approveStudent
+);
 
 
+router.delete(
+    "/students/:id",
+    deleteStudent
+);
 module.exports = router;
