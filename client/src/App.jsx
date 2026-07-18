@@ -5,6 +5,7 @@ import RegisterPage from "./pages/register/RegisterPage";
 import LoginPage from "./pages/login/LoginPage";
 import TermsPage from "./pages/terms/TermsPage";
 import PrivacyPage from "./pages/register/PrivacyPage";
+import VerifyPage from "./pages/VerifyPage";
 
 import CollegeDashboard from "./pages/college/CollegeDashboard";
 import Students from "./pages/college/Students";
@@ -33,8 +34,14 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/verify/:credentialId" element={<VerifyPage />} />
 
-          <Route path="/student/dashboard" element={<StudentDashboard />} />
+          <Route path="/student" element={<Navigate to="/student/home" replace />} />
+          <Route path="/student/dashboard" element={<Navigate to="/student/home" replace />} />
+          <Route path="/student/home" element={<StudentDashboard />} />
+          <Route path="/student/mywallet" element={<StudentDashboard />} />
+          <Route path="/student/profile" element={<StudentDashboard />} />
+          <Route path="/student/settings" element={<StudentDashboard />} />
 
           <Route path="/college" element={<CollegeLayout />}>
             <Route path="dashboard" element={<CollegeDashboard />} />

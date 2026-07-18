@@ -44,7 +44,7 @@ export default function LoginPage() {
             });
             if(user.role === "student"){
 
-                navigate("/student/dashboard");
+                navigate("/student/home");
 
             }
             else if(user.role === "college"){

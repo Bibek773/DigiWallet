@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
+  FaCamera,
   FaCertificate,
-  FaUserCircle,
-  FaSignOutAlt,
+  FaCog,
+  FaHome,
+  FaKey,
   FaLink,
   FaQrcode,
-  FaCamera,
+  FaShieldAlt,
+  FaSignOutAlt,
+  FaUserCircle,
+  FaWallet,
 } from "react-icons/fa";
-import { getMyCredentials, getMyProfile } from "../../services/studentService";
+import {
+  changeMyPassword,
+  getMyCredentials,
+  getMyProfile,
+} from "../../services/studentService";
 import "./StudentDashboard.css";
 
 const getCredentialList = (payload) => {
@@ -18,17 +27,38 @@ const getCredentialList = (payload) => {
   return [];
 };
 
+const studentNavItems = [
+  { to: "/student/home", label: "Home", icon: FaHome },
+  { to: "/student/mywallet", label: "MyWallet", icon: FaWallet },
+  { to: "/student/profile", label: "Profile", icon: FaUserCircle },
+  { to: "/student/settings", label: "Settings", icon: FaCog },
+];
+
 export default function StudentDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
 
-  const [activeSection, setActiveSection] = useState("credentials");
   const [photoPreview, setPhotoPreview] = useState(null);
   const [profile, setProfile] = useState(null);
   const [credentials, setCredentials] = useState([]);
   const [loadingCredentials, setLoadingCredentials] = useState(true);
   const [dashboardError, setDashboardError] = useState("");
   const [shareOpenId, setShareOpenId] = useState(null);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState({ type: "", text: "" });
+
+  const activeSection = useMemo(() => {
+    if (location.pathname.endsWith("/mywallet")) return "mywallet";
+    if (location.pathname.endsWith("/profile")) return "profile";
+    if (location.pathname.endsWith("/settings")) return "settings";
+    return "home";
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!user) {
@@ -106,6 +136,46 @@ export default function StudentDashboard() {
     }
   };
 
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+    setPasswordForm((current) => ({ ...current, [name]: value }));
+    if (passwordMessage.text) setPasswordMessage({ type: "", text: "" });
+  };
+
+  const handlePasswordSubmit = async (event) => {
+    event.preventDefault();
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordMessage({ type: "error", text: "New passwords do not match." });
+      return;
+    }
+
+    try {
+      setPasswordSaving(true);
+      const response = await changeMyPassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
+
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setPasswordMessage({
+        type: "success",
+        text: response.data?.message || "Password changed successfully.",
+      });
+    } catch (error) {
+      setPasswordMessage({
+        type: "error",
+        text: error.response?.data?.message || "Unable to change password.",
+      });
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
   const initials =
     user?.name
       ?.trim()
@@ -116,6 +186,8 @@ export default function StudentDashboard() {
 
   const avatarSrc = photoPreview || profile?.Photo || null;
 
+  const getCredentialId = (credential) => credential.id || credential._id;
+
   const verifyUrl = (credentialId) =>
     `${window.location.origin}/verify/${credentialId}`;
 
@@ -125,7 +197,7 @@ export default function StudentDashboard() {
     )}`;
 
   const copyLink = (credentialId) => {
-    navigator.clipboard.writeText(verifyUrl(credentialId));
+    navigator.clipboard?.writeText(verifyUrl(credentialId));
   };
 
   const formatDate = (date) => {
@@ -142,6 +214,17 @@ export default function StudentDashboard() {
       credential.credentialType || "Credential"
     }`;
 
+  const formatProfileDate = (date) => {
+    if (!date) return "-";
+    const parsedDate = new Date(date);
+    if (Number.isNaN(parsedDate.getTime())) return "-";
+    return new Intl.DateTimeFormat("en", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    }).format(parsedDate);
+  };
+
   const collegeName =
     profile?.College_Id?.collegeName ||
     profile?.College_Id?.name ||
@@ -155,13 +238,18 @@ export default function StudentDashboard() {
   return (
     <div className="student-dashboard">
       <header className="topnav">
-        <Link to="/" className="topnav__brand" aria-label="Go to home page">
+        <Link
+          to="/student/home"
+          className="topnav__brand"
+          aria-label="Go to student home page"
+        >
           DiGiWallet
         </Link>
 
         <button
+          type="button"
           className="profile-preview"
-          onClick={() => setActiveSection("profile")}
+          onClick={() => navigate("/student/profile")}
         >
           <div className="profile-preview__avatar">
             {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{initials}</span>}
@@ -176,27 +264,20 @@ export default function StudentDashboard() {
       </header>
 
       <div className="student-dashboard__body">
-        <aside className="sidebar">
-          <nav className="sidebar__nav">
-            <button
-              className={`sidebar__link ${
-                activeSection === "credentials" ? "sidebar__link--active" : ""
-              }`}
-              onClick={() => setActiveSection("credentials")}
-            >
-              <FaCertificate className="sidebar__icon" />
-              Credentials
-            </button>
-
-            <button
-              className={`sidebar__link ${
-                activeSection === "profile" ? "sidebar__link--active" : ""
-              }`}
-              onClick={() => setActiveSection("profile")}
-            >
-              <FaUserCircle className="sidebar__icon" />
-              Profile
-            </button>
+        <aside className="sidebar student-sidebar">
+          <nav className="sidebar__nav" aria-label="Student dashboard">
+            {studentNavItems.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `sidebar__link ${isActive ? "sidebar__link--active" : ""}`
+                }
+              >
+                <Icon className="sidebar__icon" />
+                {label}
+              </NavLink>
+            ))}
           </nav>
 
           <button className="sidebar__signout" onClick={handleSignOut}>
@@ -206,9 +287,64 @@ export default function StudentDashboard() {
         </aside>
 
         <main className="student-dashboard__content">
-          {activeSection === "credentials" && (
+          {activeSection === "home" && (
             <section>
-              <h1 className="content-title">My Credentials</h1>
+              <section className="student-welcome">
+                <div>
+                  <span>Student Home</span>
+                  <h1>Welcome, {user?.name || "Student"}</h1>
+                  <p>
+                    Your verified academic records, profile, and account
+                    security are collected here.
+                  </p>
+                </div>
+                <div className="student-welcome__badge">
+                  <FaShieldAlt aria-hidden="true" />
+                  <span>{profile?.accountStatus || "approved"}</span>
+                </div>
+              </section>
+
+              <div className="student-home-grid">
+                <Link to="/student/mywallet" className="student-home-card">
+                  <FaWallet aria-hidden="true" />
+                  <span>MyWallet</span>
+                  <strong>{credentials.length}</strong>
+                  <small>Issued credential{credentials.length === 1 ? "" : "s"}</small>
+                </Link>
+
+                <Link to="/student/profile" className="student-home-card">
+                  <FaUserCircle aria-hidden="true" />
+                  <span>Profile</span>
+                  <strong>{user?.name || "Student"}</strong>
+                  <small>{collegeName}</small>
+                </Link>
+
+                <Link to="/student/settings" className="student-home-card">
+                  <FaKey aria-hidden="true" />
+                  <span>Settings</span>
+                  <strong>Password</strong>
+                  <small>Change your account password</small>
+                </Link>
+              </div>
+
+              <section className="student-home-panel">
+                <div>
+                  <h2>Wallet status</h2>
+                  <p>
+                    New credentials issued by your college appear in MyWallet
+                    with their stored verification QR code.
+                  </p>
+                </div>
+                <Link to="/student/mywallet" className="action-btn">
+                  <FaCertificate /> Open MyWallet
+                </Link>
+              </section>
+            </section>
+          )}
+
+          {activeSection === "mywallet" && (
+            <section>
+              <h1 className="content-title">MyWallet</h1>
               <p className="content-subtitle">
                 Credentials issued to you by your college. Share any of them
                 with an employer via link or QR code.
@@ -222,22 +358,23 @@ export default function StudentDashboard() {
                 )}
 
                 {loadingCredentials && (
-                  <div className="dashboard-message">Loading credentials...</div>
+                  <div className="dashboard-message">Loading MyWallet...</div>
                 )}
 
                 {!loadingCredentials && !dashboardError && credentials.length === 0 && (
                   <div className="dashboard-message">
-                    No credentials have been issued to you yet.
+                    No credentials have been issued to your wallet yet.
                   </div>
                 )}
 
                 {!loadingCredentials &&
                   !dashboardError &&
                   credentials.map((cred) => {
+                    const credentialId = getCredentialId(cred);
                     const title = getCredentialTitle(cred);
 
                     return (
-                      <div className="credential-item" key={cred.id}>
+                      <div className="credential-item" key={credentialId}>
                         <div className="credential-item__main">
                           <span className="credential-item__degree">{title}</span>
                           <span className="credential-item__meta">
@@ -257,25 +394,29 @@ export default function StudentDashboard() {
 
                         <div className="credential-item__actions">
                           <button
+                            type="button"
                             className="action-btn"
-                            onClick={() => copyLink(cred.id)}
+                            onClick={() => copyLink(credentialId)}
                           >
                             <FaLink /> Copy link
                           </button>
                           <button
+                            type="button"
                             className="action-btn"
                             onClick={() =>
-                              setShareOpenId(shareOpenId === cred.id ? null : cred.id)
+                              setShareOpenId(
+                                shareOpenId === credentialId ? null : credentialId
+                              )
                             }
                           >
                             <FaQrcode /> QR code
                           </button>
                         </div>
 
-                        {shareOpenId === cred.id && (
+                        {shareOpenId === credentialId && (
                           <div className="qr-panel">
                             <img
-                              src={cred.qrCodeData || qrImageUrl(cred.id)}
+                              src={cred.qrCodeData || qrImageUrl(credentialId)}
                               alt={`QR code to verify ${title}`}
                             />
                             <span className="qr-panel__hint">
@@ -335,11 +476,118 @@ export default function StudentDashboard() {
                     <span className="profile-field__value">{collegeName}</span>
                   </div>
                   <div className="profile-field">
+                    <span className="profile-field__label">Faculty</span>
+                    <span className="profile-field__value">
+                      {profile?.Faculty || "-"}
+                    </span>
+                  </div>
+                  <div className="profile-field">
+                    <span className="profile-field__label">Program</span>
+                    <span className="profile-field__value">
+                      {profile?.Program || "-"}
+                    </span>
+                  </div>
+                  <div className="profile-field">
+                    <span className="profile-field__label">Batch</span>
+                    <span className="profile-field__value">
+                      {profile?.Batch || "-"}
+                    </span>
+                  </div>
+                  <div className="profile-field">
+                    <span className="profile-field__label">Registration number</span>
+                    <span className="profile-field__value">
+                      {profile?.RegistrationNumber || "-"}
+                    </span>
+                  </div>
+                  <div className="profile-field">
+                    <span className="profile-field__label">Exam roll no.</span>
+                    <span className="profile-field__value">
+                      {profile?.RollNo || "-"}
+                    </span>
+                  </div>
+                  <div className="profile-field">
+                    <span className="profile-field__label">Date of birth</span>
+                    <span className="profile-field__value">
+                      {formatProfileDate(profile?.DOB)}
+                    </span>
+                  </div>
+                  <div className="profile-field">
+                    <span className="profile-field__label">Account status</span>
+                    <span className="profile-field__value">
+                      {profile?.accountStatus || "-"}
+                    </span>
+                  </div>
+                  <div className="profile-field">
                     <span className="profile-field__label">Role</span>
                     <span className="profile-field__value">Student</span>
                   </div>
                 </div>
               </div>
+            </section>
+          )}
+
+          {activeSection === "settings" && (
+            <section>
+              <h1 className="content-title">Settings</h1>
+              <p className="content-subtitle">
+                Manage your student account security.
+              </p>
+
+              <form className="settings-card" onSubmit={handlePasswordSubmit}>
+                <div className="settings-card__heading">
+                  <FaKey aria-hidden="true" />
+                  <div>
+                    <h2>Change password</h2>
+                    <p>Use your current password to set a new one.</p>
+                  </div>
+                </div>
+
+                <label className="settings-field">
+                  <span>Current password</span>
+                  <input
+                    type="password"
+                    name="currentPassword"
+                    value={passwordForm.currentPassword}
+                    onChange={handlePasswordChange}
+                    minLength="6"
+                    required
+                  />
+                </label>
+
+                <label className="settings-field">
+                  <span>New password</span>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={passwordForm.newPassword}
+                    onChange={handlePasswordChange}
+                    minLength="6"
+                    required
+                  />
+                </label>
+
+                <label className="settings-field">
+                  <span>Confirm new password</span>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordForm.confirmPassword}
+                    onChange={handlePasswordChange}
+                    minLength="6"
+                    required
+                  />
+                </label>
+
+                {passwordMessage.text && (
+                  <div className={`settings-message settings-message--${passwordMessage.type}`}>
+                    {passwordMessage.text}
+                  </div>
+                )}
+
+                <button type="submit" className="settings-submit" disabled={passwordSaving}>
+                  {passwordSaving ? "Changing password..." : "Change password"}
+                </button>
+              </form>
             </section>
           )}
         </main>

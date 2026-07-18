@@ -1107,13 +1107,21 @@ export default function AdminDashboard() {
     return (
         <main className="admin-page">
             <aside className={`admin-sidebar ${mobileNavOpen ? "admin-sidebar--open" : ""}`}>
-                <Link to="/" className="admin-brand" aria-label="Go to home page">
+                <button
+                    type="button"
+                    className="admin-brand admin-brand--button"
+                    aria-label="Go to admin overview"
+                    onClick={() => {
+                        setActiveSection("overview");
+                        setMobileNavOpen(false);
+                    }}
+                >
                     <span className="admin-brand__mark">DW</span>
                     <div>
                         <strong>DigiWallet</strong>
                         <small>Admin Console</small>
                     </div>
-                </Link>
+                </button>
 
                 <nav className="admin-nav" aria-label="Admin sections">
                     {sections.map(({ id, label, icon: Icon }) => (

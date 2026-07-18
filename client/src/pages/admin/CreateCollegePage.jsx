@@ -134,7 +134,7 @@ export default function CreateCollegePage() {
     return (
         <main className="admin-create-page">
             <aside className="admin-create-sidebar">
-                <Link to="/" className="admin-brand" aria-label="Go to home page">
+                <Link to="/admin/dashboard" className="admin-brand" aria-label="Go to admin overview">
                     <span className="admin-brand__mark">DW</span>
                     <div>
                         <strong>DigiWallet</strong>
