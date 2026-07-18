@@ -29,6 +29,10 @@ const toPublicUser = (user) => {
   return userObj;
 };
 
+const isValidPhotoDataUrl = (value) =>
+  typeof value === "string" &&
+  /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+/]+={0,2}$/.test(value);
+
 
 // STUDENT SIGNUP — creates the account directly.
 // Public route. Student provides all their own data + a password.
@@ -48,6 +52,7 @@ exports.studentSignup = async (req, res) => {
       RegistrationNumber,
       RollNo,
       DOB,
+      Photo,
     } = req.body;
 
     const normalizedEmail = normalizeEmail(Email ?? req.body.email);
@@ -57,6 +62,12 @@ exports.studentSignup = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
+      });
+    }
+    if (Photo && !isValidPhotoDataUrl(Photo)) {
+      return res.status(400).json({
+        success: false,
+        message: "Profile photo must be a valid image",
       });
     }
 
@@ -83,6 +94,7 @@ exports.studentSignup = async (req, res) => {
       RegistrationNumber,
       RollNo,
       DOB,
+      Photo: Photo || null,
       accountStatus: "pending", // explicit, even though it's the schema default
     });
 

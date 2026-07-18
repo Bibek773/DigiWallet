@@ -49,6 +49,17 @@ function previewCredentialId(seed) {
   return `${hex.slice(0, 4)} ${hex.slice(4, 8)} PEND`;
 }
 
+function readPhotoAsDataUrl(file) {
+  if (!file) return Promise.resolve(null);
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Could not read the selected photo.'));
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function RegisterPage() {
   const [formData, setFormData] = useState(initialFormState);
   const [status, setStatus] = useState({ type: '', message: '' });
@@ -122,24 +133,33 @@ export default function RegisterPage() {
       setStatus({ type: 'error', message: 'Please agree to the Terms & Conditions and Privacy Policy to continue.' });
       return;
     }
-
-    const payload = {
-      Name: formData.name.trim(),
-      Email: formData.email.trim(),
-      Password: formData.password,
-      Faculty: formData.faculty.trim(),
-      Program: formData.program.trim(),
-      Batch: formData.batch.trim(),
-      RegistrationNumber: formData.registrationNumber.trim(),
-      RollNo: formData.examRollNo.trim(),
-      DOB: formData.dob,
-      College_Id: formData.college,
-    };
+    if (formData.photo && !formData.photo.type.startsWith('image/')) {
+      setStatus({ type: 'error', message: 'Please choose a valid image file for your profile photo.' });
+      return;
+    }
+    if (formData.photo && formData.photo.size > 2 * 1024 * 1024) {
+      setStatus({ type: 'error', message: 'Profile photo must be 2 MB or smaller.' });
+      return;
+    }
 
     setLoading(true);
     setStatus({ type: '', message: '' });
 
     try {
+      const photoDataUrl = await readPhotoAsDataUrl(formData.photo);
+      const payload = {
+        Name: formData.name.trim(),
+        Email: formData.email.trim(),
+        Password: formData.password,
+        Faculty: formData.faculty.trim(),
+        Program: formData.program.trim(),
+        Batch: formData.batch.trim(),
+        RegistrationNumber: formData.registrationNumber.trim(),
+        RollNo: formData.examRollNo.trim(),
+        DOB: formData.dob,
+        College_Id: formData.college,
+        Photo: photoDataUrl,
+      };
       const response = await registerStudent(payload);
       setStatus({
         type: 'success',
@@ -164,13 +184,13 @@ export default function RegisterPage() {
     .join('') || 'SN';
 
   return (
-    <main className="page">
-      <section className="panel">
+    <main className="register-page">
+      <section className="register-layout">
 
         {/* Left: institutional context + live credential preview */}
-        <aside className="hero">
+        <aside className="register-hero">
           <div className="hero__content">
-            <p className="eyebrow">Academic Credential Registration</p>
+           <p className="register-eyebrow">  Academic Credential Registration</p>
             <h1 className="hero__title">
               Credentials verified beyond doubt.
             </h1>
@@ -235,7 +255,7 @@ export default function RegisterPage() {
         </aside>
 
         {/* Right: form */}
-        <div className="form-wrap">
+        <div className="register-form-card">
           <header className="form-header">
             <h2>Register your academic identity</h2>
             <p>Used to issue and verify your digital academic credentials. All fields are required.</p>
@@ -245,19 +265,19 @@ export default function RegisterPage() {
             <fieldset className="group">
               <legend>Identity details</legend>
 
-              <div className="field">
-                <label htmlFor="name">Full name</label>
-                <input id="name" name="name" type="text" placeholder="As it appears on your college records"
-                  value={formData.name} onChange={handleChange} required />
-              </div>
+              <div className="form-grid">
+                <div className="field">
+                  <label htmlFor="name">Full name</label>
+                  <input id="name" name="name" type="text" placeholder="As it appears on your college records"
+                    value={formData.name} onChange={handleChange} required />
+                </div>
 
-              <div className="field">
-                <label htmlFor="email">Email</label>
-                <input id="email" name="email" type="email" placeholder="you@example.com"
-                  value={formData.email} onChange={handleChange} required />
-              </div>
+                <div className="field">
+                  <label htmlFor="email">Email</label>
+                  <input id="email" name="email" type="email" placeholder="you@example.com"
+                    value={formData.email} onChange={handleChange} required />
+                </div>
 
-              <div className="row">
                 <div className="field">
                   <label htmlFor="dob">Date of birth</label>
                   <input id="dob" name="dob" type="date"
@@ -267,7 +287,7 @@ export default function RegisterPage() {
                   <label htmlFor="photo">Photo for verification</label>
                   <input id="photo" name="photo" type="file" accept="image/*"
                     onChange={handleChange} />
-                  <span className="hint">Preview only for now. Photo upload will be connected after the backend upload endpoint exists.</span>
+                  <span className="hint">Used as your profile photo during college verification.</span>
                 </div>
               </div>
             </fieldset>
@@ -275,7 +295,7 @@ export default function RegisterPage() {
             <fieldset className="group">
               <legend>Academic details</legend>
 
-              <div className="row">
+              <div className="form-grid">
                 <div className="field">
                   <label htmlFor="college">College</label>
                   {/* updated because college id was null and college dashboaard couldnot identify college */}
@@ -325,9 +345,6 @@ export default function RegisterPage() {
                     <option value="IT">IT</option>
                   </select>
                 </div>
-              </div>
-
-              <div className="row">
                 <div className="field">
                   <label htmlFor="batch">Batch</label>
                   <input id="batch" name="batch" type="text" placeholder="e.g. 2024"
@@ -350,22 +367,24 @@ export default function RegisterPage() {
             <fieldset className="group">
               <legend>Account security</legend>
 
-              <div className="field">
-                <label htmlFor="password">Password</label>
-                <input id="password" name="password" type="password" placeholder="At least 8 characters"
-                  value={formData.password} onChange={handleChange} required />
-                {formData.password && (
-                  <div className="strength" data-level={strength.label}>
-                    <div className="strength__bar" style={{ width: `${strength.width}%` }} />
-                    <span>{strength.label}</span>
-                  </div>
-                )}
-              </div>
+              <div className="form-grid">
+                <div className="field">
+                  <label htmlFor="password">Password</label>
+                  <input id="password" name="password" type="password" placeholder="At least 8 characters"
+                    value={formData.password} onChange={handleChange} required />
+                  {formData.password && (
+                    <div className="strength" data-level={strength.label}>
+                      <div className="strength__bar" style={{ width: `${strength.width}%` }} />
+                      <span>{strength.label}</span>
+                    </div>
+                  )}
+                </div>
 
-              <div className="field">
-                <label htmlFor="confirmPassword">Confirm password</label>
-                <input id="confirmPassword" name="confirmPassword" type="password"
-                  value={formData.confirmPassword} onChange={handleChange} required />
+                <div className="field">
+                  <label htmlFor="confirmPassword">Confirm password</label>
+                  <input id="confirmPassword" name="confirmPassword" type="password"
+                    value={formData.confirmPassword} onChange={handleChange} required />
+                </div>
               </div>
 
               <span className="hint hint--secure">

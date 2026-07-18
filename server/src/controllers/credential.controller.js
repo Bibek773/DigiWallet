@@ -219,6 +219,32 @@ exports.getIssuedCredentials = async (req, res) => {
   }
 };
 
+exports.getMyCredentials = async (req, res) => {
+  try {
+    const studentId = req.user?.id;
+
+    if (!studentId || !mongoose.Types.ObjectId.isValid(studentId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid student ID.",
+      });
+    }
+
+    const credentials = await Credential.find({ studentId }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: credentials.length,
+      credentials: credentials.map(safeCredential),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 exports.revokeCredential = async (req, res) => {
   try {
     const { credentialId } = req.params;

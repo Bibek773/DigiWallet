@@ -4,12 +4,15 @@ const router = express.Router();
 const {
   issueCredential,
   getIssuedCredentials,
+  getMyCredentials,
   revokeCredential,
 } = require('../controllers/credential.controller');
 // Only college can issue/manage credentials
 const protect = require("../middleware/auth.middleware");
 const authorizeRoles = require("../middleware/role.middleware");
 router.use(protect);
+router.get('/mine', authorizeRoles("student"), getMyCredentials);
+
 router.use(authorizeRoles("college"));
 router.post('/issue', issueCredential);
 

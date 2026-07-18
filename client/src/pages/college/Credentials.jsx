@@ -56,6 +56,12 @@ const formatCredentialTimestamp = (timestamp) => {
     }).format(new Date(timestamp));
 };
 
+const getCredentialList = (payload) => {
+    if (Array.isArray(payload?.credentials)) return payload.credentials;
+    if (Array.isArray(payload?.data)) return payload.data;
+    return [];
+};
+
 export default function Credentials() {
 
     const [credentials, setCredentials] = useState([]);
@@ -93,12 +99,7 @@ export default function Credentials() {
         try{
 
             const res = await getCredentials();
-            console.log("Full Response:", res);
-            console.log("First Credential:", res.data.data[0]);
-            console.log("Credentials:", res.data.credentials || res.data.data);
-            setCredentials(
-                res.data.credentials || res.data.data || []
-            );
+            setCredentials(getCredentialList(res.data));
 
         }
         catch(error){
