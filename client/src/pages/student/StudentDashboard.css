@@ -191,6 +191,22 @@
     gap: 16px;
 }
 
+.dashboard-message {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    color: #475569;
+    font-size: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.dashboard-message--error {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
 .credential-item {
     background: white;
     border-radius: 12px;

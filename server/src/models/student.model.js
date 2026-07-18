@@ -71,6 +71,10 @@ const userSchema = new mongoose.Schema({
     DOB: {
         type: Date,
     },
+    Photo: {
+        type: String,
+        default: null,
+    },
 
     // pending  = student signed up, college hasn't reviewed yet (default)
     // approved = college confirmed this is a real student, can now log in

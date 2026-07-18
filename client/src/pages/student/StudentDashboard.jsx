@@ -9,24 +9,14 @@ import {
   FaQrcode,
   FaCamera,
 } from "react-icons/fa";
+import { getMyCredentials, getMyProfile } from "../../services/studentService";
 import "./StudentDashboard.css";
 
-const credentials = [
-  {
-    id: "CRED-2026-001",
-    degree: "Bachelor in Computer Engineering",
-    college: "Cosmos College of Engineering",
-    issueDate: "2026-05-06",
-    status: "valid",
-  },
-  {
-    id: "CRED-2026-014",
-    degree: "SEE Certificate",
-    college: "Cosmos College of Engineering",
-    issueDate: "2022-06-15",
-    status: "valid",
-  },
-];
+const getCredentialList = (payload) => {
+  if (Array.isArray(payload?.credentials)) return payload.credentials;
+  if (Array.isArray(payload?.data)) return payload.data;
+  return [];
+};
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
@@ -34,6 +24,10 @@ export default function StudentDashboard() {
 
   const [activeSection, setActiveSection] = useState("credentials");
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [credentials, setCredentials] = useState([]);
+  const [loadingCredentials, setLoadingCredentials] = useState(true);
+  const [dashboardError, setDashboardError] = useState("");
   const [shareOpenId, setShareOpenId] = useState(null);
 
   useEffect(() => {
@@ -60,6 +54,46 @@ export default function StudentDashboard() {
     };
   }, [photoPreview]);
 
+  useEffect(() => {
+    if (!user || user.role !== "student") return;
+
+    let ignore = false;
+
+    const loadDashboardData = async () => {
+      setLoadingCredentials(true);
+      setDashboardError("");
+
+      try {
+        const [profileResponse, credentialsResponse] = await Promise.all([
+          getMyProfile(),
+          getMyCredentials(),
+        ]);
+
+        if (ignore) return;
+
+        setProfile(profileResponse.data?.data || null);
+        setCredentials(getCredentialList(credentialsResponse.data));
+      } catch (error) {
+        if (!ignore) {
+          setDashboardError(
+            error.response?.data?.message ||
+              "Unable to load your student dashboard data."
+          );
+        }
+      } finally {
+        if (!ignore) {
+          setLoadingCredentials(false);
+        }
+      }
+    };
+
+    loadDashboardData();
+
+    return () => {
+      ignore = true;
+    };
+  }, [user]);
+
   const handleSignOut = () => {
     logout();
     navigate("/login");
@@ -80,6 +114,8 @@ export default function StudentDashboard() {
       .map((p) => p[0]?.toUpperCase())
       .join("") || "ST";
 
+  const avatarSrc = photoPreview || profile?.Photo || null;
+
   const verifyUrl = (credentialId) =>
     `${window.location.origin}/verify/${credentialId}`;
 
@@ -92,13 +128,32 @@ export default function StudentDashboard() {
     navigator.clipboard.writeText(verifyUrl(credentialId));
   };
 
+  const formatDate = (date) => {
+    if (!date) return "N/A";
+    return new Intl.DateTimeFormat("en", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    }).format(new Date(date));
+  };
+
+  const getCredentialTitle = (credential) =>
+    `${credential.level || "Academic"} in ${credential.program || "Program"} - ${
+      credential.credentialType || "Credential"
+    }`;
+
+  const collegeName =
+    profile?.College_Id?.collegeName ||
+    profile?.College_Id?.name ||
+    user?.collegeId?.collegeName ||
+    "-";
+
   if (!user || user.role !== "student") {
     return null;
   }
 
   return (
     <div className="student-dashboard">
-
       <header className="topnav">
         <Link to="/" className="topnav__brand" aria-label="Go to home page">
           DiGiWallet
@@ -109,11 +164,7 @@ export default function StudentDashboard() {
           onClick={() => setActiveSection("profile")}
         >
           <div className="profile-preview__avatar">
-            {photoPreview ? (
-              <img src={photoPreview} alt="" />
-            ) : (
-              <span>{initials}</span>
-            )}
+            {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{initials}</span>}
           </div>
           <div className="profile-preview__info">
             <span className="profile-preview__name">
@@ -125,7 +176,6 @@ export default function StudentDashboard() {
       </header>
 
       <div className="student-dashboard__body">
-
         <aside className="sidebar">
           <nav className="sidebar__nav">
             <button
@@ -156,7 +206,6 @@ export default function StudentDashboard() {
         </aside>
 
         <main className="student-dashboard__content">
-
           {activeSection === "credentials" && (
             <section>
               <h1 className="content-title">My Credentials</h1>
@@ -166,54 +215,77 @@ export default function StudentDashboard() {
               </p>
 
               <div className="credential-list">
-                {credentials.map((cred) => (
-                  <div className="credential-item" key={cred.id}>
-                    <div className="credential-item__main">
-                      <span className="credential-item__degree">
-                        {cred.degree}
-                      </span>
-                      <span className="credential-item__meta">
-                        {cred.college} · Issued {cred.issueDate}
-                      </span>
-                      <span
-                        className={`credential-item__status credential-item__status--${cred.status}`}
-                      >
-                        {cred.status}
-                      </span>
-                    </div>
-
-                    <div className="credential-item__actions">
-                      <button
-                        className="action-btn"
-                        onClick={() => copyLink(cred.id)}
-                      >
-                        <FaLink /> Copy link
-                      </button>
-                      <button
-                        className="action-btn"
-                        onClick={() =>
-                          setShareOpenId(
-                            shareOpenId === cred.id ? null : cred.id
-                          )
-                        }
-                      >
-                        <FaQrcode /> QR code
-                      </button>
-                    </div>
-
-                    {shareOpenId === cred.id && (
-                      <div className="qr-panel">
-                        <img
-                          src={qrImageUrl(cred.id)}
-                          alt={`QR code to verify ${cred.degree}`}
-                        />
-                        <span className="qr-panel__hint">
-                          Scan to open the public verification page
-                        </span>
-                      </div>
-                    )}
+                {dashboardError && (
+                  <div className="dashboard-message dashboard-message--error">
+                    {dashboardError}
                   </div>
-                ))}
+                )}
+
+                {loadingCredentials && (
+                  <div className="dashboard-message">Loading credentials...</div>
+                )}
+
+                {!loadingCredentials && !dashboardError && credentials.length === 0 && (
+                  <div className="dashboard-message">
+                    No credentials have been issued to you yet.
+                  </div>
+                )}
+
+                {!loadingCredentials &&
+                  !dashboardError &&
+                  credentials.map((cred) => {
+                    const title = getCredentialTitle(cred);
+
+                    return (
+                      <div className="credential-item" key={cred.id}>
+                        <div className="credential-item__main">
+                          <span className="credential-item__degree">{title}</span>
+                          <span className="credential-item__meta">
+                            {cred.collegeName || "College"} - Issued{" "}
+                            {formatDate(cred.createdAt)}
+                          </span>
+                          <span className="credential-item__meta">
+                            Semester {cred.semester || "N/A"} - CGPA{" "}
+                            {cred.CGPA ?? "N/A"} - Grade {cred.grade || "N/A"}
+                          </span>
+                          <span
+                            className={`credential-item__status credential-item__status--${cred.status}`}
+                          >
+                            {cred.status}
+                          </span>
+                        </div>
+
+                        <div className="credential-item__actions">
+                          <button
+                            className="action-btn"
+                            onClick={() => copyLink(cred.id)}
+                          >
+                            <FaLink /> Copy link
+                          </button>
+                          <button
+                            className="action-btn"
+                            onClick={() =>
+                              setShareOpenId(shareOpenId === cred.id ? null : cred.id)
+                            }
+                          >
+                            <FaQrcode /> QR code
+                          </button>
+                        </div>
+
+                        {shareOpenId === cred.id && (
+                          <div className="qr-panel">
+                            <img
+                              src={cred.qrCodeData || qrImageUrl(cred.id)}
+                              alt={`QR code to verify ${title}`}
+                            />
+                            <span className="qr-panel__hint">
+                              Scan to open the public verification page
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
             </section>
           )}
@@ -228,8 +300,8 @@ export default function StudentDashboard() {
               <div className="profile-card">
                 <div className="profile-card__photo-section">
                   <div className="profile-card__avatar">
-                    {photoPreview ? (
-                      <img src={photoPreview} alt="" />
+                    {avatarSrc ? (
+                      <img src={avatarSrc} alt="" />
                     ) : (
                       <span>{initials}</span>
                     )}
@@ -249,20 +321,18 @@ export default function StudentDashboard() {
                   <div className="profile-field">
                     <span className="profile-field__label">Full name</span>
                     <span className="profile-field__value">
-                      {user?.name || "—"}
+                      {user?.name || "-"}
                     </span>
                   </div>
                   <div className="profile-field">
                     <span className="profile-field__label">Email</span>
                     <span className="profile-field__value">
-                      {user?.email || "—"}
+                      {user?.email || "-"}
                     </span>
                   </div>
                   <div className="profile-field">
                     <span className="profile-field__label">College</span>
-                    <span className="profile-field__value">
-                      {user?.collegeId?.collegeName || "—"}
-                    </span>
+                    <span className="profile-field__value">{collegeName}</span>
                   </div>
                   <div className="profile-field">
                     <span className="profile-field__label">Role</span>
@@ -272,7 +342,6 @@ export default function StudentDashboard() {
               </div>
             </section>
           )}
-
         </main>
       </div>
     </div>

@@ -24,8 +24,8 @@ export const issueCredential = (data)=>{
 };
 export const revokeCredential = (id)=>{
 
-    return api.put(
-        `/credentials/${id}/revoke`
+    return api.patch(
+        `/credentials/revoke/${id}`
     );
 
 };
