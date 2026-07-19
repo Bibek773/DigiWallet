@@ -45,6 +45,7 @@ export default function StudentDashboard() {
   const [loadingCredentials, setLoadingCredentials] = useState(true);
   const [dashboardError, setDashboardError] = useState("");
   const [shareOpenId, setShareOpenId] = useState(null);
+  const [detailsOpenId, setDetailsOpenId] = useState(null);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
@@ -214,6 +215,48 @@ export default function StudentDashboard() {
       credential.credentialType || "Credential"
     }`;
 
+  const credentialFieldLabels = {
+    studentName: "Student name",
+    examRoll: "Exam roll",
+    registrationNumber: "Registration no.",
+    semester: "Semester",
+    level: "Level",
+    faculty: "Faculty",
+    program: "Program",
+    batch: "Batch",
+    collegeName: "College",
+    CGPA: "CGPA",
+    academicYear: "Academic year",
+    grade: "Grade",
+    credentialType: "Credential type",
+    issuedAt: "Issued at",
+  };
+
+  const credentialFieldOrder = Object.keys(credentialFieldLabels);
+
+  const formatCredentialValue = (value) => {
+    if (value === null || value === undefined || value === "") return "N/A";
+    if (typeof value === "number") return String(value);
+    if (typeof value === "string" && value.includes("T")) return formatDate(value);
+    return String(value);
+  };
+
+  const getCredentialDetails = (credential) => {
+    const data = credential?.credentialData || credential || {};
+    const orderedFields = credentialFieldOrder
+      .filter((key) => Object.prototype.hasOwnProperty.call(data, key))
+      .map((key) => [credentialFieldLabels[key], data[key]]);
+
+    const remainingFields = Object.entries(data)
+      .filter(([key]) => !credentialFieldOrder.includes(key))
+      .map(([key, value]) => [
+        key.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase()),
+        value,
+      ]);
+
+    return [...orderedFields, ...remainingFields];
+  };
+
   const formatProfileDate = (date) => {
     if (!date) return "-";
     const parsedDate = new Date(date);
@@ -373,8 +416,14 @@ export default function StudentDashboard() {
                     const credentialId = getCredentialId(cred);
                     const title = getCredentialTitle(cred);
 
+                    const detailsOpen = detailsOpenId === credentialId;
+
                     return (
-                      <div className="credential-item" key={credentialId}>
+                      <div
+                        className="credential-item"
+                        
+                  
+                      >
                         <div className="credential-item__main">
                           <span className="credential-item__degree">{title}</span>
                           <span className="credential-item__meta">
@@ -390,9 +439,13 @@ export default function StudentDashboard() {
                           >
                             {cred.status}
                           </span>
+                          
                         </div>
 
-                        <div className="credential-item__actions">
+                        <div
+                          className="credential-item__actions"
+                          onClick={(event) => event.stopPropagation()}
+                        >
                           <button
                             type="button"
                             className="action-btn"
@@ -413,14 +466,28 @@ export default function StudentDashboard() {
                           </button>
                         </div>
 
+                        {detailsOpen && (
+                          <dl className="credential-details">
+                            {getCredentialDetails(cred).map(([label, value]) => (
+                              <div key={label}>
+                                <dt>{label}</dt>
+                                <dd>{formatCredentialValue(value)}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                        )}
+
                         {shareOpenId === credentialId && (
-                          <div className="qr-panel">
+                          <div
+                            className="qr-panel"
+                            onClick={(event) => event.stopPropagation()}
+                          >
                             <img
-                              src={cred.qrCodeData || qrImageUrl(credentialId)}
-                              alt={`QR code to verify ${title}`}
+                              src={qrImageUrl(credentialId)}
+                           alt={`QR code to verify ${title}`}
                             />
                             <span className="qr-panel__hint">
-                              Scan to open the public verification page
+                              Scan to open credential information and verification
                             </span>
                           </div>
                         )}

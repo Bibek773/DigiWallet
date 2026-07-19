@@ -94,7 +94,17 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    margin: 20px 0 0;
+    margin: 0;
+}
+
+.verify-section {
+    margin-top: 22px;
+}
+
+.verify-section h2 {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 18px;
 }
 
 .verify-details div {
@@ -118,6 +128,10 @@
     color: #0f172a;
     font-weight: 700;
     overflow-wrap: anywhere;
+}
+
+.verify-details--proof {
+    grid-template-columns: 1fr;
 }
 
 @media (max-width: 620px) {
