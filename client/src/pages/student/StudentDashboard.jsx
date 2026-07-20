@@ -427,12 +427,22 @@ export default function StudentDashboard() {
                         <div className="credential-item__main">
                           <span className="credential-item__degree">{title}</span>
                           <span className="credential-item__meta">
-                            {cred.collegeName || "College"} - Issued{" "}
+                            {cred.collegeName || "College"} 
+                            {formatDate(cred.createdAt)}
+                          </span>
+                           <span className="credential-item__meta">
+                             Issued{" "}
                             {formatDate(cred.createdAt)}
                           </span>
                           <span className="credential-item__meta">
-                            Semester {cred.semester || "N/A"} - CGPA{" "}
-                            {cred.CGPA ?? "N/A"} - Grade {cred.grade || "N/A"}
+                            Semester {cred.semester || "N/A"} 
+                          </span>
+                          <span className="credential-item__meta">
+                           CGPA{" "}
+                            {cred.CGPA ?? "N/A"} 
+                          </span>
+                           <span className="credential-item__meta">
+                           Grade {cred.grade || "N/A"}
                           </span>
                           <span
                             className={`credential-item__status credential-item__status--${cred.status}`}
