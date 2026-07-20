@@ -20,7 +20,7 @@
 .topnav__brand {
     font-size: 20px;
     font-weight: 700;
-    color: #2563eb;
+    color: #11226d;
     text-decoration: none;
     flex-shrink: 0;
 }
@@ -50,7 +50,7 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: #2563eb;
+    background: #11226d;
     color: white;
     font-size: 13px;
     font-weight: 700;
@@ -135,7 +135,7 @@
 
 .sidebar__link--active {
     background: #eff6ff;
-    color: #2563eb;
+    color: #11226d;
 }
 
 .sidebar__icon {
@@ -200,7 +200,7 @@
 }
 
 .student-welcome span {
-    color: #2563eb;
+    color: #1f3283;
     font-size: 12px;
     font-weight: 800;
     text-transform: uppercase;
@@ -208,7 +208,7 @@
 
 .student-welcome h1 {
     margin: 7px 0;
-    color: #0f172a;
+    color: #11226d;
     font-size: 30px;
     line-height: 1.15;
 }
