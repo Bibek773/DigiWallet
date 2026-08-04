@@ -114,4 +114,8 @@ const seedSuperAdmin = async () => {
   }
 };
 
-seedSuperAdmin();
+module.exports = seedSuperAdmin;
+
+if (require.main === module) {
+  seedSuperAdmin();
+}
