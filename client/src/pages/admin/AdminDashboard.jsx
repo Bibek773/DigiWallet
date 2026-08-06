@@ -798,49 +798,20 @@ export default function AdminDashboard() {
         { key: "city", header: "City", render: (row) => row.city },
         { key: "credentials", header: "Credentials", render: (row) => row.issuedCredentialCount },
         { key: "status", header: "Status", render: (row) => <StatusBadge status={row.status} /> },
-        {
-            key: "actions",
-            header: "Actions",
-            render: (row) => (
-                <div className="admin-row-actions">
-                    <IconButton label="View college" onClick={() => handleCollegeAction("view", row)}>
-                        <FaEye aria-hidden="true" />
-                    </IconButton>
-                    <IconButton
-                        label="Approve college"
-                        variant="success"
-                        disabled={busyAction === `college-approve-${row.id}`}
-                        onClick={() => handleCollegeAction("approve", row)}
-                    >
-                        <FaCheckCircle aria-hidden="true" />
-                    </IconButton>
-                    <IconButton
-                        label="Reject college"
-                        variant="warning"
-                        disabled={busyAction === `college-reject-${row.id}`}
-                        onClick={() => handleCollegeAction("reject", row)}
-                    >
-                        <FaTimesCircle aria-hidden="true" />
-                    </IconButton>
-                    <IconButton
-                        label="Disable college"
-                        variant="danger"
-                        disabled={busyAction === `college-disable-${row.id}`}
-                        onClick={() => handleCollegeAction("disable", row)}
-                    >
-                        <FaBan aria-hidden="true" />
-                    </IconButton>
-                    <IconButton
-                        label="Delete college"
-                        variant="danger"
-                        disabled={busyAction === `college-delete-${row.id}`}
-                        onClick={() => handleCollegeAction("delete", row)}
-                    >
-                        <FaTrash aria-hidden="true" />
-                    </IconButton>
-                </div>
-            ),
-        },
+       {
+                key: "actions",
+                header: "Actions",
+                render: (row) => (
+                    <div className="admin-row-actions">
+                        <IconButton
+                            label="View college"
+                            onClick={() => handleCollegeAction("view", row)}
+                        >
+                            <FaEye aria-hidden="true" />
+                        </IconButton>
+                    </div>
+                ),
+            },
     ];
 
     const credentialColumns = [
@@ -868,25 +839,6 @@ export default function AdminDashboard() {
                         onClick={() => handleCredentialAction("view", row)}
                     >
                         <FaEye aria-hidden="true" />
-                    </IconButton>
-                    <IconButton
-                        label="Revoke credential"
-                        variant="warning"
-                        disabled={
-                            row.status === "revoked" ||
-                            busyAction === `credential-revoke-${row.id}`
-                        }
-                        onClick={() => handleCredentialAction("revoke", row)}
-                    >
-                        <FaBan aria-hidden="true" />
-                    </IconButton>
-                    <IconButton
-                        label="Delete credential"
-                        variant="danger"
-                        disabled={busyAction === `credential-delete-${row.id}`}
-                        onClick={() => handleCredentialAction("delete", row)}
-                    >
-                        <FaTrash aria-hidden="true" />
                     </IconButton>
                 </div>
             ),

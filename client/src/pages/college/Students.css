@@ -428,6 +428,28 @@ tbody tr:hover {
     }
 
 }
+.modal-content {
+    background: #ffffff;
+    color: #1f2937;   /* Dark text */
+    width: 420px;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.modal-content h2 {
+    color: #111827;
+    margin-bottom: 20px;
+}
+
+.student-details p {
+    color: #374151;
+    margin: 12px 0;
+    font-size: 15px;
+}
+
+.student-details strong {
+    color: #111827;
+}
 .student-modal {
 
     position: fixed;
