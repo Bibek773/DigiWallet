@@ -176,7 +176,9 @@ exports.issueCredential = async (req, res) => {
 
     const clientUrl = (process.env.CLIENT_URL || "http://localhost:3000").replace(/\/$/, "");
     credential.verificationLink = `${clientUrl}/verify/${credential._id}`;
-    credential.qrCodeData = await QRCode.toDataURL(credential.verificationLink);
+    // Keep the shareable link clean while marking scans of the generated QR code.
+    const qrVerificationUrl = `${credential.verificationLink}?source=qr`;
+    credential.qrCodeData = await QRCode.toDataURL(qrVerificationUrl);
     await credential.save();
 
     await College.findByIdAndUpdate(issuerCollegeId, {

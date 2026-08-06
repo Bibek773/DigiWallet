@@ -25,6 +25,7 @@ import {
     deleteCredential,
     deleteUser,
     fetchAdminDashboardData,
+    fetchAdminVerificationLogs,
     revokeCredential,
     updateCollegeStatus,
     updateUserStatus,
@@ -44,6 +45,13 @@ const initialDashboard = {
     colleges: [],
     credentials: [],
     verificationLogs: [],
+    recentVerifications: [],
+    verificationStats: {
+        totalVerifications: 0,
+        validVerifications: 0,
+        revokedVerifications: 0,
+        tamperedVerifications: 0,
+    },
     recentActivity: [],
     metrics: {
         totalUsers: 0,
@@ -52,7 +60,9 @@ const initialDashboard = {
         issuedCredentials: 0,
         verifications: 0,
     },
-};
+}
+
+
 
 const formatNumber = new Intl.NumberFormat("en");
 const dateFormatter = new Intl.DateTimeFormat("en", {
@@ -108,10 +118,10 @@ const deriveRecentActivity = ({ credentials, verificationLogs }) => {
         type: "Verification",
         title: log.credentialName,
         detail: `${log.actor} checked this credential`,
-        status: log.status,
-        timestamp: log.timestamp,
+        status: log.verificationStatus,
+        timestamp: log.verifiedAt,
     }));
-
+// changed status and timestamp from status and .timestamp to .verificationStatus and . verifiedAt since our backend returns this
     return [...issued, ...verified]
         .filter((activity) => activity.timestamp)
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
@@ -132,10 +142,12 @@ const includesSearch = (values, search) => {
 
 const isSelfRecord = (currentUser, row) => currentUser?.id && row?.id && currentUser.id === row.id;
 
-const confirmAdminAction = (entityLabel, actionLabel, rowLabel) =>
-    window.confirm(
-        `Are you sure you want to ${actionLabel} ${entityLabel} ${rowLabel}? This action cannot be undone.`
-    );
+const requestConfirmation = (entityLabel, actionLabel, row, callback) => {
+    setConfirmDialog({
+        message: `Are you sure you want to ${actionLabel} ${entityLabel} "${row}"?`,
+        callback,
+    });
+};
 
 const USER_ACTION_LABELS = {
     approve: "approve",
@@ -317,9 +329,45 @@ function ActivityFeed({ items }) {
 function DetailDrawer({ item, onClose }) {
     if (!item) return null;
 
-    const entries = Object.entries(item.record).filter(
-        ([, value]) => value !== undefined && value !== null && typeof value !== "object"
-    );
+    const hiddenFields = [
+        "credentialName",
+        "actorEmail",
+        "message",
+        "timestamp",
+        "credentialId",
+        "studentId",
+        "_id",
+        "__v",
+    ];
+
+    const fieldLabels = {
+        studentName: "Student Name",
+        credentialType: "Credential Type",
+        verificationStatus: "Verification Status",
+        verificationMethod: "Verification Method",
+        actor: "Verified By",
+        ipAddress: "IP Address",
+        verifiedAt: "Verified Date & Time",
+    };
+
+    const entries = Object.entries(item.record)
+        .filter(
+            ([key, value]) =>
+                !hiddenFields.includes(key) &&
+                value !== undefined &&
+                value !== null &&
+                typeof value !== "object"
+        )
+        .map(([key, value]) => ({
+                key,
+                label: fieldLabels[key] || titleCase(key),
+                value:
+                    key === "verifiedAt"
+                        ? formatDate(value)
+                        : key === "ipAddress" && value === "::1"
+                            ? "Localhost (::1)"
+                            : value,
+            }));
 
     return (
         <div className="admin-drawer-backdrop" role="presentation" onClick={onClose}>
@@ -340,10 +388,10 @@ function DetailDrawer({ item, onClose }) {
                     </IconButton>
                 </header>
                 <dl>
-                    {entries.map(([key, value]) => (
+                    {entries.map(({ key, label, value }) => (
                         <div key={key}>
-                            <dt>{titleCase(key)}</dt>
-                            <dd>{key.toLowerCase().includes("at") ? formatDate(value) : String(value)}</dd>
+                            <dt>{label}</dt>
+                            <dd>{String(value)}</dd>
                         </div>
                     ))}
                 </dl>
@@ -355,6 +403,7 @@ function DetailDrawer({ item, onClose }) {
 export default function AdminDashboard() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+    const[confirmDialog,setConfirmDialog]=useState(null);
     const [activeSection, setActiveSection] = useState("overview");
     const [dashboard, setDashboard] = useState(initialDashboard);
     const [loading, setLoading] = useState(true);
@@ -363,6 +412,7 @@ export default function AdminDashboard() {
     const [busyAction, setBusyAction] = useState("");
     const [drawerItem, setDrawerItem] = useState(null);
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
+    const [allLogsLoaded, setAllLogsLoaded] = useState(false);
     const [filters, setFilters] = useState({
         users: { search: "", role: "all", status: "all" },
         colleges: { search: "", status: "all" },
@@ -377,6 +427,7 @@ export default function AdminDashboard() {
         try {
             const data = await fetchAdminDashboardData();
             setDashboard({ ...initialDashboard, ...data });
+            setAllLogsLoaded(false);
         } catch (requestError) {
             setError(
                 requestError.message ||
@@ -406,6 +457,18 @@ export default function AdminDashboard() {
                 [key]: value,
             },
         }));
+    };
+
+    const openVerificationLogs = async () => {
+        setActiveSection("verifications");
+        if (allLogsLoaded) return;
+        try {
+            const logs = await fetchAdminVerificationLogs();
+            setDashboard((current) => ({ ...current, verificationLogs: logs }));
+            setAllLogsLoaded(true);
+        } catch (requestError) {
+            setToast(requestError.message || "Verification logs could not be loaded.");
+        }
     };
 
     const filteredUsers = useMemo(() => {
@@ -580,53 +643,52 @@ export default function AdminDashboard() {
     };
 
     const handleCredentialAction = (action, row) => {
-        if (action === "view") {
-            openDrawer("Credential", row.registrationNumber, row);
-            return;
-        }
+    if (action === "view") {
+        openDrawer("Credential", row.registrationNumber, row);
+        return;
+    }
 
-        if (
-            !confirmAdminAction(
-                "credential",
-                CREDENTIAL_ACTION_LABELS[action],
-                row.registrationNumber
-            )
-        ) {
-            return;
-        }
+    setConfirmDialog({
+        message: `Are you sure you want to ${CREDENTIAL_ACTION_LABELS[action]} credential ${row.registrationNumber}?`,
+        action: async () => {
+            await runAction(
+                `credential-${action}-${row.id}`,
+                async () => {
+                    if (action === "delete") {
+                        const result = await deleteCredential(row.id);
 
-        runAction(
-            `credential-${action}-${row.id}`,
-            async () => {
-                if (action === "delete") {
-                    const result = await deleteCredential(row.id);
+                        updateDashboard((current) => ({
+                            ...current,
+                            credentials: current.credentials.filter(
+                                (credentialRow) => credentialRow.id !== row.id
+                            ),
+                        }));
+
+                        return result;
+                    }
+
+                    const result = await revokeCredential(row.id);
+
                     updateDashboard((current) => ({
                         ...current,
-                        credentials: current.credentials.filter(
-                            (credentialRow) => credentialRow.id !== row.id
+                        credentials: current.credentials.map((credentialRow) =>
+                            credentialRow.id === row.id
+                                ? {
+                                      ...credentialRow,
+                                      status: "revoked",
+                                      revokedAt: new Date().toISOString(),
+                                  }
+                                : credentialRow
                         ),
                     }));
-                    return result;
-                }
 
-                const result = await revokeCredential(row.id);
-                updateDashboard((current) => ({
-                    ...current,
-                    credentials: current.credentials.map((credentialRow) =>
-                        credentialRow.id === row.id
-                            ? {
-                                  ...credentialRow,
-                                  status: "revoked",
-                                  revokedAt: new Date().toISOString(),
-                              }
-                            : credentialRow
-                    ),
-                }));
-                return result;
-            },
-            `Credential ${action} completed.`
-        );
-    };
+                    return result;
+                },
+                `Credential ${action} completed.`
+            );
+        },
+    });
+};
 
     const handleLogout = () => {
         logout();
@@ -669,6 +731,13 @@ export default function AdminDashboard() {
             tone: "rose",
             detail: "Recorded verification events",
         },
+    ];
+
+    const verificationStats = [
+        { label: "Total Verifications", value: dashboard.verificationStats.totalVerifications, icon: FaClipboardCheck, tone: "blue", detail: "All credential checks" },
+        { label: "Valid Verifications", value: dashboard.verificationStats.validVerifications, icon: FaCheckCircle, tone: "green", detail: "Verified successfully" },
+        { label: "Revoked Verifications", value: dashboard.verificationStats.revokedVerifications, icon: FaBan, tone: "rose", detail: "Revoked credentials checked" },
+        { label: "Tampered / Invalid", value: dashboard.verificationStats.tamperedVerifications, icon: FaTimesCircle, tone: "amber", detail: "Tampered or invalid signatures" },
     ];
 
     const userColumns = [
@@ -861,8 +930,8 @@ export default function AdminDashboard() {
             header: "Credential",
             render: (row) => (
                 <div className="admin-primary-cell">
-                    <strong>{row.credentialName}</strong>
-                    <span>{row.message}</span>
+                    <strong>{row.studentName}</strong>
+                    <span>{row.credentialType}</span>
                 </div>
             ),
         },
@@ -871,13 +940,13 @@ export default function AdminDashboard() {
             header: "Actor",
             render: (row) => (
                 <div className="admin-primary-cell">
-                    <strong>{row.actor}</strong>
+                    <strong>{row.actor || "-"}</strong>
                     <span>{row.actorEmail}</span>
                 </div>
             ),
         },
-        { key: "ip", header: "IP", render: (row) => row.ip },
-        { key: "timestamp", header: "Timestamp", render: (row) => formatDate(row.timestamp) },
+        { key: "ipAddress", header: "IP", render: (row) => row.ipAddress || "-" },
+        { key: "verifiedAt", header: "Timestamp", render: (row) => formatDate(row.verifiedAt) }, //for table in verification page
         { key: "status", header: "Status", render: (row) => <StatusBadge status={row.status} /> },
         {
             key: "actions",
@@ -886,13 +955,22 @@ export default function AdminDashboard() {
                 <div className="admin-row-actions">
                     <IconButton
                         label="View verification log"
-                        onClick={() => openDrawer("Verification log", row.credentialName, row)}
+                        onClick={() => openDrawer("Verification log", row.credentialType, row)}
                     >
                         <FaEye aria-hidden="true" />
                     </IconButton>
                 </div>
             ),
         },
+    ];
+
+    const recentVerificationColumns = [
+        { key: "studentName", header: "Student Name", render: (row) => row.studentName || "N/A" },
+        { key: "collegeName", header: "College Name", render: (row) => row.collegeName || "N/A" },
+        { key: "credentialType", header: "Credential Type", render: (row) => row.credentialType || "N/A" },
+        { key: "verificationMethod", header: "Verification Method", render: (row) => titleCase(row.verificationMethod) },
+        { key: "status", header: "Verification Status", render: (row) => <StatusBadge status={row.status} /> },
+        { key: "verifiedAt", header: "Verified Date & Time", render: (row) => formatDate(row.verifiedAt) },
     ];
 
     const renderSection = () => {
@@ -927,16 +1005,27 @@ export default function AdminDashboard() {
                         ))}
                     </section>
 
+                    <SectionHeader eyebrow="Verification summary" title="Credential verification health" />
+                    <section className="admin-summary-grid admin-summary-grid--verification">
+                        {verificationStats.map((stat) => (
+                            <SummaryCard key={stat.label} {...stat} />
+                        ))}
+                    </section>
+
                     <section className="admin-overview-grid">
                         <div className="admin-panel">
                             <SectionHeader eyebrow="Live feed" title="Recent activity" />
                             <ActivityFeed items={dashboard.recentActivity} />
                         </div>
                         <div className="admin-panel">
-                            <SectionHeader eyebrow="Audit" title="Verification logs" />
+                            <SectionHeader
+                                eyebrow="Audit"
+                                title="Recent verification activity"
+                                action={<button type="button" className="admin-button admin-button--inline" onClick={openVerificationLogs}>View All Verification Logs</button>}
+                            />
                             <DataTable
-                                columns={logColumns.slice(0, 5)}
-                                rows={dashboard.verificationLogs.slice(0, 5)}
+                                columns={recentVerificationColumns}
+                                rows={dashboard.recentVerifications}
                                 emptyTitle="No verification logs"
                                 emptyMessage="Verification events will appear once credentials are checked."
                             />
@@ -1132,6 +1221,7 @@ export default function AdminDashboard() {
                             onClick={() => {
                                 setActiveSection(id);
                                 setMobileNavOpen(false);
+                                if (id === "verifications") openVerificationLogs();
                             }}
                         >
                             <Icon aria-hidden="true" />
@@ -1164,7 +1254,7 @@ export default function AdminDashboard() {
                     </button>
                     <div>
                         <span>{currentSection?.label}</span>
-                        <h1>Platform control center</h1>
+                        <h1>Platform control center </h1>
                     </div>
                     <button type="button" className="admin-refresh" onClick={loadDashboard}>
                         <FaSyncAlt aria-hidden="true" />
@@ -1176,6 +1266,35 @@ export default function AdminDashboard() {
             </section>
 
             {toast && <div className="admin-toast">{toast}</div>}
+            {confirmDialog && (
+                    <div className="confirm-overlay">
+                        <div className="confirm-box">
+                            <h3>Confirm Action</h3>
+
+                            <p>{confirmDialog.message}</p>
+
+                            <div className="confirm-actions">
+                                <button
+                                    type="button"
+                                    onClick={() => setConfirmDialog(null)}
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="confirm-danger"
+                                    onClick={() => {
+                                        confirmDialog.action();
+                                        setConfirmDialog(null);
+                                    }}
+                                >
+                                    Confirm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             <DetailDrawer item={drawerItem} onClose={() => setDrawerItem(null)} />
         </main>
     );

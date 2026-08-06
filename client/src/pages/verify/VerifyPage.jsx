@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import api from "../../services/api";
 import VerifyResult from "./VerifyResult";
 import "./VerifyPage.css";
 
 export default function VerifyPage() {
   const { credentialId } = useParams();
+  const { search } = useLocation();
   const [loading, setLoading] = useState(true);
   const [verification, setVerification] = useState(null);
   const [error, setError] = useState("");
@@ -18,7 +19,7 @@ export default function VerifyPage() {
       setError("");
 
       try {
-        const response = await api.get(`/verify/${credentialId}`);
+        const response = await api.get(`/verify/${credentialId}${search}`);
         if (!ignore) setVerification(response.data);
       } catch (requestError) {
         if (!ignore) {
@@ -38,7 +39,7 @@ export default function VerifyPage() {
     return () => {
       ignore = true;
     };
-  }, [credentialId]);
+  }, [credentialId, search]);
 
   return (
     <main className="verify-page">

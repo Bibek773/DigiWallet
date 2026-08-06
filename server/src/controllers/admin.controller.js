@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const College = require("../models/college.model");
 const Credential = require("../models/credential.model");
 const User = require("../models/student.model");
+const VerificationLog = require("../models/verificationLog");
 const generateKeyPair = require("../utils/keyGenerator");
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -259,12 +260,55 @@ exports.createCollegeAccount = async (req, res) => {
 
 exports.getDashboard = async (req, res) => {
   try {
-    const [users, colleges, credentials] = await Promise.all([
+    const [users, colleges, credentials, verificationSummary, recentVerifications] = await Promise.all([
       User.find().populate("College_Id", "collegeName collegeCode"),
       College.find(),
       Credential.find().sort({ createdAt: -1 }),
+      // A single aggregation keeps dashboard verification totals inexpensive as logs grow.
+      VerificationLog.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalVerifications: { $sum: 1 },
+            validVerifications: {
+              $sum: { $cond: [{ $eq: ["$verificationStatus", "valid"] }, 1, 0] },
+            },
+            revokedVerifications: {
+              $sum: { $cond: [{ $eq: ["$verificationStatus", "revoked"] }, 1, 0] },
+            },
+            tamperedVerifications: {
+              $sum: {
+                $cond: [
+                  { $in: ["$verificationStatus", ["tampered", "invalid_signature"]] },
+                  1,
+                  0,
+                ],
+              },
+            },
+          },
+        },
+      ]),
+      VerificationLog.find()
+        .sort({ verifiedAt: -1 })
+        .limit(5)
+        .populate("credentialId", "registrationNumber examRoll collegeName")
+        .lean(),
     ]);
-    const verificationLogs = [];
+    const verificationCounts = verificationSummary[0] || {
+      totalVerifications: 0,
+      validVerifications: 0,
+      revokedVerifications: 0,
+      tamperedVerifications: 0,
+    };
+    const verificationLogs = recentVerifications.map((log) => ({
+      ...log,
+      // Legacy logs may predate actor tracking; retain a useful audit display value.
+      actor: log.actor || "Public Verifier",
+      actorEmail: log.actorEmail || null,
+      registrationNumber: log.credentialId?.registrationNumber || "",
+      rollNumber: log.credentialId?.examRoll || "",
+      collegeName: log.credentialId?.collegeName || "",
+    }));
     const dashboardData = {
       users: users.map(toPublicUser),
       colleges,
@@ -277,6 +321,8 @@ exports.getDashboard = async (req, res) => {
       message: "Admin dashboard data loaded.",
       data: {
         ...dashboardData,
+        ...verificationCounts,
+        recentVerifications: verificationLogs,
         metrics: buildDashboardMetrics(dashboardData),
         recentActivity: buildRecentActivity(dashboardData),
       },
@@ -286,6 +332,27 @@ exports.getDashboard = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+// Kept separate from the dashboard payload so the overview stays limited to five events.
+exports.getVerificationLogs = async (req, res) => {
+  try {
+    const logs = await VerificationLog.find()
+      .sort({ verifiedAt: -1 })
+      .populate("credentialId", "registrationNumber examRoll collegeName")
+      .lean();
+
+    return res.json({ success: true, data: logs.map((log) => ({
+      ...log,
+      actor: log.actor || "Public Verifier",
+      actorEmail: log.actorEmail || null,
+      registrationNumber: log.credentialId?.registrationNumber || "",
+      rollNumber: log.credentialId?.examRoll || "",
+      collegeName: log.credentialId?.collegeName || "",
+    })) });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 

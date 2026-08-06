@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const protect = require("../middleware/auth.middleware");
+const authorizeRoles = require("../middleware/role.middleware");
 
 const {
   createCollege,
@@ -7,6 +9,7 @@ const {
   createCollegeWithAccount,
   deleteCredential,
   getDashboard,
+  getVerificationLogs,
   getAllColleges,
   getCollegeById,
   deleteUser,
@@ -16,7 +19,12 @@ const {
   deleteCollege,
 } = require("../controllers/admin.controller");
 
+// All admin dashboard data, including platform-wide verification records, is restricted.
+router.use(protect);
+router.use(authorizeRoles("super_admin"));
+
 router.get("/dashboard", getDashboard);
+router.get("/verification-logs", getVerificationLogs);
 
 router.get("/colleges", getAllColleges);
 router.post("/colleges", createCollegeWithAccount);

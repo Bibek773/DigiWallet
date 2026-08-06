@@ -69,7 +69,9 @@ export default function Credentials() {
     const [collegeName, setCollegeName] = useState("");
     const [loading, setLoading] = useState(true);
     const [issuing, setIssuing] = useState(false);
-
+    const [notification, setNotification] = useState(null);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [selectedRevokeId, setSelectedRevokeId] = useState(null);
     const [selectedCredential, setSelectedCredential] = useState(null);
     const [showIssueModal, setShowIssueModal] = useState(false);
 
@@ -225,60 +227,99 @@ export default function Credentials() {
         }));
 
     };
+    const showMessage = (message, type="success") => {
 
-    const handleIssue=async(e)=>{
+            setNotification({
+                message,
+                type
+            });
 
-        e.preventDefault();
+           setTimeout(() => {
+                setNotification(null);
+            }, 3000);
 
-        if(!formData.studentId){
-            alert("Select a verified student before issuing a credential.");
-            return;
-        }
+        };
 
-        try{
+    const handleIssue = async(e) => {
 
-            setIssuing(true);
+            e.preventDefault();
 
-            await issueCredential(formData);
+            if(!formData.studentId){
 
-            alert("Credential Issued Successfully");
+                showMessage(
+                    "Select a verified student before issuing a credential.",
+                    "error"
+                );
 
-            closeIssueModal();
+                return;
+            }
 
-            fetchCredentials();
+            try{
 
-        }
-        catch(error){
+                setIssuing(true);
 
-            alert(error.response?.data?.message);
+                await issueCredential(formData);
 
-        }
-        finally{
+                showMessage(
+                    "Credential issued successfully."
+                );
 
-            setIssuing(false);
+                closeIssueModal();
 
-        }
+                fetchCredentials();
 
-    };
+            }
+            catch(error){
 
-    const handleRevoke=async(id)=>{
+                showMessage(
+                    error.response?.data?.message || 
+                    "Credential issuance failed.",
+                    "error"
+                );
 
-        if(!window.confirm("Revoke this credential?")) return;
+            }
+            finally{
 
-        try{
+                setIssuing(false);
 
-            await revokeCredential(id);
+            }
 
-            fetchCredentials();
+        };
+                
+      const handleRevoke = (id) => {
 
-        }
-        catch(error){
+    setSelectedRevokeId(id);
+    setShowConfirm(true);
 
-            console.log(error);
+};  
+const confirmRevoke = async () => {
 
-        }
+    try {
 
-    };
+        await revokeCredential(selectedRevokeId);
+
+        showMessage(
+            "Credential revoked successfully.",
+            "success"
+        );
+
+        fetchCredentials();
+
+    }
+    catch(error) {
+
+        showMessage(
+            "Failed to revoke credential.",
+            "error"
+        );
+
+    }
+
+    setShowConfirm(false);
+    setSelectedRevokeId(null);
+
+};
+               
 
     const downloadCredential=(credential)=>{
 
@@ -317,9 +358,17 @@ ${credential.dataHash}
 
     }
 
-    return(
-
+return(
+    <>
+ {
+notification && (
+    <div className={`notification ${notification.type}`}>
+        {notification.message}
+    </div>
+)
+}
 <div className="credentials-page">
+   
 
 <section className="page-hero">
 
@@ -446,17 +495,11 @@ onClick={()=>downloadCredential(credential)}
 credential.status!=="revoked" &&
 
 <button
-
-className="icon-btn delete"
-
-title="Revoke"
-
-onClick={()=>handleRevoke(credential.id||credential._id)}
-
+    className="icon-btn delete"
+    title="Revoke"
+    onClick={() => handleRevoke(credential.id || credential._id)}
 >
-
-<FaBan/>
-
+    <FaBan/>
 </button>
 
 }
@@ -714,9 +757,49 @@ required
 </div>
 
 }
+{
+showConfirm && (
+
+<div className="student-modal-overlay">
+
+<div className="student-modal confirm-modal">
+
+<h2>Confirm Action</h2>
+
+<p>
+Are you sure you want to revoke this credential?
+</p>
+
+<div className="confirm-actions">
+
+<button
+className="cancel-btn"
+onClick={()=>{
+    setShowConfirm(false);
+    setSelectedRevokeId(null);
+}}
+>
+Cancel
+</button>
+
+
+<button
+className="confirm-btn"
+onClick={confirmRevoke}
+>
+Revoke
+</button>
 
 </div>
 
+</div>
+
+</div>
+
+)
+}
+</div>
+</>
 );
 
 }
