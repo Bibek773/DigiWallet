@@ -13,6 +13,7 @@ app.use("/api/college", collegeRoutes);
 app.use("/api/student", require("./routes/student.routes"));
 app.use("/api/credentials", require("./routes/credential.routes"));
 app.use("/api/verify", require("./routes/verify.routes"));
+app.use("/api/verification", require("./routes/verificationLog.routes"));
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", require("./routes/auth.routes"));
 

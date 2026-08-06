@@ -62,9 +62,14 @@ export default function Sidebar({ className = "", onNavigate }) {
                 
 
                     
-                    <Link to="/college/verification">
+                   {/*  <Link to="/college/verification">
                      <FaCheckCircle />
                         Verification
+                    </Link> */}
+
+                    <Link to="/college/verification-logs">
+                     <FaCheckCircle />
+                        Verification Logs
                     </Link>
                 
 

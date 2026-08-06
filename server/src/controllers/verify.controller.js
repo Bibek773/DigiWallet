@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const Credential = require("../models/credential.model");
+const VerificationLog = require("../models/verificationLog");
 const { createCredentialHash } = require("../utils/hash");
 const { verifySignature } = require("../utils/signature");
 
@@ -14,6 +15,13 @@ const buildMessage = (result) => {
 exports.verifyCredential = async (req, res) => {
   try {
     const { credentialId } = req.params;
+    // QR codes carry ?source=qr; all other public verification URLs are links.
+    const verificationMethod = req.query.source === "qr" ? "QR" : "Link";
+    const verifier = {
+      actor: "Public Verifier",
+      actorEmail: req.user?.email || null,
+      ipAddress: req.ip,
+    };
 
     if (!mongoose.Types.ObjectId.isValid(credentialId)) {
       return res.status(400).json({
@@ -28,6 +36,14 @@ exports.verifyCredential = async (req, res) => {
     );
 
     if (!credential) {
+      await VerificationLog.create({
+        credentialId,
+        verificationMethod,
+        verificationStatus: "not_found",
+        verifiedAt: new Date(),
+        ...verifier,
+      });
+
       return res.status(404).json({
         success: false,
         result: "not_found",
@@ -50,6 +66,17 @@ exports.verifyCredential = async (req, res) => {
     } else if (!signatureValid) {
       result = "invalid_signature";
     }
+
+    await VerificationLog.create({
+      credentialId: credential._id,
+      studentId: credential.studentId,
+      studentName: credential.studentName,
+      credentialType: credential.credentialType,
+      verificationMethod,
+      verificationStatus: result,
+      verifiedAt: new Date(),
+      ...verifier,
+    });
 
     return res.status(200).json({
       success: true,

@@ -77,16 +77,17 @@ const normalizeLog = (log) => ({
     credentialId: log?.credentialId || log?.credential?._id || log?.credential?.id,
     credentialName:
         log?.credentialName ||
-        log?.credential?.registrationNumber ||
-        log?.registrationNumber ||
-        log?.credentialSnapshot?.registrationNumber ||
+        log?.credentialType ||
         "",
-    actor: log?.actor || log?.actorName || log?.verifierName || "",
-    actorEmail: log?.actorEmail || log?.verifierEmail || "",
-    status: log?.status || log?.result || "",
-    message: log?.message || "",
-    ip: log?.ip || log?.verifierIP || "",
-    timestamp: log?.timestamp || log?.verifiedAt || log?.createdAt,
+    studentName: log?.studentName || "",
+    collegeName: log?.collegeName || log?.credentialId?.collegeName || "",
+    credentialType: log?.credentialType || "",
+    verificationMethod: log?.verificationMethod || "",
+    actor: log?.actor || "",
+    actorEmail: log?.actorEmail || "",
+    status: log?.verificationStatus || "",
+    ipAddress: log?.ipAddress || "",
+    verifiedAt: log?.verifiedAt || "",
 });
 
 const normalizeDashboard = (data) => ({
@@ -94,6 +95,13 @@ const normalizeDashboard = (data) => ({
     colleges: (data?.colleges || []).map(normalizeCollege),
     credentials: (data?.credentials || []).map(normalizeCredential),
     verificationLogs: (data?.verificationLogs || []).map(normalizeLog),
+    recentVerifications: (data?.recentVerifications || data?.verificationLogs || []).map(normalizeLog),
+    verificationStats: {
+        totalVerifications: data?.totalVerifications || 0,
+        validVerifications: data?.validVerifications || 0,
+        revokedVerifications: data?.revokedVerifications || 0,
+        tamperedVerifications: data?.tamperedVerifications || 0,
+    },
     recentActivity: data?.recentActivity || [],
     metrics: data?.metrics || {
         totalUsers: 0,
@@ -107,6 +115,11 @@ const normalizeDashboard = (data) => ({
 export const fetchAdminDashboardData = async () => {
     const payload = await withBackendMessage(() => api.get("/admin/dashboard"));
     return normalizeDashboard(payload.data);
+};
+
+export const fetchAdminVerificationLogs = async () => {
+    const payload = await withBackendMessage(() => api.get("/admin/verification-logs"));
+    return (payload.data || []).map(normalizeLog);
 };
 
 export const createCollegeWithAccount = async (payload) => {

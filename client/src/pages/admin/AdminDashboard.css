@@ -232,6 +232,10 @@
     margin-bottom: 18px;
 }
 
+.admin-summary-grid--verification {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .admin-summary-card {
     min-height: 142px;
     display: flex;
@@ -546,7 +550,50 @@
     color: #475569;
     cursor: pointer;
 }
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
+.confirm-box {
+    width: 380px;
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.confirm-box h3 {
+    margin-bottom: 10px;
+}
+
+.confirm-box p {
+    color: #475569;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.confirm-actions button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.confirm-danger {
+    background: #dc2626;
+    color: white;
+}
 .admin-icon-button:hover {
     border-color: #2563eb;
     color: #2563eb;
@@ -790,6 +837,10 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .admin-summary-grid--verification {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .admin-overview-grid {
         grid-template-columns: 1fr;
     }
@@ -846,6 +897,10 @@
     }
 
     .admin-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-summary-grid--verification {
         grid-template-columns: 1fr;
     }
 

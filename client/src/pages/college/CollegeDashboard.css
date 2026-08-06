@@ -179,6 +179,40 @@
 
 }
 
+.dashboard-section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px;
+    margin: 0 0 18px;
+}
+
+.dashboard-section-heading p {
+    margin: 0 0 4px;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.dashboard-section-heading h2 { margin: 0; color: #08011d; }
+.verification-activity-box { margin-bottom: 30px; }
+.verification-view-all { border: 0; border-radius: 8px; background: #092f80; color: #fff; padding: 11px 15px; font: inherit; font-weight: 600; cursor: pointer; }
+.dashboard-table-wrap { overflow-x: auto; }
+.dashboard-verification-table { width: 100%; min-width: 840px; border-collapse: collapse; }
+.dashboard-verification-table th, .dashboard-verification-table td { padding: 14px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; color: #374151; font-size: 14px; }
+.dashboard-verification-table th {
+    color: #eaf0f3;
+    background: #150656;
+}
+.dashboard-verification-status { display: inline-block; padding: 5px 10px; border-radius: 16px; font-size: 12px; font-weight: 700; text-transform: capitalize; }
+.dashboard-verification-status.valid { background: #dcfce7; color: #15803d; }
+.dashboard-verification-status.revoked { background: #fee2e2; color: #b91c1c; }
+.dashboard-verification-status.warning { background: #fef3c7; color: #b45309; }
+.verification-empty-state { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 48px 20px; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; text-align: center; }
+.verification-empty-state strong { color: #1d336d; font-size: 17px; }
+.college-recent-activity { margin-top: 30px; }
+
 
 .content-box{
 
@@ -242,6 +276,7 @@
         padding: 24px;
     }
 
+
     .content-box {
         padding: 28px;
     }
@@ -282,6 +317,8 @@
         padding: 20px;
         margin-top: 0;
     }
+
+    .dashboard-section-heading { align-items: flex-start; flex-direction: column; }
 
     .card {
         padding: 20px;
@@ -329,6 +366,30 @@
         padding: 16px;
         gap: 16px;
     }
+
+.dashboard-verification-table thead th {
+    background: #ffffff !important;
+    color: #1d336d !important;
+    font-weight: 700 !important;
+}
+
+.dashboard-verification-table tbody td {
+    color: #475569 !important;
+}
+.dashboard-verification-table thead tr th {
+    background-color: #ffffff !important;
+    color: #1d336d !important;
+    padding: 14px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.dashboard-verification-table tbody tr td {
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    padding: 14px 12px;
+}
 
     .card {
         padding: 18px;

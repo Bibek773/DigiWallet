@@ -208,7 +208,7 @@ export default function LoginPage() {
                     >
                         {loading ? "Logging in..." : "Login"}
                     </button>
-
+                    
                     {error && (
                         <p className="error-message">
                             {error}
@@ -226,7 +226,15 @@ export default function LoginPage() {
                     </Link>
 
                 </div>
-
+                <div className="home-link-container">
+                    <button
+                            type="button"
+                            className="home-link"
+                            onClick={() => navigate("/")}
+                        >
+                            Back to Home
+                    </button>
+                </div>
             </div>
 
         </div>
