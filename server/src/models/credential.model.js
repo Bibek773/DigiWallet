@@ -9,12 +9,10 @@ const credentialSchema = new mongoose.Schema({
   },
   examRoll: {
     type: Number,
-    unique: true,
     required: true,
   },
   registrationNumber: {
     type: String,
-    unique: true,
     trim: true,
     uppercase: true,
     required: true,
@@ -52,6 +50,7 @@ const credentialSchema = new mongoose.Schema({
   },
   credentialType: {
     type: String,
+    trim: true,
     default: 'CGPA',
   },
   studentId: {
@@ -122,6 +121,11 @@ const credentialSchema = new mongoose.Schema({
     // Automatically adds createdAt (= issuedAt) and updatedAt
     timestamps: true,
   }
+);
+
+credentialSchema.index(
+  { registrationNumber: 1, semester: 1, credentialType: 1 },
+  { unique: true }
 );
 
 

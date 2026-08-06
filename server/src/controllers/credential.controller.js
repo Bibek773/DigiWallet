@@ -99,6 +99,8 @@ exports.issueCredential = async (req, res) => {
       return res.status(400).json({ success: false, message: "CGPA must be between 0.0 and 4.0." });
     }
 
+    const credentialType = req.body.credentialType || "Semester Transcript";
+
     const credentialInput = {
       studentName: student.Name?.trim(),
       examRoll: student.RollNo,
@@ -112,7 +114,7 @@ exports.issueCredential = async (req, res) => {
       CGPA: cgpa,
       academicYear: req.body.academicYear?.trim(),
       grade: getGrade(cgpa),
-      credentialType: "CGPA",
+      credentialType,
       studentId: student._id,
       collegeId: issuerCollegeId,
       issuerCollegeId,
