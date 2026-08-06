@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const User = require("../models/student.model");
 const College = require("../models/college.model");
 const Credential = require("../models/credential.model");
+const VerificationLog = require("../models/verificationLog");
 
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -78,7 +79,9 @@ exports.getCollegeDashboard = async (req, res) => {
             pendingStudents,
             credentials,
             studentActivity,
-            credentialActivity
+            credentialActivity,
+            verificationSummary,
+            recentVerifications
         ] = await Promise.all([
 
             User.countDocuments({
@@ -103,9 +106,68 @@ exports.getCollegeDashboard = async (req, res) => {
 
             Credential.find({
                 collegeId: collegeId
-            }).select("studentName status createdAt revokedAt")
+            }).select("studentName status createdAt revokedAt"),
+
+            // Logs are linked to credentials, so the lookup prevents cross-college access.
+            VerificationLog.aggregate([
+                {
+                    $lookup: {
+                        from: "credentials",
+                        localField: "credentialId",
+                        foreignField: "_id",
+                        as: "credential"
+                    }
+                },
+                { $unwind: "$credential" },
+                { $match: { "credential.collegeId": new mongoose.Types.ObjectId(collegeId) } },
+                {
+                    $group: {
+                        _id: null,
+                        totalVerifications: { $sum: 1 },
+                        validVerifications: { $sum: { $cond: [{ $eq: ["$verificationStatus", "valid"] }, 1, 0] } },
+                        revokedVerifications: { $sum: { $cond: [{ $eq: ["$verificationStatus", "revoked"] }, 1, 0] } },
+                        tamperedVerifications: {
+                            $sum: { $cond: [{ $in: ["$verificationStatus", ["tampered", "invalid_signature"]] }, 1, 0] }
+                        }
+                    }
+                }
+            ]),
+
+            VerificationLog.aggregate([
+                {
+                    $lookup: {
+                        from: "credentials",
+                        localField: "credentialId",
+                        foreignField: "_id",
+                        as: "credential"
+                    }
+                },
+                { $unwind: "$credential" },
+                { $match: { "credential.collegeId": new mongoose.Types.ObjectId(collegeId) } },
+                { $sort: { verifiedAt: -1 } },
+                { $limit: 5 },
+                {
+                    $project: {
+                        studentName: 1,
+                        credentialType: 1,
+                        verificationMethod: 1,
+                        verificationStatus: 1,
+                        verifiedAt: 1,
+                        registrationNumber: "$credential.registrationNumber",
+                        rollNumber: "$credential.examRoll",
+                        collegeName: "$credential.collegeName"
+                    }
+                }
+            ])
 
         ]);
+
+        const verificationCounts = verificationSummary[0] || {
+            totalVerifications: 0,
+            validVerifications: 0,
+            revokedVerifications: 0,
+            tamperedVerifications: 0
+        };
 
 
         res.json({
@@ -115,6 +177,8 @@ exports.getCollegeDashboard = async (req, res) => {
                 pendingStudents,
                 credentials,
                 verificationRate:100,
+                ...verificationCounts,
+                recentVerifications,
                 recentActivity: buildRecentActivity({
                     students: studentActivity,
                     credentials: credentialActivity
@@ -271,12 +335,55 @@ exports.getVerificationLogs = async(req,res)=>{
 
     try{
 
-        // If verification log schema exists later,
-        // fetch using collegeId
+        const collegeId = req.user.collegeId;
+
+        if (!collegeId) {
+            return res.status(400).json({ success: false, message: "College account is not linked" });
+        }
+
+        // Filter by the credential's issuer, never by client-supplied college data.
+        const [logs, summary] = await Promise.all([
+            VerificationLog.aggregate([
+                { $lookup: { from: "credentials", localField: "credentialId", foreignField: "_id", as: "credential" } },
+                { $unwind: "$credential" },
+                { $match: { "credential.collegeId": new mongoose.Types.ObjectId(collegeId) } },
+                { $sort: { verifiedAt: -1 } },
+                {
+                    $project: {
+                        studentName: 1,
+                        credentialType: 1,
+                        verificationMethod: 1,
+                        verificationStatus: 1,
+                        verifiedAt: 1,
+                        ipAddress: 1,
+                        registrationNumber: "$credential.registrationNumber",
+                        rollNumber: "$credential.examRoll",
+                        collegeName: "$credential.collegeName"
+                    }
+                }
+            ]),
+            VerificationLog.aggregate([
+                { $lookup: { from: "credentials", localField: "credentialId", foreignField: "_id", as: "credential" } },
+                { $unwind: "$credential" },
+                { $match: { "credential.collegeId": new mongoose.Types.ObjectId(collegeId) } },
+                {
+                    $group: {
+                        _id: null,
+                        totalVerifications: { $sum: 1 },
+                        validVerifications: { $sum: { $cond: [{ $eq: ["$verificationStatus", "valid"] }, 1, 0] } },
+                        revokedVerifications: { $sum: { $cond: [{ $eq: ["$verificationStatus", "revoked"] }, 1, 0] } },
+                        tamperedVerifications: { $sum: { $cond: [{ $in: ["$verificationStatus", ["tampered", "invalid_signature"]] }, 1, 0] } }
+                    }
+                }
+            ])
+        ]);
+        const verificationCounts = summary[0] || { totalVerifications: 0, validVerifications: 0, revokedVerifications: 0, tamperedVerifications: 0 };
 
         res.json({
             success:true,
-            data:[]
+            data: { logs, ...verificationCounts },
+            // Keep this alias for clients using the original logs response shape.
+            logs
         });
 
 

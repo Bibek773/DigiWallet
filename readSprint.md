@@ -90,6 +90,17 @@
 - integrated credential page 
 - recent activity in dashboard
 - ui made more good
+
+### 04-20
+
+- in server side, verificationLog controller, route, model was created
+
+- app.jsx, sidebar.jsx, verificationLogs.jsx and .css, collegeService.js were changed for frontend logic of verification log
+- ip address field on clicking view icon in admin dashboard shows localhost(::1) coz all are verified using our local computer
+- on verifying with other servers it will show their ip address (ipv6)
+### 04-21
+- debugged the compare and merge issue on adminDashboard
+- added toast or showmessage dialog for confirmation message
 #### Working
 
 - test api through postman using url `http://localhost:5000/api/college`

@@ -12,7 +12,8 @@ import CollegeDashboard from "./pages/college/CollegeDashboard";
 import Students from "./pages/college/Students";
 import Credentials from "./pages/college/Credentials";
 import PendingRequests from "./pages/college/PendingRequests";
-import Verification from "./pages/college/Verification";
+//import Verification from "./pages/college/Verification";
+import VerificationLogs from "./pages/college/VerificationLogs";
 import Profile from "./pages/college/Profile";
 
 import StudentDashboard from "./pages/student/StudentDashboard";
@@ -50,7 +51,9 @@ function App() {
             <Route path="students" element={<Students />} />
             <Route path="credentials" element={<Credentials />} />
             <Route path="pending-requests" element={<PendingRequests />} />
-            <Route path="verification" element={<Verification />} />
+            {/* 
+            <Route path="verification" element={<Verification />} /> */}
+            <Route path="verification-logs" element={<VerificationLogs />} />
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>

@@ -598,8 +598,43 @@
 
 }
 
+.home-link-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+.home-link {
+    background: #07045f;
+    border: none;
+    padding: 8px 18px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 12px;
+    width: fit-content;
+    transition: 0.2s ease;
+    
+}
 
+.home-link:hover {
+    background: #dc6a1a;
+}
 
+.back-home-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.back-home-btn:hover {
+    text-decoration: underline;
+}
 /* Error Message */
 
 
