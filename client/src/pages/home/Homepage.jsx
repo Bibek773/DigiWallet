@@ -21,6 +21,9 @@ export default function HomePage() {
         </Link>
 
         <div className="home-nav__links">
+          <Link to="/verify" className="home-nav__link">
+            Verify credential
+          </Link>
           <Link to="/register" className="home-nav__link">
             Register
           </Link>

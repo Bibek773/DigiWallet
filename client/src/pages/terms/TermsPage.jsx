@@ -170,7 +170,7 @@ export default function TermsPage() {
             </div>
             <div>
               <dt>University</dt>
-              <dd>Your University Name</dd>
+              <dd>Pokhara University</dd>
             </div>
           </dl>
           <p className="terms-contact__note">Contact details will be replaced with official information before launch.</p>

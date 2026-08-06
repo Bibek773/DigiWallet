@@ -5,6 +5,7 @@ import {
   FaCamera,
   FaCertificate,
   FaCog,
+  FaDownload,
   FaHome,
   FaKey,
   FaLink,
@@ -199,6 +200,16 @@ export default function StudentDashboard() {
 
   const copyLink = (credentialId) => {
     navigator.clipboard?.writeText(verifyUrl(credentialId));
+  };
+
+  const downloadQrImage = (credential) => {
+    const credentialId = getCredentialId(credential);
+    const qrDownloadUrl = credential?.qrCodeData || qrImageUrl(credentialId);
+
+    const anchor = document.createElement("a");
+    anchor.href = qrDownloadUrl;
+    anchor.download = `credential-qr-${credentialId}.png`;
+    anchor.click();
   };
 
   const formatDate = (date) => {
@@ -427,12 +438,22 @@ export default function StudentDashboard() {
                         <div className="credential-item__main">
                           <span className="credential-item__degree">{title}</span>
                           <span className="credential-item__meta">
-                            {cred.collegeName || "College"} - Issued{" "}
+                            {cred.collegeName || "College"} 
+                            {formatDate(cred.createdAt)}
+                          </span>
+                           <span className="credential-item__meta">
+                             Issued{" "}
                             {formatDate(cred.createdAt)}
                           </span>
                           <span className="credential-item__meta">
-                            Semester {cred.semester || "N/A"} - CGPA{" "}
-                            {cred.CGPA ?? "N/A"} - Grade {cred.grade || "N/A"}
+                            Semester {cred.semester || "N/A"} 
+                          </span>
+                          <span className="credential-item__meta">
+                           CGPA{" "}
+                            {cred.CGPA ?? "N/A"} 
+                          </span>
+                           <span className="credential-item__meta">
+                           Grade {cred.grade || "N/A"}
                           </span>
                           <span
                             className={`credential-item__status credential-item__status--${cred.status}`}
@@ -483,9 +504,18 @@ export default function StudentDashboard() {
                             onClick={(event) => event.stopPropagation()}
                           >
                             <img
-                              src={qrImageUrl(credentialId)}
-                           alt={`QR code to verify ${title}`}
+                              src={cred?.qrCodeData || qrImageUrl(credentialId)}
+                              alt={`QR code to verify ${title}`}
                             />
+                            <div className="qr-panel__actions">
+                              <button
+                                type="button"
+                                className="action-btn"
+                                onClick={() => downloadQrImage(cred)}
+                              >
+                                <FaDownload /> Download QR
+                              </button>
+                            </div>
                             <span className="qr-panel__hint">
                               Scan to open credential information and verification
                             </span>

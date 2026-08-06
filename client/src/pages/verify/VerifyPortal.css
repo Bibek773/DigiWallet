@@ -1,0 +1,138 @@
+.verify-portal-title {
+    margin: 0 0 6px;
+    font-size: 24px;
+    color: #0f172a;
+}
+
+.verify-portal-subtitle {
+    margin: 0 0 20px;
+    color: #64748b;
+}
+
+.verify-portal-form {
+    display: flex;
+    gap: 10px;
+}
+
+.verify-portal-input-row {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.verify-portal-input-row svg {
+    color: #94a3b8;
+    flex: 0 0 auto;
+}
+
+.verify-portal-input-row input {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    background: transparent;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.verify-portal-input-row input:focus {
+    outline: none;
+}
+
+.verify-portal-form button {
+    padding: 0 20px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.verify-portal-form button:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
+
+.verify-portal-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.verify-portal-divider::before,
+.verify-portal-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+}
+
+.verify-portal-dropzone {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 28px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    text-align: center;
+    cursor: pointer;
+}
+
+.verify-portal-dropzone:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.verify-portal-dropzone svg {
+    width: 28px;
+    height: 28px;
+    color: #2563eb;
+}
+
+.verify-portal-dropzone p {
+    margin: 0;
+    color: #334155;
+}
+
+.verify-portal-dropzone-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.verify-portal-status {
+    margin: 14px 0 0;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.verify-portal-result {
+    margin-top: 22px;
+}
+
+@media (max-width: 620px) {
+    .verify-portal-form {
+        flex-direction: column;
+    }
+
+    .verify-portal-form button {
+        padding: 12px 20px;
+    }
+}

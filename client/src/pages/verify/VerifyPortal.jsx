@@ -7,22 +7,20 @@ import VerifyResult from "./VerifyResult";
 import "./VerifyPage.css";
 import "./VerifyPortal.css";
 
-function extractVerificationTarget(raw) {
-  if (!raw) return { credentialId: "", source: "" };
+function extractCredentialId(raw) {
+  if (!raw) return "";
   const trimmed = raw.trim();
 
   try {
     const url = new URL(trimmed);
     const parts = url.pathname.split("/").filter(Boolean);
     const verifyIndex = parts.indexOf("verify");
-    const credentialId = verifyIndex !== -1 && parts[verifyIndex + 1]
-      ? parts[verifyIndex + 1]
-      : parts[parts.length - 1] || "";
-    return { credentialId, source: url.searchParams.get("source") || "" };
+    if (verifyIndex !== -1 && parts[verifyIndex + 1]) return parts[verifyIndex + 1];
+    return parts[parts.length - 1] || "";
   } catch {
     // Not a full URL (e.g. "localhost:3001/verify/xxx" or a bare id)
     const parts = trimmed.split("/").filter(Boolean);
-    return { credentialId: parts[parts.length - 1] || trimmed, source: "" };
+    return parts[parts.length - 1] || trimmed;
   }
 }
 
@@ -50,7 +48,7 @@ export default function VerifyPortal() {
   const fileInputRef = useRef(null);
 
   const runVerification = async (rawInput) => {
-    const { credentialId, source } = extractVerificationTarget(rawInput);
+    const credentialId = extractCredentialId(rawInput);
 
     if (!credentialId) {
       setHasSearched(true);
@@ -64,9 +62,7 @@ export default function VerifyPortal() {
     setError("");
 
     try {
-      const response = await api.get(`/verify/${credentialId}`, {
-        params: source === "qr" ? { source } : undefined,
-      });
+      const response = await api.get(`/verify/${credentialId}`);
       setVerification(response.data);
     } catch (requestError) {
       setError(

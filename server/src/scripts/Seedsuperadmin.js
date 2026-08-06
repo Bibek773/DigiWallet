@@ -15,7 +15,6 @@
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", "..", ".env") });
 
-const mongoose = require("mongoose");
 const User = require("../models/student.model");
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -53,9 +52,6 @@ if (ADMIN_PASS.length < 6) {
 
 const seedSuperAdmin = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log("\nMongoDB connected.");
-
     const existingByEmail = await User.findOne({
       $or: [{ email: normalizedEmail }, { Email: normalizedEmail }],
     }).select("+Password");
@@ -109,9 +105,11 @@ const seedSuperAdmin = async () => {
     }
 
     process.exitCode = 1;
-  } finally {
-    await mongoose.disconnect();
   }
 };
 
-seedSuperAdmin();
+module.exports = seedSuperAdmin;
+
+if (require.main === module) {
+  seedSuperAdmin();
+}

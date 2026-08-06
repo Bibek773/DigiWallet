@@ -90,7 +90,7 @@ export default function LoginPage() {
 
                 <div className="hero__content">
 
-                    <p className="eyebrow">
+                    <p className="login-eyebrow">
                         Digital Credential Management System
                     </p>
 

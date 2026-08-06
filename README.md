@@ -1,92 +1,150 @@
 # DiGiWallet
 
-**DiGiWallet** is a Digital Academic Credential Verification System for issuing, storing, sharing, and verifying academic credentials with digital signatures, hashing, public/private key cryptography, and QR-based verification.
+DiGiWallet is a digital academic credential system for issuing, storing, sharing, and verifying academic records with JWT authentication, QR-based verification, hashing, and public/private key signatures.
 
-## Project Overview
+## Overview
 
-In Nepal, students often need to submit photocopies or scanned copies of academic documents for jobs, internships, higher studies, KYC, and other verification processes. This process is repetitive, time-consuming, and creates the risk of fake or tampered certificates.
+The goal of DiGiWallet is to reduce the manual work involved in sharing academic documents for jobs, internships, higher studies, and identity checks. Colleges can issue digitally signed credentials, students can keep them in a wallet-style dashboard, and verifiers can confirm whether a credential is valid, tampered, revoked, or missing.
 
-DiGiWallet solves this problem by allowing academic institutions to issue digitally signed credentials. Students can store these credentials in a digital wallet and share them through a QR code or verification link. Employers or institutions can instantly verify whether a credential is valid, invalid, tampered, revoked, or not found.
+The current codebase includes a React + Vite frontend, an Express + MongoDB backend, route-based role protection, and a verification flow for issued credentials.
 
-## Main Features
+## Features
 
-- College registration with automatic key-pair generation
+- College registration with key-pair generation
 - Student signup and login with JWT authentication
-- Role-based access for admin, college, student, and super_admin
-- Issuance of digitally signed academic credentials
-- QR code and verification link generation for each credential
-- Credential verification with valid, invalid signature, tampered, revoked, and not-found states
-- Credential revocation for issuer colleges
-- Student wallet and dashboard pages in the frontend
+- Role-based access for `super_admin`, `admin`, `college`, and `student`
+- College dashboard pages for students, credentials, pending requests, profile, and settings
+- Digitally signed credential issuance
+- QR code and verification link generation
+- Public credential verification
+- Credential revocation
+- Admin dashboard and college account creation flows
+- Student wallet and profile entry points in the frontend
 
 ## Tech Stack
 
 ### Frontend
-- React.js
+
+- React 18
 - Vite
-- Axios
 - React Router
+- Axios
 - React Icons
-- QR code rendering
+- jsPDF
 
 ### Backend
+
 - Node.js
 - Express.js
 - MongoDB with Mongoose
-- JWT authentication
-- bcrypt password hashing
+- JSON Web Tokens
+- bcryptjs password hashing
+- qrcode generation
 
-### Database
-- MongoDB
+### Security And Verification
 
-### Security and Verification
 - SHA-256 hashing
 - Digital signatures
 - Public/private key cryptography
-- QR code generation
-- Verification link generation
-- Tamper and revocation checks
+- Credential revocation checks
+- QR-based sharing and verification links
 
 ## Repository Structure
 
 ```txt
-DiGiWallet/
-│
-├── client/        # React + Vite frontend
-├── server/        # Node.js + Express + MongoDB API
-├── docs/          # API notes and testing guides
-├── README.md
-└── readSprint.md  # Sprint-by-sprint work log
+DigiWallet/
+|-- client/        # React + Vite frontend
+|-- server/        # Express + MongoDB backend
+|-- docs/          # API and testing notes
+|-- readSprint.md  # Sprint log
+`-- README.md
 ```
 
-## Project Status
+## Frontend Structure
 
-DiGiWallet is in active development, with the core backend and authentication flows already implemented.
+The frontend entry point is [client/src/main.jsx](client/src/main.jsx) and the route map is defined in [client/src/App.jsx](client/src/App.jsx).
 
-Current progress:
+Public routes:
 
-* College, student, auth, credential, and verification modules are in place
-* JWT authentication and role-based access control are working
-* Credential hashing, signing, QR generation, and revocation are implemented
-* Frontend login, registration, privacy, and terms pages are available
-* Dashboard and wallet pages exist and are being integrated with the API
-* Postman testing notes and API documentation are available in `docs/`
+- `/` -> home page
+- `/register` -> student registration
+- `/login` -> login
+- `/terms` -> terms page
+- `/privacy` -> privacy page
+- `/verify/:credentialId` -> public credential verification page
 
-Sprint highlights:
+Student routes:
 
-* Sprint 1: college, student, and credential schemas/controllers/routes were created and tested
-* Sprint 2: key-pair generation, JWT auth, and protected routes were added
-* Sprint 3: login and registration UI were added, along with the first integrated auth flow
+- `/student/home`
+- `/student/mywallet`
+- `/student/profile`
+- `/student/settings`
 
-## Running Locally
+College routes:
 
-### Frontend
+- `/college/dashboard`
+- `/college/students`
+- `/college/credentials`
+- `/college/pending-requests`
+- `/college/verification`
+- `/college/profile`
+- `/college/settings`
 
-```bash
-cd client
-npm install
-npm run dev
+Admin routes:
+
+- `/admin/dashboard`
+- `/admin/colleges/create`
+
+The frontend dev server runs on port `3001` and proxies `/api` requests to the backend on port `5000`.
+
+## Backend Structure
+
+The backend entry point is [server/src/server.js](server/src/server.js), which loads environment variables, connects to MongoDB, and starts the Express app from [server/src/app.js](server/src/app.js).
+
+Mounted API routes:
+
+- `/api/health`
+- `/api/auth`
+- `/api/college`
+- `/api/student`
+- `/api/credentials`
+- `/api/verify`
+- `/api/admin`
+
+Key route behavior:
+
+- `POST /api/auth/signup` creates a student account
+- `POST /api/auth/login` logs in any role
+- `GET /api/auth/me` returns the current user
+- `PATCH /api/auth/change-password` updates the password
+- `GET /api/verify/:credentialId` verifies a credential publicly
+- `POST /api/credentials/issue` issues a credential for a college user
+- `PATCH /api/credentials/revoke/:credentialId` revokes a credential
+- `GET /api/credentials/mine` returns a student's own credentials
+- `GET /api/admin/dashboard` returns admin dashboard data
+- `POST /api/admin/colleges` creates a college and login account
+- `POST /api/admin/colleges/:id/account` creates a college login account for an existing college
+
+The college router protects all college endpoints with JWT and role checks. The auth and credential flows also enforce role-based access in the controller and middleware layer.
+
+## Environment Variables
+
+Create `server/.env` with at least these values:
+
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=7d
+CLIENT_URL=http://localhost:3001
+SUPER_ADMIN_NAME=Super Admin
+SUPER_ADMIN_EMAIL=admin@example.com
+SUPER_ADMIN_PASSWORD=change-me
 ```
+
+`PORT` and `JWT_EXPIRES_IN` are optional, but the rest are required for local startup and seeding.
+
+## Local Setup
 
 ### Backend
 
@@ -96,7 +154,39 @@ npm install
 npm run dev
 ```
 
-The backend runs on port `5000` by default. The frontend uses the Vite dev server.
+Useful backend scripts:
+
+- `npm run dev` starts the API with nodemon
+- `npm start` starts the API with node
+- `npm run seed:admin` creates the initial super admin account from `server/.env`
+
+### Frontend
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Useful frontend scripts:
+
+- `npm run dev` starts Vite on port `3001`
+- `npm run build` creates a production build
+- `npm run preview` previews the build locally
+
+## Current Project Status
+
+The backend is the most complete part of the system. College, student, auth, credential, verification, and admin routes are present, and the verification flow is wired to hash and signature checks.
+
+The frontend includes the main navigation, layout, and route shells for home, auth, college, student, and admin views. Some pages are still placeholders or are not yet wired into the active route map, so the UI is still being integrated with the API layer.
+
+Documentation and test notes live in `docs/`, including Postman-oriented API testing guidance and admin integration notes.
+
+## Notes
+
+- The seed script uses the email normalization fix already present in the codebase, so admin seed data should be entered in lowercase email form.
+- The frontend API layer reads bearer tokens from local storage and sends requests to `/api`.
+- The backend exposes a simple health check at `GET /api/health`.
 
 ## Team Members
 
