@@ -149,24 +149,24 @@ const requestConfirmation = (entityLabel, actionLabel, row, callback) => {
     });
 };
 
-const USER_ACTION_LABELS = {
-    approve: "approve",
-    reject: "reject",
-    disable: "disable",
-    delete: "delete",
-};
+// const USER_ACTION_LABELS = {
+//     approve: "approve",
+//     reject: "reject",
+//     disable: "disable",
+//     delete: "delete",
+// };
 
-const COLLEGE_ACTION_LABELS = {
-    approve: "approve",
-    reject: "reject",
-    disable: "disable",
-    delete: "delete",
-};
+// const COLLEGE_ACTION_LABELS = {
+//     approve: "approve",
+//     reject: "reject",
+//     disable: "disable",
+//     delete: "delete",
+// };
 
-const CREDENTIAL_ACTION_LABELS = {
-    revoke: "revoke",
-    delete: "delete",
-};
+// const CREDENTIAL_ACTION_LABELS = {
+//     revoke: "revoke",
+//     delete: "delete",
+// };
 
 function StatusBadge({ status }) {
     const normalized = String(status || "unknown").toLowerCase();
@@ -768,46 +768,15 @@ export default function AdminDashboard() {
             header: "Actions",
             render: (row) => (
                 <div className="admin-row-actions">
-                    <IconButton label="View user" onClick={() => handleUserAction("view", row)}>
+                    <IconButton
+                        label="View user"
+                        onClick={() => handleUserAction("view", row)}
+                    >
                         <FaEye aria-hidden="true" />
                     </IconButton>
-                    {isSelfRecord(user, row) ? (
+
+                    {isSelfRecord(user, row) && (
                         <span className="admin-row-note">Current account</span>
-                    ) : (
-                        <>
-                            <IconButton
-                                label="Approve user"
-                                variant="success"
-                                disabled={busyAction === `user-approve-${row.id}`}
-                                onClick={() => handleUserAction("approve", row)}
-                            >
-                                <FaCheckCircle aria-hidden="true" />
-                            </IconButton>
-                            <IconButton
-                                label="Reject user"
-                                variant="warning"
-                                disabled={busyAction === `user-reject-${row.id}`}
-                                onClick={() => handleUserAction("reject", row)}
-                            >
-                                <FaTimesCircle aria-hidden="true" />
-                            </IconButton>
-                            <IconButton
-                                label="Disable user"
-                                variant="danger"
-                                disabled={busyAction === `user-disable-${row.id}`}
-                                onClick={() => handleUserAction("disable", row)}
-                            >
-                                <FaBan aria-hidden="true" />
-                            </IconButton>
-                            <IconButton
-                                label="Delete user"
-                                variant="danger"
-                                disabled={busyAction === `user-delete-${row.id}`}
-                                onClick={() => handleUserAction("delete", row)}
-                            >
-                                <FaTrash aria-hidden="true" />
-                            </IconButton>
-                        </>
                     )}
                 </div>
             ),
