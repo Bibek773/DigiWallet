@@ -1,195 +1,246 @@
-# DiGiWallet
+<div align="center">
 
-DiGiWallet is a digital academic credential system for issuing, storing, sharing, and verifying academic records with JWT authentication, QR-based verification, hashing, and public/private key signatures.
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1e3a8a,100:0ea5e9&height=180&section=header&text=DiGiWallet&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Digital%20Academic%20Credentials%2C%20Verified%20Instantly&descAlignY=58&descSize=16" width="100%"/>
+
+<a href="https://digi-wallet-ecru.vercel.app/">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&pause=1500&color=0EA5E9&center=true&vCenter=true&width=520&lines=Issue+%C2%B7+Store+%C2%B7+Share+%C2%B7+Verify+Academic+Credentials;Secured+with+JWT%2C+SHA-256+%26+Digital+Signatures;Built+with+React+%2B+Express+%2B+MongoDB" alt="Typing SVG" />
+</a>
+
+<br/><br/>
+
+[![GitHub](https://img.shields.io/badge/GitHub-DigiWallet-181717?style=for-the-badge&logo=github)](https://github.com/bibek773)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express.js-Framework-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://digi-wallet-ecru.vercel.app/)
+
+<br/>
+
+### [**Live Demo → digi-wallet-ecru.vercel.app**](https://digi-wallet-ecru.vercel.app/)
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
 
 ## Overview
 
-The goal of DiGiWallet is to reduce the manual work involved in sharing academic documents for jobs, internships, higher studies, and identity checks. Colleges can issue digitally signed credentials, students can keep them in a wallet-style dashboard, and verifiers can confirm whether a credential is valid, tampered, revoked, or missing.
+DiGiWallet eliminates the manual hassle of sharing academic documents for **jobs, internships, higher studies, and identity checks**. Colleges issue digitally signed credentials, students manage them in a wallet-style dashboard, and verifiers can instantly confirm whether a credential is **valid, tampered, revoked, or missing**.
 
-The current codebase includes a React + Vite frontend, an Express + MongoDB backend, route-based role protection, and a verification flow for issued credentials.
+The system combines a **React + Vite** frontend with an **Express + MongoDB** backend, secured with JWT authentication, role-based access control, and cryptographic credential signing.
 
-## Features
+<div align="center">
 
-- College registration with key-pair generation
-- Student signup and login with JWT authentication
-- Role-based access for `super_admin`, `admin`, `college`, and `student`
-- College dashboard pages for students, credentials, pending requests, profile, and settings
-- Digitally signed credential issuance
-- QR code and verification link generation
-- Public credential verification
-- Credential revocation
-- Admin dashboard and college account creation flows
-- Student wallet and profile entry points in the frontend
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
+
+## Key Features
+
+| Category | Highlights |
+|---|---|
+| **Authentication** | JWT-based login for students, colleges, and admins |
+| **College Management** | Registration with key-pair generation, student & credential management |
+| **Credential Issuance** | Digitally signed academic credentials |
+| **QR Verification** | QR code and shareable verification links |
+| **Public Verification** | Anyone can verify a credential's authenticity |
+| **Revocation** | Colleges can revoke issued credentials |
+| **Admin Console** | Dashboard for platform-wide college account management |
+| **Student Wallet** | Centralized dashboard to view and manage credentials |
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
 
 ## Tech Stack
 
 ### Frontend
-
-- React 18
-- Vite
-- React Router
-- Axios
-- React Icons
-- jsPDF
+| Technology | Purpose |
+|---|---|
+| React 18 | UI library |
+| Vite | Build tool & dev server |
+| React Router | Client-side routing |
+| Axios | API communication |
+| React Icons | Iconography |
+| jsPDF | PDF generation |
 
 ### Backend
+| Technology | Purpose |
+|---|---|
+| Node.js | Runtime environment |
+| Express.js | REST API framework |
+| MongoDB + Mongoose | Database & ODM |
+| JSON Web Tokens (JWT) | Authentication |
+| bcryptjs | Password hashing |
+| QRCode | QR code generation |
 
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JSON Web Tokens
-- bcryptjs password hashing
-- qrcode generation
+### Security
+| Mechanism | Purpose |
+|---|---|
+| SHA-256 Hashing | Credential integrity |
+| RSA Digital Signatures | Credential authenticity |
+| Public/Private Key Cryptography | College signing keys |
+| JWT Authentication | Secure sessions |
+| QR-based Verification | Tamper-evident sharing |
+| Credential Revocation | Invalidate compromised/expired credentials |
 
-### Security And Verification
+<div align="center">
 
-- SHA-256 hashing
-- Digital signatures
-- Public/private key cryptography
-- Credential revocation checks
-- QR-based sharing and verification links
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
+
+## Architecture
+
+### Frontend Structure
+
+Entry point: `client/src/main.jsx` · Routes defined in: `client/src/App.jsx`
+
+**Public Routes**
+
+| Route | Description |
+|---|---|
+| `/` | Landing Page |
+| `/register` | Student Registration |
+| `/login` | Login |
+| `/terms` | Terms & Conditions |
+| `/privacy` | Privacy Policy |
+| `/verify/:credentialId` | Public Credential Verification |
+
+**Role-Based Routes**
+
+| Role | Routes |
+|---|---|
+| **Student** | `/student/home` · `/student/mywallet` · `/student/profile` · `/student/settings` |
+| **College** | `/college/dashboard` · `/college/students` · `/college/credentials` · `/college/pending-requests` · `/college/verification` · `/college/profile` · `/college/settings` |
+| **Admin** | `/admin/dashboard` · `/admin/colleges/create` |
+
+### Backend Structure
+
+Entry point: `server/src/server.js` · App initialized in: `server/src/app.js`
+
+**Mounted API Routes**
+
+`/api/health` · `/api/auth` · `/api/college` · `/api/student` · `/api/credentials` · `/api/verify` · `/api/admin`
+
+### API Overview
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/signup` | Register a new user |
+| `POST` | `/api/auth/login` | Authenticate user |
+| `GET` | `/api/auth/me` | Get current user profile |
+| `PATCH` | `/api/auth/change-password` | Update password |
+| `POST` | `/api/credentials/issue` | Issue a new credential |
+| `PATCH` | `/api/credentials/revoke/:credentialId` | Revoke a credential |
+| `GET` | `/api/credentials/mine` | Fetch owned credentials |
+| `GET` | `/api/verify/:credentialId` | Publicly verify a credential |
+| `GET` | `/api/admin/dashboard` | Admin overview data |
+| `POST` | `/api/admin/colleges` | Register a new college |
+| `POST` | `/api/admin/colleges/:id/account` | Create a college account |
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
+
+## Major Functionalities
+
+### Student
+- Register and log in securely via JWT
+- View and manage credentials in a personal wallet dashboard
+- Access profile and account settings
+
+### College
+- Register with automatic key-pair generation for signing
+- Manage students, issue and track credentials
+- Handle pending credential requests
+- Access college profile and settings
+
+### Admin
+- Platform-wide dashboard for oversight
+- Create and manage college accounts
+
+### Verification
+- Public, no-login verification via credential ID or QR code
+- Instantly detect valid, tampered, revoked, or missing credentials
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
+
+## Security Features
+
+- **SHA-256 hashing** ensures credential data integrity
+- **RSA digital signatures** bind credentials to the issuing college
+- **Public/private key cryptography** for tamper-proof signing
+- **JWT authentication** secures all protected routes
+- **QR-based verification** enables fast, reliable checks
+- **Revocation system** invalidates credentials when needed
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
 
 ## Repository Structure
 
-```txt
+```text
 DigiWallet/
-|-- client/        # React + Vite frontend
-|-- server/        # Express + MongoDB backend
-|-- docs/          # API and testing notes
-|-- readSprint.md  # Sprint log
-`-- README.md
+│
+├── client/          # React + Vite frontend
+├── server/          # Express + MongoDB backend
+├── docs/            # API and testing notes
+├── readSprint.md    # Sprint log
+└── README.md
 ```
 
-## Frontend Structure
+<div align="center">
 
-The frontend entry point is [client/src/main.jsx](client/src/main.jsx) and the route map is defined in [client/src/App.jsx](client/src/App.jsx).
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
 
-Public routes:
+</div>
 
-- `/` -> home page
-- `/register` -> student registration
-- `/login` -> login
-- `/terms` -> terms page
-- `/privacy` -> privacy page
-- `/verify/:credentialId` -> public credential verification page
+## Project Status
 
-Student routes:
+| Module | Status |
+|---|---|
+| Backend (Auth, College, Student, Credentials, Verification, Admin) | Fully Integrated |
+| Frontend — Landing, Auth, Dashboards, Wallet, Verification | Complete |
 
-- `/student/home`
-- `/student/mywallet`
-- `/student/profile`
-- `/student/settings`
+The system implements digital credential issuance end-to-end using **SHA-256 hashing**, **RSA digital signatures**, **QR code verification**, a **public verification endpoint**, and **credential revocation**. Additional documentation and API testing notes are available in the `docs/` directory.
 
-College routes:
+<div align="center">
 
-- `/college/dashboard`
-- `/college/students`
-- `/college/credentials`
-- `/college/pending-requests`
-- `/college/verification`
-- `/college/profile`
-- `/college/settings`
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
 
-Admin routes:
-
-- `/admin/dashboard`
-- `/admin/colleges/create`
-
-The frontend dev server runs on port `3001` and proxies `/api` requests to the backend on port `5000`.
-
-## Backend Structure
-
-The backend entry point is [server/src/server.js](server/src/server.js), which loads environment variables, connects to MongoDB, and starts the Express app from [server/src/app.js](server/src/app.js).
-
-Mounted API routes:
-
-- `/api/health`
-- `/api/auth`
-- `/api/college`
-- `/api/student`
-- `/api/credentials`
-- `/api/verify`
-- `/api/admin`
-
-Key route behavior:
-
-- `POST /api/auth/signup` creates a student account
-- `POST /api/auth/login` logs in any role
-- `GET /api/auth/me` returns the current user
-- `PATCH /api/auth/change-password` updates the password
-- `GET /api/verify/:credentialId` verifies a credential publicly
-- `POST /api/credentials/issue` issues a credential for a college user
-- `PATCH /api/credentials/revoke/:credentialId` revokes a credential
-- `GET /api/credentials/mine` returns a student's own credentials
-- `GET /api/admin/dashboard` returns admin dashboard data
-- `POST /api/admin/colleges` creates a college and login account
-- `POST /api/admin/colleges/:id/account` creates a college login account for an existing college
-
-The college router protects all college endpoints with JWT and role checks. The auth and credential flows also enforce role-based access in the controller and middleware layer.
-
-## Environment Variables
-
-Create `server/.env` with at least these values:
-
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:3001
-SUPER_ADMIN_NAME=Super Admin
-SUPER_ADMIN_EMAIL=admin@example.com
-SUPER_ADMIN_PASSWORD=change-me
-```
-
-`PORT` and `JWT_EXPIRES_IN` are optional, but the rest are required for local startup and seeding.
-
-## Local Setup
-
-### Backend
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-Useful backend scripts:
-
-- `npm run dev` starts the API with nodemon
-- `npm start` starts the API with node
-- `npm run seed:admin` creates the initial super admin account from `server/.env`
-
-### Frontend
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Useful frontend scripts:
-
-- `npm run dev` starts Vite on port `3001`
-- `npm run build` creates a production build
-- `npm run preview` previews the build locally
-
-## Current Project Status
-
-The backend is the most complete part of the system. College, student, auth, credential, verification, and admin routes are present, and the verification flow is wired to hash and signature checks.
-
-The frontend includes the main navigation, layout, and route shells for home, auth, college, student, and admin views. Some pages are still placeholders or are not yet wired into the active route map, so the UI is still being integrated with the API layer.
-
-Documentation and test notes live in `docs/`, including Postman-oriented API testing guidance and admin integration notes.
-
-## Notes
-
-- The seed script uses the email normalization fix already present in the codebase, so admin seed data should be entered in lowercase email form.
-- The frontend API layer reads bearer tokens from local storage and sends requests to `/api`.
-- The backend exposes a simple health check at `GET /api/health`.
+</div>
 
 ## Team Members
 
-- [Bibek Ghimire](https://github.com/bibek773)
-- [Maheshwar Pant](https://github.com/Maheshwar-Pant)
-- [Manisha Oli](https://github.com/Manishaa-Oli)
+| Name | GitHub |
+|---|---|
+| **Bibek Ghimire** | [@bibek773](https://github.com/bibek773) |
+| **Maheshwar Pant** | [@Maheshwar-Pant](https://github.com/Maheshwar-Pant) |
+| **Manisha Oli** | [@Manishaa-Oli](https://github.com/Manishaa-Oli) |
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0ea5e9,100:1e3a8a&height=2&width=1000" width="100%"/>
+
+</div>
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1e3a8a,100:0ea5e9&height=110&section=footer" width="100%"/>
+
+**Built for a secure, paperless academic future.**
+
+</div>
