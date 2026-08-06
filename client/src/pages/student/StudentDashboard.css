@@ -468,6 +468,13 @@
     border: 1px solid #e2e8f0;
 }
 
+.qr-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
 .qr-panel__hint {
     font-size: 12px;
     color: #64748b;
