@@ -150,7 +150,7 @@ export default function VerifyPortal() {
               type="text"
               value={linkValue}
               onChange={(event) => setLinkValue(event.target.value)}
-              placeholder="Paste verification link, e.g. localhost:3001/verify/xxxxx"
+              placeholder="Paste verification link"
             />
           </div>
           <button type="submit" disabled={loading || decoding}>
