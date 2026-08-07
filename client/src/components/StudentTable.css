@@ -331,8 +331,88 @@ tbody tr:hover{
     font-size:inherit;
 
 }
+.student-modal{
+    position:fixed !important;
+    inset:0;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height:100vh !important;
+    background: transparent !important ;
+    
+    display:flex !important;
+    justify-content: center !important;
+    align-items:center !important;
+    z-index:999 !important;
+}
 
+.confirmation-modal{
+   
+    position:relative;
+    width:320px;
+    max-width: 90%;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    text-align:center;
+    /* box-shadow: 0 12px 30px rgba(0,0,0,0.25); */
 
+    animation: popup 0.2s ease;
+}
+.confirmation-modal h2 {
+    margin-bottom: 12px;
+}
+
+.confirmation-modal p {
+    margin-bottom: 20px;
+    color:black;
+}
+.confirmation-buttons{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:25px;
+}
+
+.cancel-btn,
+.delete-btn{
+    border:none;
+    padding:10px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.cancel-btn{
+    background:#64748b;
+    color:#fff;
+}
+
+.delete-btn{
+    background:#dc2626;
+    color:#fff;
+}
+
+.cancel-btn:hover{
+    background:#475569;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
+}
+
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
 /* Responsive */
 

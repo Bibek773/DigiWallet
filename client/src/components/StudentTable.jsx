@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { approveStudent,deleteStudent } from "../services/collegeService";
 import "./StudentTable.css";
 
@@ -14,7 +15,10 @@ export default function StudentTable({
     fetchStudents
 }) {
 
-
+    const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    studentId: null,
+    });
     const handleApprove = async(student) => {
 
        try {
@@ -29,32 +33,33 @@ export default function StudentTable({
 
     };
 
+    const handleDelete = (student) => {
+        setConfirmDialog({
+            open: true,
+            studentId: student._id,
+        });
+    };
 
-
-    const handleDelete = async(student) => {
-
-        const confirmDelete=window.confirm("Are you sure you want to delete this student?");
-        if(!confirmDelete)
-            return;
-        // connected API:
-        // deleteStudent(student._id)
-        try {
-            await deleteStudent(student._id);
-
-
-        alert("Student deleted");
-
+   const confirmDeleteStudent = async () => {
+    try {
+        await deleteStudent(confirmDialog.studentId);
 
         fetchStudents();
-        } catch (error) {
-            console.log(error);
-        }
+
+        setConfirmDialog({
+            open: false,
+            studentId: null,
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
     };
 
 
 
     return (
-
+        <>
         <div className="students-table-container">
 
 
@@ -302,10 +307,45 @@ export default function StudentTable({
 
 
             </table>
-
-
         </div>
+        {confirmDialog.open && (
+            <div className="student-modal">
+                <div className=" confirmation-modal">
 
+                    <h2>Delete Student</h2>
+
+                    <p>
+                        Are you sure you want to delete this student?
+                    </p>
+
+                    <div className="confirmation-buttons">
+
+                        <button
+                            className="cancel-btn"
+                            onClick={() =>
+                                setConfirmDialog({
+                                    open: false,
+                                    studentId: null,
+                                })
+                            }
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            className="delete-btn"
+                            onClick={confirmDeleteStudent}
+                        >
+                            Delete
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        )}
+     
+</>
     );
 
 }

@@ -14,7 +14,7 @@ export default function Students(){
 
     const [selectedStudent, setSelectedStudent] = useState(null);
 
-
+    
     const fetchStudents = async()=>{
 
             try{
@@ -103,7 +103,7 @@ export default function Students(){
 
             </section>
 
-
+        
 
 
 

@@ -166,8 +166,13 @@ export default function Credentials() {
         fetchCollegeName();
 
     },[]);
+    const currentYear = new Date().getFullYear();
 
-    
+    const academicYears = Array.from({ length: 10 }, (_, index) => {
+        const startYear = currentYear - 2 + index;
+        return `${startYear}/${startYear + 1}`;
+    });
+        
 
     const handleChange=(e)=>{
 
@@ -732,10 +737,19 @@ required
 <option key={semester} value={semester}>{index + 1}{index === 0 ? "st" : index === 1 ? "nd" : index === 2 ? "rd" : "th"} Semester</option>
 ))}
 </select>
+<select
+    name="academicYear"
+    value={formData.academicYear}
+    onChange={handleChange}
+    required
+>
+    <option value="">Select Academic Year</option>
 
-<select name="academicYear" value={formData.academicYear} onChange={handleChange} required>
-<option value="">Select academic year</option>
-{["2025/2026", "2026/2027", "2027/2028"].map((year)=><option key={year} value={year}>{year}</option>)}
+    {academicYears.map((year) => (
+        <option key={year} value={year}>
+            {year}
+        </option>
+    ))}
 </select>
 
 <input name="CGPA" type="number" min="0" max="4" step="0.01" placeholder="CGPA (0.0 - 4.0)" value={formData.CGPA} onChange={handleChange} required/>
