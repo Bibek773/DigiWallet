@@ -50,6 +50,7 @@ const credentialSchema = new mongoose.Schema({
   },
   credentialType: {
     type: String,
+    enum:['CGPA'],
     trim: true,
     default: 'CGPA',
   },
