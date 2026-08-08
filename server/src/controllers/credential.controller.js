@@ -33,7 +33,8 @@ const safeCredential = (credential) => ({
   registrationNumber: credential.registrationNumber,
   academicYear: credential.academicYear,
   grade: credential.grade,
-  credentialType: credential.credentialType,
+  // credentialType: credential.credentialType,
+   credentialType: 'CGPA',
   semester: credential.semester,
   level: credential.level,
   faculty: credential.faculty,
@@ -99,7 +100,7 @@ exports.issueCredential = async (req, res) => {
       return res.status(400).json({ success: false, message: "CGPA must be between 0.0 and 4.0." });
     }
 
-    const credentialType = req.body.credentialType || "Semester Transcript";
+    const credentialType = req.body.credentialType || "CGPA";
 
     const credentialInput = {
       studentName: student.Name?.trim(),
@@ -152,7 +153,8 @@ exports.issueCredential = async (req, res) => {
       CGPA: credentialInput.CGPA,
       academicYear: credentialInput.academicYear,
       grade: credentialInput.grade,
-      credentialType: credentialInput.credentialType,
+      // credentialType: credentialInput.credentialType,
+      credentialType:'CGPA',//cause for now we only have cgpa as credential
       studentId: student._id.toString(),
       collegeId: issuerCollegeId.toString(),
       issuerCollegeId: issuerCollegeId.toString(),

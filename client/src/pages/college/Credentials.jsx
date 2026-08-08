@@ -771,47 +771,42 @@ required
 </div>
 
 }
-{
-showConfirm && (
+{showConfirm && (
+    <div className="revoke-modal-overlay">
 
-<div className="student-modal-overlay">
+        <div className="revoke-modal">
 
-<div className="student-modal confirm-modal">
+            <h2>Confirm Action</h2>
 
-<h2>Confirm Action</h2>
+            <p>
+                Are you sure you want to revoke this credential?
+            </p>
 
-<p>
-Are you sure you want to revoke this credential?
-</p>
+            <div className="confirm-actions">
 
-<div className="confirm-actions">
+                <button
+                    className="cancel-btn"
+                    onClick={() => {
+                        setShowConfirm(false);
+                        setSelectedRevokeId(null);
+                    }}
+                >
+                    Cancel
+                </button>
 
-<button
-className="cancel-btn"
-onClick={()=>{
-    setShowConfirm(false);
-    setSelectedRevokeId(null);
-}}
->
-Cancel
-</button>
+                <button
+                    className="confirm-btn"
+                    onClick={confirmRevoke}
+                >
+                    Revoke
+                </button>
 
+            </div>
 
-<button
-className="confirm-btn"
-onClick={confirmRevoke}
->
-Revoke
-</button>
+        </div>
 
-</div>
-
-</div>
-
-</div>
-
-)
-}
+    </div>
+)}
 </div>
 </>
 );
